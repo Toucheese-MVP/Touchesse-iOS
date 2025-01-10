@@ -11,12 +11,12 @@ struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     
     private let conceptCards: [ConceptCard] = [
-        ConceptCard(imageString: "flashIdol", concept: .flashIdol),
-        ConceptCard(imageString: "liveliness", concept: .liveliness),
-        ConceptCard(imageString: "blackBlueActor", concept: .blackBlueActor),
-        ConceptCard(imageString: "naturalPictorial", concept: .naturalPictorial),
-        ConceptCard(imageString: "waterColor", concept: .waterColor),
-        ConceptCard(imageString: "clarityDoll", concept: .gorgeous)
+        ConceptCard(imageString: "concept1", concept: .liveliness),
+        ConceptCard(imageString: "concept2", concept: .flashIdol),
+        ConceptCard(imageString: "concept3", concept: .blackBlueActor),
+        ConceptCard(imageString: "concept4", concept: .naturalPictorial),
+        ConceptCard(imageString: "concept5", concept: .gorgeous),
+        ConceptCard(imageString: "concept6", concept: .waterColor)
     ]
     
     private let columns = [
