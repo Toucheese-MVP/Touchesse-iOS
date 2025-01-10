@@ -87,6 +87,10 @@ extension Network {
             return "/\(nicknameChangeRequest.memberId)/name"
         case .studioLikeCancelRequest(let studioLikeRelationRequest):
             return "/delete/\(studioLikeRelationRequest.studioId)"
+            
+        // MARK: - SERVER Migration WORK
+        case .studioConceptReqeust:
+            return "/concepts"
         }
     }
 }

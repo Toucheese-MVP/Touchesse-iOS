@@ -10,7 +10,7 @@ import Foundation
 protocol ViewMaterial { }
 
 struct HomeResultViewMaterial: ViewMaterial {
-    var concept: StudioConcept
+    var concept: StudioConceptEntity
 }
 
 struct StudioDetailViewMaterial: ViewMaterial {

@@ -13,7 +13,7 @@ struct HomeResultView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    let concept: StudioConcept
+    let concept: StudioConceptEntity
     
     @State private var isShowingPriceFilterOptionView: Bool = false
     @State private var isShowingRegionFilterOptionView: Bool = false
@@ -85,7 +85,7 @@ struct HomeResultView: View {
                 }
             }
             .customNavigationBar(centerView: {
-                Text("\(concept.title)")
+                Text("\(concept.name)")
                     .modifier(NavigationTitleModifier())
             }, leftView: {
                 Button {
@@ -118,7 +118,7 @@ struct HomeResultView: View {
             LogInView(isPresented: $isShowingLoginView)
         }
         .onAppear {
-            studioListViewModel.selectStudioConcept(concept)
+            // studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
         }
     }
@@ -267,7 +267,7 @@ struct HomeResultView: View {
 
 #Preview {
     NavigationStack {
-        HomeResultView(concept: .liveliness)
+        HomeResultView(concept: StudioConceptEntity(id: 1, name: "생동감 있는 실물 느낌"))
     }
     .environmentObject(StudioListViewModel())
     .environmentObject(NavigationManager())

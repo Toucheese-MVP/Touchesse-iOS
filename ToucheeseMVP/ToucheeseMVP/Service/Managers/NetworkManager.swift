@@ -29,6 +29,7 @@ final class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
+        print("\(url)")
         
         let request = AF.request(
             url,
@@ -568,4 +569,16 @@ final class NetworkManager {
         return studioLikeListResponseData.data
     }
     
+    
+    // MARK: - SERVER Migration WORK
+    func getStudioConcept() async throws -> [StudioConceptEntity] {
+        let fetchRequest = Network.studioConceptReqeust
+        
+        let studioConceptArray = try await performRequest(
+            fetchRequest,
+            decodingType: [StudioConceptEntity].self
+        )
+        
+        return studioConceptArray
+    }
 }

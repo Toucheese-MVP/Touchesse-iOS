@@ -19,6 +19,9 @@ extension Network {
             return .delete
         case .nicknameChangeRequest:
             return .put
+        // MARK: - SERVER Migration WORK
+        case .studioConceptReqeust:
+            return . get
         }
     }
 }
