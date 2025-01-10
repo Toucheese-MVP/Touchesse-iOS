@@ -35,7 +35,6 @@ final class NavigationManager: ObservableObject {
     private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
     private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
-    
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
     func goFirstView() {

@@ -67,6 +67,11 @@ extension Network {
             headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
+        // MARK: - SERVER Migration WORK
+        case .studioConceptReqeust:
+            var headers: HTTPHeaders = ["accept": "*/*"]
+            
+            return headers
         }
     }
 }

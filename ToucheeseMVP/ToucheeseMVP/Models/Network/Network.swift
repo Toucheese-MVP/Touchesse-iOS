@@ -56,4 +56,8 @@ enum Network {
     case studioLikeRequest(StudioLikeRelationRequest)
     case studioLikeCancelRequest(StudioLikeRelationRequest)
     case studioLikeListRequest(accsessToken: String, memberID: Int)
+    
+    // MARK: - SERVER Migration WORK
+    // 컨셉 조회
+    case studioConceptReqeust
 }

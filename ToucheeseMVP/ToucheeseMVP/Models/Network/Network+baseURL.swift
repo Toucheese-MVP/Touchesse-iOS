@@ -26,6 +26,10 @@ extension Network {
             return "\(server_url)/api/v1/auth"
         case .studioLikeRequest, .studioLikeCancelRequest, .studioLikeListRequest:
             return "\(server_url)/api/v1/like"
+            
+        // MARK: - SERVER Migration WORK
+        case .studioConceptReqeust:
+            return "\(server_url)/v1"
         }
     }
 }

@@ -9,16 +9,8 @@ import SwiftUI
 
 struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
-    
-    private let conceptCards: [ConceptCard] = [
-        ConceptCard(imageString: "flashIdol", concept: .flashIdol),
-        ConceptCard(imageString: "liveliness", concept: .liveliness),
-        ConceptCard(imageString: "blackBlueActor", concept: .blackBlueActor),
-        ConceptCard(imageString: "naturalPictorial", concept: .naturalPictorial),
-        ConceptCard(imageString: "waterColor", concept: .waterColor),
-        ConceptCard(imageString: "clarityDoll", concept: .gorgeous)
-    ]
-    
+    @EnvironmentObject var studioConceptViewModel: StudioConceptViewModel
+
     private let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -30,13 +22,13 @@ struct HomeConceptView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             Color.clear.frame(height: 8)
-            
+
             LazyVGrid(columns: columns, spacing:12) {
-                ForEach(conceptCards) { conceptCard in
+                ForEach(studioConceptViewModel.concepts) { concept in
                     Button {
-                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: conceptCard.concept))
+                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
                     } label: {
-                        conceptCardView(conceptCard)
+                        conceptCardView(imageString: "concept\(concept.id)", concept: concept.shortedName)
                     }
                 }
             }
@@ -54,9 +46,9 @@ struct HomeConceptView: View {
     }
     
     @ViewBuilder
-    private func conceptCardView(_ conceptCard: ConceptCard) -> some View {
+    private func conceptCardView(imageString: String, concept: String) -> some View {
         ZStack(alignment: .bottom) {
-            Image(conceptCard.imageString)
+            Image(imageString)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: gridWidthSize, height: 232)
@@ -77,7 +69,7 @@ struct HomeConceptView: View {
                         )
                 }
             
-            Text(conceptCard.title)
+            Text(concept)
                 .foregroundStyle(.white)
                 .font(.pretendardSemiBold16)
                 .padding(.bottom, 15)
