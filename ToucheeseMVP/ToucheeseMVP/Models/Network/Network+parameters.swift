@@ -129,6 +129,12 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptReqeust:
             return [:]
+        case .conceptedStudioListRequest(let conceptedStudioRequest):
+            var params: Parameters = [:]
+            
+            params["page"] = conceptedStudioRequest.page
+            
+            return params
         }
     }
 }

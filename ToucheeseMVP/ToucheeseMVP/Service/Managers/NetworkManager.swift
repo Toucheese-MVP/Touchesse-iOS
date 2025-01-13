@@ -47,6 +47,8 @@ final class NetworkManager {
             throw NetworkError.unknown
         }
         
+        print(response)
+        
         switch statusCode {
         case 200...299:
             switch response.result {
@@ -580,5 +582,16 @@ final class NetworkManager {
         )
         
         return studioConceptArray
+    }
+    
+    func getConceptedStudioList(conceptedStudioRequest: ConceptedStudioRequest) async throws -> StudioEntity {
+        let fetchRequest = Network.conceptedStudioListRequest(conceptedStudioRequest)
+        
+        let studioEntity = try await performRequest(
+            fetchRequest,
+            decodingType: StudioEntity.self
+        )
+        
+        return studioEntity
     }
 }

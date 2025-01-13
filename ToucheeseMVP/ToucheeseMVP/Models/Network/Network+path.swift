@@ -91,6 +91,8 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptReqeust:
             return "/concepts"
+        case .conceptedStudioListRequest(let conceptedStudioRequest):
+            return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios?"
         }
     }
 }

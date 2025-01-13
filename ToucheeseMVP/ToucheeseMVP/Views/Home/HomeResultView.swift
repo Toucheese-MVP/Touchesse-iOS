@@ -118,7 +118,7 @@ struct HomeResultView: View {
             LogInView(isPresented: $isShowingLoginView)
         }
         .onAppear {
-            // studioListViewModel.selectStudioConcept(concept)
+            studioListViewModel.selectStudioConcept(conceptId: concept.id)
             studioListViewModel.completeLoding()
         }
     }
