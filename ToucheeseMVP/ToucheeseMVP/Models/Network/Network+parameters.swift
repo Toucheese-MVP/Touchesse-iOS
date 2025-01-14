@@ -134,6 +134,18 @@ extension Network {
             
             params["page"] = conceptedStudioRequest.page
             
+            if let price = conceptedStudioRequest.price {
+                params["price"] = price
+            }
+            
+            if let rating = conceptedStudioRequest.rating {
+                params["rating"] = rating
+            }
+            
+            if let location = conceptedStudioRequest.location {
+                params["locations"] = location
+            }
+            
             return params
         }
     }
