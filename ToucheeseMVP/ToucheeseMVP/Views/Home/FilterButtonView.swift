@@ -16,15 +16,10 @@ struct FilterButtonView: View {
             Text(filter.title)
                 .font(.pretendardRegular14)
             
-            switch filter {
-            case .region, .price:
-                Image(systemName: "chevron.down")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 11)
-            case .rating:
-                EmptyView()
-            }
+            Image(systemName: "chevron.down")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 11)
         }
         .foregroundStyle(isFiltering ? .tcPrimary06 : .tcGray08)
         .foregroundStyle(.black)

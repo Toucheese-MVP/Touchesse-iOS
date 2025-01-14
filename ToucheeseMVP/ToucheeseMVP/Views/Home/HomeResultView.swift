@@ -17,6 +17,7 @@ struct HomeResultView: View {
     
     @State private var isShowingPriceFilterOptionView: Bool = false
     @State private var isShowingRegionFilterOptionView: Bool = false
+    @State private var isShowingRatingFilterOptionView: Bool = false
     
     @State private var isShowingLoginAlert: Bool = false
     @State private var isShowingLoginView: Bool = false
@@ -48,7 +49,7 @@ struct HomeResultView: View {
                                     Text("총")
                                         .padding(.trailing, 3)
                                     
-                                    Text("\(studioListViewModel.studioCount)")
+                                    Text("\(studioListViewModel.studioDatas.count)")
                                         .foregroundStyle(.tcPrimary06)
                                         .font(.pretendardMedium14)
                                     
@@ -105,13 +106,18 @@ struct HomeResultView: View {
             }
         }
         .sheet(isPresented: $isShowingPriceFilterOptionView) {
-            filterOptionView(.price)
+            filterOptionView(StudioFilter.price)
                 .presentationDetents([.fraction(0.5)])
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $isShowingRegionFilterOptionView) {
-            filterOptionView(.region)
+            filterOptionView(StudioFilter.region)
                 .presentationDetents([.fraction(0.9)])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $isShowingRatingFilterOptionView) {
+            filterOptionView(StudioFilter.rating)
+                .presentationDetents([.fraction(0.6)])
                 .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $isShowingLoginView) {
@@ -129,6 +135,7 @@ struct HomeResultView: View {
                 Button {
                     isShowingRegionFilterOptionView = false
                     isShowingPriceFilterOptionView = false
+                    isShowingRatingFilterOptionView = false
                     
                     studioListViewModel.resetFilters()
                 } label: {
@@ -161,13 +168,14 @@ struct HomeResultView: View {
             }
             .buttonStyle(.plain)
             
-            FilterButtonView(filter: .rating, isFiltering: studioListViewModel.isFilteringByRating)
-                .onTapGesture {
-                    studioListViewModel.toggleStudioRatingFilter()
-                    
-                    isShowingPriceFilterOptionView = false
-                    isShowingRegionFilterOptionView = false
-                }
+            Button {
+                toggleFilter(&isShowingRatingFilterOptionView)
+            } label: {
+                FilterButtonView(
+                    filter: .rating,
+                    isFiltering: studioListViewModel.isFilteringByRating
+                )
+            }
             
             Spacer()
         }
@@ -195,6 +203,11 @@ struct HomeResultView: View {
                                 for: price,
                                 isSelected: price == studioListViewModel.tempSelectedPrice
                             )
+                        } else if let rating = option as? StudioRating {
+                            filterOptionButton(
+                                for: rating,
+                                isSelected: rating == studioListViewModel.tempSelectedRating
+                            )
                         }
                     }
                 }
@@ -208,7 +221,9 @@ struct HomeResultView: View {
                 case .price:
                     studioListViewModel.applyPriceOptions()
                     isShowingPriceFilterOptionView = false
-                case .rating: break
+                case .rating:
+                    studioListViewModel.applyRatingOptions()
+                    isShowingRatingFilterOptionView = false
                 }
             }
         }
@@ -217,6 +232,7 @@ struct HomeResultView: View {
         .onAppear {
             studioListViewModel.loadRegionOptions()
             studioListViewModel.loadPriceOptions()
+            studioListViewModel.loadRatingOptions()
         }
     }
     
@@ -229,6 +245,8 @@ struct HomeResultView: View {
                 studioListViewModel.toggleRegionFilterOption(region)
             } else if let price = option as? StudioPrice {
                 studioListViewModel.selectStudioPriceFilter(price)
+            } else if let rating = option as? StudioRating {
+                studioListViewModel.selectStudioRatingFilter(studioRating: rating)
             }
         } label: {
             HStack {
@@ -259,6 +277,7 @@ struct HomeResultView: View {
         if !filter {
             isShowingPriceFilterOptionView = false
             isShowingRegionFilterOptionView = false
+            isShowingRatingFilterOptionView = false
         }
         
         filter.toggle()

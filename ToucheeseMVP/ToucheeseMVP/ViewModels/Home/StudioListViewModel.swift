@@ -9,21 +9,8 @@ import Foundation
 import SwiftUI
 
 final class StudioListViewModel: ObservableObject {
-    
-    // MARK: - Data
-    private var selectedConceptId: Int = 1 {
-        didSet {
-            if oldValue != selectedConceptId {
-                resetStudios()
-            }
-        }
-    }
     @Published private(set) var studios: [Studio] = []
-    @Published private(set) var studioCount: Int = 0
     
-    @Published var isFilteringByPrice: Bool = false
-    @Published var isFilteringByRegion: Bool = false
-    @Published private(set) var isFilteringByRating: Bool = false
     var isShowingResetButton: Bool {
         return isFilteringByPrice || isFilteringByRegion || isFilteringByRating
     }
@@ -31,6 +18,7 @@ final class StudioListViewModel: ObservableObject {
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
+    
     @Published private(set) var tempSelectedPrice: StudioPrice = .all
     
     private var selectedRegions: Set<StudioRegion> = [.all] {
@@ -39,15 +27,48 @@ final class StudioListViewModel: ObservableObject {
     @Published private(set) var tempSelectedRegions: Set<StudioRegion> = []
     
     @Published private(set) var isStudioLoading: Bool = true
-    
-    private let networkManager = NetworkManager.shared
-    private let authManager = AuthenticationManager.shared
-    
+
     private var page: Int = 1
     
     // MARK: - Migration
-    @Published private(set) var studioDatas: [TempStudio] = []
+    // MARK: - Data
+    private let networkManager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
+    
+    // 선택된 컨셉 ID
+    private var selectedConceptId: Int = 1 {
+        didSet {
+            if oldValue != selectedConceptId {
+                resetStudios()
+            }
+        }
+    }
+    
+    // 페이징 처리를 위한 현재 페이지 정보
     private var currentPage: Int = 0
+    
+    
+    // MARK: - Data: Studio
+    // 메모리에 있는 스튜디오 데이터
+    @Published private(set) var studioDatas: [TempStudio] = []
+    
+    // 메모리에 있는 스튜디오 데이터의 수
+    @Published private(set) var studioCount: Int = 0
+    
+    
+    // MARK: Data: Filter Options
+    // 선택된 평점 필터
+    @Published private(set) var selectedRating: StudioRating = .all {
+        didSet { isFilteringByRating = selectedRating != .all }
+    }
+    
+    // 선택된 임시 평점 필터
+    @Published private(set) var tempSelectedRating: StudioRating = .all
+    
+    // 필터 정렬이 되어있는지 여부
+    @Published private(set) var isFilteringByRating: Bool = false
+    @Published private(set) var isFilteringByPrice: Bool = false
+    @Published private(set) var isFilteringByRegion: Bool = false
     
     // MARK: - Intput
     func resetFilters() {
@@ -57,16 +78,23 @@ final class StudioListViewModel: ObservableObject {
         
         selectedPrice = .all
         selectedRegions = [.all]
+        selectedRating = .all
         Task { await fetchStudios() }
     }
     
     func applyRegionOptions() {
         selectedRegions = tempSelectedRegions
+        print("============================= \(selectedRegions)")
         Task { await fetchStudios() }
     }
     
     func applyPriceOptions() {
         selectedPrice = tempSelectedPrice
+        Task { await fetchStudios() }
+    }
+    
+    func applyRatingOptions() {
+        selectedRating = tempSelectedRating
         Task { await fetchStudios() }
     }
     
@@ -84,6 +112,10 @@ final class StudioListViewModel: ObservableObject {
     
     func selectStudioPriceFilter(_ price: StudioPrice) {
         self.tempSelectedPrice = price
+    }
+    
+    func selectStudioRatingFilter(studioRating: StudioRating) {
+        self.tempSelectedRating = studioRating
     }
     
     func toggleStudioRatingFilter() {
@@ -115,6 +147,10 @@ final class StudioListViewModel: ObservableObject {
     
     func loadRegionOptions() {
         tempSelectedRegions = selectedRegions
+    }
+    
+    func loadRatingOptions() {
+        tempSelectedRating = selectedRating
     }
     
     func completeLoding() {
@@ -157,8 +193,20 @@ final class StudioListViewModel: ObservableObject {
     func fetchStudios() async {
         let conceptId = selectedConceptId
         let currentPage = currentPage
+        let price = selectedPrice.querryParameter
+        let rating = selectedRating.querryParameter
         
-        let request = ConceptedStudioRequest(studioConceptId: conceptId)
+        var regionArray: [String] {
+            selectedRegions == [.all] ? [] : selectedRegions.map(\.self.querryParameter)
+        }
+        
+        let request = ConceptedStudioRequest(
+            studioConceptId: conceptId,
+            page: currentPage,
+            price: price,
+            rating: rating,
+            location: regionArray
+        )
         
         do {
             let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
@@ -168,7 +216,6 @@ final class StudioListViewModel: ObservableObject {
         } catch {
             print(error.localizedDescription)
         }
-        
         
 //        let concept = selectedConceptId
 //        let isHighRating = isFilteringByRating
