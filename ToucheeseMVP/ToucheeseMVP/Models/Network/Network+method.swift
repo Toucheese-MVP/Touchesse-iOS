@@ -20,7 +20,7 @@ extension Network {
         case .nicknameChangeRequest:
             return .put
         // MARK: - SERVER Migration WORK
-        case .studioConceptReqeust:
+        case .studioConceptType, .conceptedStudioListType:
             return . get
         }
     }

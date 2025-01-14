@@ -11,9 +11,9 @@ import SwiftUI
 final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data
-    private var selectedConcept: StudioConcept = .liveliness {
+    private var selectedConceptId: Int = 1 {
         didSet {
-            if oldValue != selectedConcept {
+            if oldValue != selectedConceptId {
                 resetStudios()
             }
         }
@@ -45,6 +45,10 @@ final class StudioListViewModel: ObservableObject {
     
     private var page: Int = 1
     
+    // MARK: - Migration
+    @Published private(set) var studioDatas: [TempStudio] = []
+    private var currentPage: Int = 0
+    
     // MARK: - Intput
     func resetFilters() {
         isFilteringByPrice = false
@@ -70,8 +74,8 @@ final class StudioListViewModel: ObservableObject {
     
     
     // MARK: - Logic
-    func selectStudioConcept(_ concept: StudioConcept) {
-        self.selectedConcept = concept
+    func selectStudioConcept(conceptId: Int) {
+        self.selectedConceptId = conceptId
         Task {
             page = 1
             await fetchStudios()
@@ -119,61 +123,76 @@ final class StudioListViewModel: ObservableObject {
     
     @MainActor
     func loadMoreStudios() {
-        if !isStudioLoading {
-            page += 1
-            
-            let concept = selectedConcept
-            let isHighRating = isFilteringByRating
-            let regionArray = selectedRegions.map { $0 }
-            let price = selectedPrice
-            let page = page
-            
-            Task {
-                do {
-                    isStudioLoading = true
-                    studios.append(
-                        contentsOf: try await networkManager.getStudioListDatas(
-                            concept: concept,
-                            isHighRating: isHighRating,
-                            regionArray: regionArray,
-                            price: price,
-                            page: page
-                        ).list
-                    )
-                    
-                    isStudioLoading = false
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }
+//        if !isStudioLoading {
+//            page += 1
+//            
+//            let concept = selectedConceptId
+//            let isHighRating = isFilteringByRating
+//            let regionArray = selectedRegions.map { $0 }
+//            let price = selectedPrice
+//            let page = page
+//            
+//            Task {
+//                do {
+//                    isStudioLoading = true
+//                    studios.append(
+//                        contentsOf: try await networkManager.getStudioListDatas(
+//                            concept: concept,
+//                            isHighRating: isHighRating,
+//                            regionArray: regionArray,
+//                            price: price,
+//                            page: page
+//                        ).list
+//                    )
+//                    
+//                    isStudioLoading = false
+//                } catch {
+//                    print(error.localizedDescription)
+//                }
+//            }
+//        }
     }
     
     @MainActor
     func fetchStudios() async {
-        let concept = selectedConcept
-        let isHighRating = isFilteringByRating
-        var regionArray: [StudioRegion] {
-            selectedRegions == [.all] ? [] : Array(selectedRegions)
-        }
-        let price = selectedPrice
-        page = 1
+        let conceptId = selectedConceptId
+        let currentPage = currentPage
+        
+        let request = ConceptedStudioRequest(studioConceptId: conceptId)
         
         do {
-            let studioDatas = try await networkManager.getStudioListDatas(
-                concept: concept,
-                isHighRating: isHighRating,
-                regionArray: regionArray,
-                price: price,
-                page: page
-            )
-            
-            (studios, studioCount) = (studioDatas.list, studioDatas.count)
-            
+            let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
+            studioDatas = studioEntity.studio
+            print("studioDatas ====== \(studioDatas)")
             isStudioLoading = false
         } catch {
             print(error.localizedDescription)
         }
+        
+        
+//        let concept = selectedConceptId
+//        let isHighRating = isFilteringByRating
+//        var regionArray: [StudioRegion] {
+//            selectedRegions == [.all] ? [] : Array(selectedRegions)
+//        }
+//        let price = selectedPrice
+//        page = 1
+//        
+//        do {
+//            let studioDatas = try await networkManager.getStudioListDatas(
+//                concept: concept,
+//                isHighRating: isHighRating,
+//                regionArray: regionArray,
+//                price: price,
+//                page: page
+//            )
+//            
+//            (studios, studioCount) = (studioDatas.list, studioDatas.count)
+//            
+//            isStudioLoading = false
+//        } catch {
+//            print(error.localizedDescription)
+//        }
     }
     
     private func resetStudios() {

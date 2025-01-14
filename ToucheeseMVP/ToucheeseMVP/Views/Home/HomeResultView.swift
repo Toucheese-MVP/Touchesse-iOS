@@ -30,7 +30,7 @@ struct HomeResultView: View {
                     .padding(.bottom, -5)
                 
                 ZStack(alignment: .top) {
-                    if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
+                    if studioListViewModel.studioDatas.isEmpty && studioListViewModel.isStudioLoading == false {
                         CustomEmptyView(
                             viewType: .studio(
                                 buttonAction: {
@@ -60,16 +60,16 @@ struct HomeResultView: View {
                                 .font(.pretendardRegular14)
                                 .padding(.horizontal, 16)
                                 
-                                ForEach(studioListViewModel.studios) { studio in
+                                ForEach(studioListViewModel.studioDatas) { studio in
                                     StudioRow(
-                                        studio: studio,
+                                        tempStudio: studio,
                                         isShowingLoginAlert: $isShowingLoginAlert
                                     )
                                     .contentShape(.rect)
                                     .onTapGesture {
                                         navigationManager.appendPath(
                                             viewType: .studioDetailView,
-                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: Studio.sample))
                                         )
                                     }
                                 }
@@ -118,7 +118,7 @@ struct HomeResultView: View {
             LogInView(isPresented: $isShowingLoginView)
         }
         .onAppear {
-            // studioListViewModel.selectStudioConcept(concept)
+            studioListViewModel.selectStudioConcept(conceptId: concept.id)
             studioListViewModel.completeLoding()
         }
     }

@@ -59,5 +59,6 @@ enum Network {
     
     // MARK: - SERVER Migration WORK
     // 컨셉 조회
-    case studioConceptReqeust
+    case studioConceptType
+    case conceptedStudioListType(ConceptedStudioRequest)
 }

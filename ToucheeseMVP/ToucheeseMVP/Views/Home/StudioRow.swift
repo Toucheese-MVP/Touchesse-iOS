@@ -15,9 +15,10 @@ struct StudioRow: View {
     
     private let authManager = AuthenticationManager.shared
     
-    let studio: Studio
+    // let studio: Studio
+    let tempStudio: TempStudio
     private var portfolioImageURLs: [URL] {
-        studio.portfolioImageURLs
+        tempStudio.profileImageUrls
     }
     
     @Binding var isShowingLoginAlert: Bool
@@ -26,12 +27,12 @@ struct StudioRow: View {
         VStack(spacing: 12) {
             HStack(spacing: 8) {
                 ProfileImageView(
-                    imageURL: studio.profileImageURL,
+                    imageURL: tempStudio.profileImageUrl,
                     size: 50
                 )
                 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(studio.name)")
+                    Text("\(tempStudio.name)")
                         .foregroundStyle(.tcGray10)
                         .font(.pretendardMedium(17))
                     
@@ -42,13 +43,13 @@ struct StudioRow: View {
                             .frame(width: 14, height: 14)
                             .padding(.trailing, 3)
                         
-                        Text(studio.formattedRating)
+                        Text(tempStudio.formattedRating)
                             .foregroundStyle(.tcGray10)
                             .font(.pretendardSemiBold14)
                         
-                        Text("(\(studio.reviewCount))")
-                            .foregroundStyle(.tcGray05)
-                            .font(.pretendardRegular14)
+//                        Text("(\(studio.reviewCount))")
+//                            .foregroundStyle(.tcGray05)
+//                            .font(.pretendardRegular14)
                     }
                 }
                 
@@ -59,25 +60,29 @@ struct StudioRow: View {
                         isShowingLoginAlert.toggle()
                         navigationManager.isShowingAlert = true
                     } else {
-                        Task {
-                            if authManager.memberLikedStudios.contains(studio) {
-                                await studioListViewModel.cancelLikeStudio(
-                                    studioId: studio.id
-                                )
-                            } else {
-                                await studioListViewModel.likeStudio(
-                                    studioId: studio.id
-                                )
-                            }
-                            
-                            await studioLikeListViewModel.fetchLikedStudios()
-                        }
+//                        Task {
+//                            if authManager.memberLikedStudios.contains(tempStudio) {
+//                                await studioListViewModel.cancelLikeStudio(
+//                                    studioId: tempStudio.id
+//                                )
+//                            } else {
+//                                await studioListViewModel.likeStudio(
+//                                    studioId: tempStudio.id
+//                                )
+//                            }
+//                            
+//                            await studioLikeListViewModel.fetchLikedStudios()
+//                        }
                     }
                 } label: {
-                    Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                    Image(.tcBookmark)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
+//                    Image(authManager.memberLikedStudios.contains(tempStudio) ? .tcBookmarkFill : .tcBookmark)
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 30, height: 30)
                 }
                 .buttonStyle(.plain)
             }
@@ -110,5 +115,5 @@ struct StudioRow: View {
 }
 
 #Preview {
-    StudioRow(studio: Studio.sample, isShowingLoginAlert: .constant(false))
+    StudioRow(tempStudio: TempStudio.sample, isShowingLoginAlert: .constant(false))
 }

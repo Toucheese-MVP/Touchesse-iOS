@@ -47,19 +47,19 @@ struct StudioLikeListView: View {
                             .font(.pretendardRegular14)
                             .padding(.horizontal, 16)
                             
-                            ForEach(viewModel.likedStudios) { studio in
-                                StudioRow(
-                                    studio: studio,
-                                    isShowingLoginAlert: $isShowingLoginAlert
-                                )
-                                .contentShape(.rect)
-                                .onTapGesture {
-                                    navigationManager.appendPath(
-                                        viewType: .studioDetailView,
-                                        viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
-                                    )
-                                }
-                            }
+//                            ForEach(viewModel.likedStudios) { studio in
+//                                StudioRow(
+//                                    studio: studio,
+//                                    isShowingLoginAlert: $isShowingLoginAlert
+//                                )
+//                                .contentShape(.rect)
+//                                .onTapGesture {
+//                                    navigationManager.appendPath(
+//                                        viewType: .studioDetailView,
+//                                        viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+//                                    )
+//                                }
+//                            }
                         }
                         
                         Color.clear

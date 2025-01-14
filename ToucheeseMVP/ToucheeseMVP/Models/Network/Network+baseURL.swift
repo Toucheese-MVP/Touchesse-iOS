@@ -28,7 +28,7 @@ extension Network {
             return "\(server_url)/api/v1/like"
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptReqeust:
+        case .studioConceptType, .conceptedStudioListType:
             return "\(server_url)/v1"
         }
     }
