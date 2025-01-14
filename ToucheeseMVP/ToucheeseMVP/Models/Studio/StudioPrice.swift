@@ -26,4 +26,17 @@ enum StudioPrice: String, OptionType, CaseIterable {
         }
     }
     var title: String { self.rawValue }
+    
+    var querryParameter: Int? {
+        switch self {
+        case .all:
+            nil
+        case .lessThan100_000won:
+            100000
+        case .lessThan200_000won:
+            199999
+        case .moreThan200_000won:
+            200000
+        }
+    }
 }

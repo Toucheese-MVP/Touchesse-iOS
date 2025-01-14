@@ -16,7 +16,7 @@ enum StudioFilter {
         switch self {
         case .region: "지역별"
         case .price: "가격별"
-        case .rating: "평점 높은순"
+        case .rating: "평점"
         }
     }
     
@@ -24,7 +24,7 @@ enum StudioFilter {
         switch self {
         case .region: StudioRegion.allCases
         case .price: StudioPrice.allCases
-        case .rating: []
+        case .rating: StudioRating.allCases
         }
     }
 }

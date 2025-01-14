@@ -18,6 +18,15 @@ enum StudioRegion: Int, OptionType, CaseIterable {
     case gangbuk
     case yongsan
     case seongdong
+    case seodaemun
+    case seongbuk
+    case yangcheon
+    case dongdaemun
+    case gwangjin
+    case geumcheon
+    case gangdong
+    case junglang
+    case geonglo
     
     var id: Int { self.rawValue }
     var title: String {
@@ -32,6 +41,19 @@ enum StudioRegion: Int, OptionType, CaseIterable {
         case .gangbuk: "강북구"
         case .yongsan: "용산구"
         case .seongdong: "성동구"
+        case .seodaemun: "서대문구"
+        case .seongbuk: "성북구"
+        case .yangcheon: "양천구"
+        case .dongdaemun: "동대문"
+        case .gwangjin: "광진구"
+        case .geumcheon: "금천구"
+        case .gangdong: "강동구"
+        case .junglang: "중랑구"
+        case .geonglo: "종로구"
         }
+    }
+    
+    var querryParameter: String {
+        String(title.dropLast())
     }
 }
