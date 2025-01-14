@@ -26,7 +26,7 @@ struct StudioEntity: Codable {
     }
 }
 
-struct TempStudio: Codable {
+struct TempStudio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profileImage: String
@@ -35,12 +35,19 @@ struct TempStudio: Codable {
     let imageUrls: [String]
 }
 
-// 이미지 String 배열을 URL 배열 타입으로 리턴
 extension TempStudio {
+    var profileImageUrl: URL {
+        URL(string: profileImage ) ?? .defaultImageURL
+    }
+    
     var profileImageUrls: [URL] {
         imageUrls.map { string in
             URL(string: string ) ?? .defaultImageURL
         }
+    }
+    
+    var formattedRating: String {
+        return String(format: "%.1f", rating)
     }
 }
 

@@ -46,7 +46,7 @@ final class StudioListViewModel: ObservableObject {
     private var page: Int = 1
     
     // MARK: - Migration
-    @Published private(set) var studiodatas: [StudioEntity] = []
+    @Published private(set) var studioDatas: [TempStudio] = []
     private var currentPage: Int = 0
     
     // MARK: - Intput
@@ -162,7 +162,8 @@ final class StudioListViewModel: ObservableObject {
         
         do {
             let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
-            print(studioEntity)
+            studioDatas = studioEntity.studio
+            print("studioDatas ====== \(studioDatas)")
             isStudioLoading = false
         } catch {
             print(error.localizedDescription)

@@ -46,14 +46,12 @@ final class NetworkManager {
         guard let statusCode = response.response?.statusCode else {
             throw NetworkError.unknown
         }
-        
-        print(response)
-        
+                
         switch statusCode {
         case 200...299:
             switch response.result {
             case .success(let data):
-                // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+                print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
                 let decoder = JSONDecoder()
                 
                 do {
@@ -574,7 +572,7 @@ final class NetworkManager {
     
     // MARK: - SERVER Migration WORK
     func getStudioConcept() async throws -> [StudioConceptEntity] {
-        let fetchRequest = Network.studioConceptReqeust
+        let fetchRequest = Network.studioConceptType
         
         let studioConceptArray = try await performRequest(
             fetchRequest,
@@ -585,7 +583,7 @@ final class NetworkManager {
     }
     
     func getConceptedStudioList(conceptedStudioRequest: ConceptedStudioRequest) async throws -> StudioEntity {
-        let fetchRequest = Network.conceptedStudioListRequest(conceptedStudioRequest)
+        let fetchRequest = Network.conceptedStudioListType(conceptedStudioRequest)
         
         let studioEntity = try await performRequest(
             fetchRequest,

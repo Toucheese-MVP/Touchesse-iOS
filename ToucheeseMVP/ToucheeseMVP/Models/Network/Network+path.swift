@@ -89,9 +89,9 @@ extension Network {
             return "/delete/\(studioLikeRelationRequest.studioId)"
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptReqeust:
+        case .studioConceptType:
             return "/concepts"
-        case .conceptedStudioListRequest(let conceptedStudioRequest):
+        case .conceptedStudioListType(let conceptedStudioRequest):
             return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios?"
         }
     }
