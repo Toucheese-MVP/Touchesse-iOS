@@ -92,7 +92,7 @@ extension Network {
         case .studioConceptType:
             return "/concepts"
         case .conceptedStudioListType(let conceptedStudioRequest):
-            if conceptedStudioRequest.location == nil && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {
+            if conceptedStudioRequest.location == [] && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {
                 return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios?"
             } else {
                 return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios/filters?"

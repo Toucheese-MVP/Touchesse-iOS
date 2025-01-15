@@ -77,7 +77,9 @@ struct HomeResultView: View {
                                 
                                 Color.clear
                                     .onAppear {
-                                        studioListViewModel.loadMoreStudios()
+                                        Task {
+                                            await studioListViewModel.loadMoreStudios()
+                                        }
                                     }
                             }
                         }

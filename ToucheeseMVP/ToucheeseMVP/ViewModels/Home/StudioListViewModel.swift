@@ -9,30 +9,11 @@ import Foundation
 import SwiftUI
 
 final class StudioListViewModel: ObservableObject {
-    @Published private(set) var studios: [Studio] = []
-    
-    var isShowingResetButton: Bool {
-        return isFilteringByPrice || isFilteringByRegion || isFilteringByRating
-    }
-    
-    @Published private(set) var selectedPrice: StudioPrice = .all {
-        didSet { isFilteringByPrice = selectedPrice != .all }
-    }
-    
-    @Published private(set) var tempSelectedPrice: StudioPrice = .all
-    
-    private var selectedRegions: Set<StudioRegion> = [.all] {
-        didSet { isFilteringByRegion = selectedRegions != [.all] }
-    }
-    @Published private(set) var tempSelectedRegions: Set<StudioRegion> = []
-    
-    @Published private(set) var isStudioLoading: Bool = true
-
-    private var page: Int = 1
-    
-    // MARK: - Migration
     // MARK: - Data
+    // 네트워크 매니저
     private let networkManager = NetworkManager.shared
+    
+    // 계정 및 권한 매니저
     private let authManager = AuthenticationManager.shared
     
     // 선택된 컨셉 ID
@@ -46,6 +27,7 @@ final class StudioListViewModel: ObservableObject {
     
     // 페이징 처리를 위한 현재 페이지 정보
     private var currentPage: Int = 0
+    private var isLastPage: Bool = false
     
     
     // MARK: - Data: Studio
@@ -55,6 +37,9 @@ final class StudioListViewModel: ObservableObject {
     // 메모리에 있는 스튜디오 데이터의 수
     @Published private(set) var studioCount: Int = 0
     
+    // 스튜디오를 불러오는 중인지 여부
+    @Published private(set) var isStudioLoading: Bool = true
+    
     
     // MARK: Data: Filter Options
     // 선택된 평점 필터
@@ -62,13 +47,35 @@ final class StudioListViewModel: ObservableObject {
         didSet { isFilteringByRating = selectedRating != .all }
     }
     
+    // 선택된 가격 필터
+    @Published private(set) var selectedPrice: StudioPrice = .all {
+        didSet { isFilteringByPrice = selectedPrice != .all }
+    }
+    
+    // 선택된 지역 필터
+    private var selectedRegions: Set<StudioRegion> = [.all] {
+        didSet { isFilteringByRegion = selectedRegions != [.all] }
+    }
+    
     // 선택된 임시 평점 필터
     @Published private(set) var tempSelectedRating: StudioRating = .all
+    
+    // 선택된 임시 가격 필터
+    @Published private(set) var tempSelectedPrice: StudioPrice = .all
+    
+    // 선택된 임시 지역 필터
+    @Published private(set) var tempSelectedRegions: Set<StudioRegion> = []
     
     // 필터 정렬이 되어있는지 여부
     @Published private(set) var isFilteringByRating: Bool = false
     @Published private(set) var isFilteringByPrice: Bool = false
     @Published private(set) var isFilteringByRegion: Bool = false
+    
+    // 필터 리셋 버튼을 보이는지에 대한 변수
+    var isShowingResetButton: Bool {
+        return isFilteringByPrice || isFilteringByRegion || isFilteringByRating
+    }
+    
     
     // MARK: - Intput
     func resetFilters() {
@@ -84,17 +91,19 @@ final class StudioListViewModel: ObservableObject {
     
     func applyRegionOptions() {
         selectedRegions = tempSelectedRegions
-        print("============================= \(selectedRegions)")
+        currentPage = 0
         Task { await fetchStudios() }
     }
     
     func applyPriceOptions() {
         selectedPrice = tempSelectedPrice
+        currentPage = 0
         Task { await fetchStudios() }
     }
     
     func applyRatingOptions() {
         selectedRating = tempSelectedRating
+        currentPage = 0
         Task { await fetchStudios() }
     }
     
@@ -105,7 +114,7 @@ final class StudioListViewModel: ObservableObject {
     func selectStudioConcept(conceptId: Int) {
         self.selectedConceptId = conceptId
         Task {
-            page = 1
+            currentPage = 0
             await fetchStudios()
         }
     }
@@ -158,41 +167,45 @@ final class StudioListViewModel: ObservableObject {
     }
     
     @MainActor
-    func loadMoreStudios() {
-//        if !isStudioLoading {
-//            page += 1
-//            
-//            let concept = selectedConceptId
-//            let isHighRating = isFilteringByRating
-//            let regionArray = selectedRegions.map { $0 }
-//            let price = selectedPrice
-//            let page = page
-//            
-//            Task {
-//                do {
-//                    isStudioLoading = true
-//                    studios.append(
-//                        contentsOf: try await networkManager.getStudioListDatas(
-//                            concept: concept,
-//                            isHighRating: isHighRating,
-//                            regionArray: regionArray,
-//                            price: price,
-//                            page: page
-//                        ).list
-//                    )
-//                    
-//                    isStudioLoading = false
-//                } catch {
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }
+    func loadMoreStudios() async {
+        if !isStudioLoading && !isLastPage {
+            isStudioLoading = true
+            
+            let conceptId = selectedConceptId
+            let price = selectedPrice.querryParameter
+            let rating = selectedRating.querryParameter
+            
+            var regionArray: [String] {
+                selectedRegions == [.all] ? [] : selectedRegions.map(\.self.querryParameter)
+            }
+            
+            let request = ConceptedStudioRequest(
+                studioConceptId: conceptId,
+                page: currentPage + 1,
+                price: price,
+                rating: rating,
+                location: regionArray
+            )
+            
+            do {
+                let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
+                
+                studioDatas += studioEntity.studio
+                currentPage = studioEntity.pageable.pageNumber
+                isLastPage = studioEntity.last
+                
+                isStudioLoading = false
+            } catch {
+                print(error.localizedDescription)
+                isStudioLoading = false
+            }
+        }
     }
     
     @MainActor
+    /// StudioData를 네트워크에서 불러오는 함수
     func fetchStudios() async {
         let conceptId = selectedConceptId
-        let currentPage = currentPage
         let price = selectedPrice.querryParameter
         let rating = selectedRating.querryParameter
         
@@ -210,40 +223,20 @@ final class StudioListViewModel: ObservableObject {
         
         do {
             let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
+            
             studioDatas = studioEntity.studio
-            print("studioDatas ====== \(studioDatas)")
+            currentPage = studioEntity.pageable.pageNumber
+            isLastPage = studioEntity.last
+            
             isStudioLoading = false
         } catch {
             print(error.localizedDescription)
+            isStudioLoading = false
         }
-        
-//        let concept = selectedConceptId
-//        let isHighRating = isFilteringByRating
-//        var regionArray: [StudioRegion] {
-//            selectedRegions == [.all] ? [] : Array(selectedRegions)
-//        }
-//        let price = selectedPrice
-//        page = 1
-//        
-//        do {
-//            let studioDatas = try await networkManager.getStudioListDatas(
-//                concept: concept,
-//                isHighRating: isHighRating,
-//                regionArray: regionArray,
-//                price: price,
-//                page: page
-//            )
-//            
-//            (studios, studioCount) = (studioDatas.list, studioDatas.count)
-//            
-//            isStudioLoading = false
-//        } catch {
-//            print(error.localizedDescription)
-//        }
     }
     
     private func resetStudios() {
-        studios = []
+        studioDatas = []
     }
     
     func likeStudio(studioId: Int) async {
@@ -306,5 +299,4 @@ final class StudioListViewModel: ObservableObject {
             print("Failed to cancel like studio: \(error.localizedDescription)")
         }
     }
-    
 }
