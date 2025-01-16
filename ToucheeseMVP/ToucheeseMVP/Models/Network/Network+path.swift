@@ -103,6 +103,8 @@ extension Network {
             } else {
                 return "/\(studioID)/calendars"
             }
+        case .studioDetailType(let studioID):
+            return "/\(studioID)"
         }
     }
 }
