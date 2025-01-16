@@ -77,7 +77,8 @@ struct ReservationDetailView: View {
                         ) {
                             navigationManager.appendPath(
                                 viewType: .studioDetailView,
-                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio))
+                                // TODO: 임시 스튜디오 정보 유저가 선택한 스튜디오 정보로 변경해야 함
+                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio, tempStudioData: TempStudio.sample))
                             )
                         }
                         

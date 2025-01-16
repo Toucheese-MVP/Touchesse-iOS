@@ -119,7 +119,7 @@ fileprivate class ClearBackgroundView: UIView {
 #Preview {
     NavigationStack {
         StudioDetailView(
-            viewModel: StudioDetailViewModel(studio: Studio.sample)
+            viewModel: StudioDetailViewModel(studio: Studio.sample, tempStudioData: TempStudio.sample)
         )
     }
 }
