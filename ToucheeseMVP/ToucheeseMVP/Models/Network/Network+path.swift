@@ -90,12 +90,18 @@ extension Network {
             
         // MARK: - SERVER Migration WORK
         case .studioConceptType:
-            return "/concepts"
+            return ""
         case .conceptedStudioListType(let conceptedStudioRequest):
             if conceptedStudioRequest.location == [] && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {
-                return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios?"
+                return "/\(conceptedStudioRequest.studioConceptId)/studios?"
             } else {
-                return "/concepts/\(conceptedStudioRequest.studioConceptId)/studios/filters?"
+                return "/\(conceptedStudioRequest.studioConceptId)/studios/filters?"
+            }
+        case .studioCalendarType(let studioID, let yearMonth):
+            if let yearMonth {
+                return "/\(studioID)/calendars?yearMonth=\(yearMonth)"
+            } else {
+                return "/\(studioID)/calendars"
             }
         }
     }

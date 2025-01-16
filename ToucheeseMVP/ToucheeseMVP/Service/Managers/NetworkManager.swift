@@ -592,4 +592,12 @@ final class NetworkManager {
         
         return studioEntity
     }
+    
+    func getStudioCalendar(studioId: Int, yearMonth: String?) async throws -> [StudioCalendarEntity] {
+        let fetchRequest = Network.studioCalendarType(studioID: studioId, yearMont: yearMonth)
+        
+        let entity = try await performRequest(fetchRequest, decodingType: [StudioCalendarEntity].self)
+        
+        return entity
+    }
 }

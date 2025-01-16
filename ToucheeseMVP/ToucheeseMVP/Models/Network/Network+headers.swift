@@ -68,7 +68,7 @@ extension Network {
             
             return headers
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .conceptedStudioListType:
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType:
             var headers: HTTPHeaders = ["accept": "*/*"]
             
             return headers
