@@ -155,7 +155,7 @@ struct ReviewDetailView: View {
     NavigationStack {
         ReviewDetailView()
             .environmentObject(
-                StudioDetailViewModel(studio: Studio.sample)
+                StudioDetailViewModel(studio: Studio.sample, tempStudioData: TempStudio.sample)
             )
     }
 }

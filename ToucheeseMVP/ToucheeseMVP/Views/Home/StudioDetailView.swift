@@ -430,7 +430,7 @@ fileprivate struct NoticeView: View {
 #Preview {
     NavigationStack {
         StudioDetailView(
-            viewModel: StudioDetailViewModel(studio: Studio.sample)
+            viewModel: StudioDetailViewModel(studio: Studio.sample, tempStudioData: TempStudio.sample)
         )
         .environmentObject(NavigationManager())
     }

@@ -8,22 +8,10 @@
 import Foundation
 
 final class StudioDetailViewModel: ObservableObject {
-    
     // MARK: - Data
     @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetail = StudioDetail.sample
-    
     @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
-    
-    let networkManager = NetworkManager.shared
-        
-    init(studio: Studio) {
-        self.studio = studio
-        
-        Task {
-            await fetchStudioDetail(studioID: studio.id)
-        }
-    }
     
     
     // MARK: - Output
@@ -39,17 +27,7 @@ final class StudioDetailViewModel: ObservableObject {
         return basicString
     }
     
-    
     // MARK: - Logic
-    @MainActor
-    func fetchStudioDetail(studioID id: Int) async {
-        do {
-            studioDetail = try await networkManager.getStudioDetailData(studioID: id)
-        } catch {
-            print("Fetch StudioDetail Error: \(error.localizedDescription)")
-        }
-    }
-    
     @MainActor
     func fetchReviewDetail(reviewID: Int) async {
         do {
@@ -62,12 +40,32 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
-    // Test 코드, 불필요시 지우기
-    func fetchProductDetail(productID: Int) async {
+    // MARK: - Migration
+    // MARK: - Data
+    let networkManager = NetworkManager.shared
+    
+    init(studio: Studio, tempStudioData: TempStudio) {
+        self.studio = studio
+        self.tempStudioData = tempStudioData
+        
+        Task {
+            await fetchStudioDetail(studioID: studio.id)
+        }
+    }
+    
+    // MARK: - Data: Studio
+    @Published private(set) var tempStudioData: TempStudio
+    @Published private(set) var studioDetailEntity: StudioDetailEntity = StudioDetailEntity.sample
+    
+    
+    // MARK: - Logic
+    @MainActor
+    private func fetchStudioDetail(studioID: Int) async {
         do {
-            dump(try await networkManager.getProductDetailData(productID: productID))
+            studioDetailEntity = try await networkManager.getStudioDetail(studioID: studioID)
+            print("\(studioDetailEntity)")
         } catch {
-            print("Fetch ProductDetail Error: \(error.localizedDescription)")
+            print("Fetch StudioDetail Error: \(error.localizedDescription)")
         }
     }
 }

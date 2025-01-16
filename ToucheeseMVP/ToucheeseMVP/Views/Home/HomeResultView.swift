@@ -70,7 +70,12 @@ struct HomeResultView: View {
                                     .onTapGesture {
                                         navigationManager.appendPath(
                                             viewType: .studioDetailView,
-                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: Studio.sample))
+                                            viewMaterial: StudioDetailViewMaterial(
+                                                viewModel: StudioDetailViewModel(
+                                                    studio: Studio.sample,
+                                                    tempStudioData: studio
+                                                )
+                                            )
                                         )
                                     }
                                 }
