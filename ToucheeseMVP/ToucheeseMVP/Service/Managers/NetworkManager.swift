@@ -600,4 +600,15 @@ final class NetworkManager {
         
         return entity
     }
+    
+    func getStudioDetail(studioID: Int) async throws -> StudioDetailEntity {
+        let fetchRequest = Network.studioDetailType(studioID: studioID)
+        
+        let studioDetailEntity = try await performRequest(
+            fetchRequest,
+            decodingType: StudioDetailEntity.self
+        )
+        
+        return studioDetailEntity
+    }
 }
