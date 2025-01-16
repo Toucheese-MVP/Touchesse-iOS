@@ -16,7 +16,7 @@ extension Network {
         case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest, .withdrawalRequest, .studioLikeRequest:
             return JSONEncoding.default
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .conceptedStudioListType:
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType:
             return URLEncoding.default
         }
     }

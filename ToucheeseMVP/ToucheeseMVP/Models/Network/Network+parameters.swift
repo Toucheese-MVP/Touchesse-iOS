@@ -147,6 +147,15 @@ extension Network {
             }
             
             return params
+            
+        case .studioCalendarType(let studioID, let yearMonth):
+            var params: Parameters = [:]
+            params["studioId"] = studioID
+            if let yearMonth {
+                params["yearMonth"] = yearMonth
+            }
+            
+            return params
         }
     }
 }

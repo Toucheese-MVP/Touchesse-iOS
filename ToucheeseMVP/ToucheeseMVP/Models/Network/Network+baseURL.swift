@@ -29,7 +29,9 @@ extension Network {
             
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType:
-            return "\(server_url)/v1"
+            return "\(server_url)/v1/concepts"
+        case .studioCalendarType:
+            return "\(server_url)/v1/studios"
         }
     }
 }
