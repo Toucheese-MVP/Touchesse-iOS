@@ -59,7 +59,6 @@ struct StudioDetailView: View {
                         if viewModel.studioDetailEntity.notice != "" {
                             NoticeView(notice: viewModel.studioDetailEntity.notice, isExpanded: $isExpanded)
                                 .padding(.bottom, 12)
-                                .padding(.horizontal, 16)
                         }
                     }
                     .padding(.horizontal, 16)
@@ -420,6 +419,7 @@ fileprivate struct NoticeView: View {
         }
         .padding(.vertical, 16)
         .padding(.horizontal, 27)
+        .frame(maxWidth: .infinity)
         .background(.tcGray01, in: RoundedRectangle(cornerRadius: 8))
         .onTapGesture {
             isExpanded.toggle()
