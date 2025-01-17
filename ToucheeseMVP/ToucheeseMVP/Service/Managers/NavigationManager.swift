@@ -140,4 +140,17 @@ final class NavigationManager: ObservableObject {
             break
         }
     }
+    
+    func pop(_ depth: Int) {
+        switch tabItem {
+        case .home:
+            homePath.removeLast(depth)
+        case .reservation:
+            reservationPath.removeLast(depth)
+        case .likedStudios:
+            studioLikePath.removeLast(depth)
+        case .myPage:
+            break
+        }
+    }
 }

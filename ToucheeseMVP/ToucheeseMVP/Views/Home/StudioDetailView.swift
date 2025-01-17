@@ -13,9 +13,7 @@ struct StudioDetailView: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     @StateObject var viewModel: StudioDetailViewModel
-    
-    @Environment(\.dismiss) private var dismiss
-    
+
     @Namespace private var namespace
     
     @State private var selectedSegmentedControlIndex = 0
@@ -27,10 +25,11 @@ struct StudioDetailView: View {
     
     @State private var isShowingLoginAlert: Bool = false
     @State private var isShowingLoginView: Bool = false
-    
     @State private var isShowingWorkingTime: Bool = false
     
     private let authManager = AuthenticationManager.shared
+    
+    //MARK: - body
     
     var body: some View {
         
@@ -47,76 +46,12 @@ struct StudioDetailView: View {
                     
                     // Studio 설명 View
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 9) {
-                            ProfileImageView(
-                                imageURL: viewModel.studio.profileImageUrl,
-                                size: 36
-                            )
-                            
-                            Text(viewModel.studio.name)
-                                .foregroundStyle(.tcGray10)
-                                .font(.pretendardSemiBold18)
-                        }
-                        .padding(.bottom, 8)
                         
-                        HStack {
-                            HStack(spacing: 4) {
-                                Image(.tcStarFill)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 18, height: 18)
-                                
-                                Text(viewModel.studio.formattedRating)
-                                    .foregroundStyle(.tcGray10)
-                                    .font(.pretendardSemiBold16)
-                            }
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.tcGray01)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(.tcGray02, lineWidth: 1)
-                                    }
-                            )
-                            .onTapGesture {
-                                selectedSegmentedControlIndex = 1
-                            }
-                            
-                            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
-                                .foregroundStyle(.tcGray10)
-                                .font(.pretendardRegular16)
-                        }
-                        .padding(.bottom, 4)
-                        
-                        HStack(alignment: .top, spacing: 4) {
-                            Image(.tcMapPinFill)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                            
-                            Text(viewModel.studioDetailEntity.address)
-                                .foregroundStyle(.tcGray08)
-                                .font(.pretendardRegular16)
-                                .multilineTextAlignment(.leading)
-                        }
-                        .padding(.bottom, 4)
-                        
-                        HStack(spacing: 4) {
-                            Image(.tcClock)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                            HStack {
-                                Text("영업 중")
-                                    .foregroundStyle(.tcGray08)
-                                    .font(.pretendardRegular16)
-                                Image(isShowingWorkingTime ? .tcTriangleUp : .tcTriangleDown)
-                            }
-                            .onTapGesture {
-                                isShowingWorkingTime.toggle()
-                            }
-                        }
-                        
+                        studioNameView
+                        ratingReviewView
+                        locationView
+                        workingTimeToggleButton
+
                         if isShowingWorkingTime {
                             workingTimeView
                         }
@@ -126,8 +61,6 @@ struct StudioDetailView: View {
                                 .padding(.bottom, 12)
                                 .padding(.horizontal, 16)
                         }
-                        
-                        
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 24)
@@ -164,14 +97,7 @@ struct StudioDetailView: View {
                     EmptyView()
                 },
                 leftView: {
-                    HStack(spacing: 0) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            NavigationBackButtonView()
-                        }
-                        .padding(.trailing, 11)
-                    }
+                    BackbButtonView()
                 },
                 rightView: {
                     Button {
@@ -230,10 +156,92 @@ struct StudioDetailView: View {
         //        }
     }
     
+    //MARK: - views
+    
+    private var studioNameView: some View {
+        HStack(spacing: 9) {
+            ProfileImageView(
+                imageURL: viewModel.studio.profileImageUrl,
+                size: 36
+            )
+            
+            Text(viewModel.studio.name)
+                .foregroundStyle(.tcGray10)
+                .font(.pretendardSemiBold18)
+        }
+        .padding(.bottom, 8)
+    }
+    
+    private var ratingReviewView: some View {
+        HStack {
+            HStack(spacing: 4) {
+                Image(.tcStarFill)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+                
+                Text(viewModel.studio.formattedRating)
+                    .foregroundStyle(.tcGray10)
+                    .font(.pretendardSemiBold16)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(.tcGray01)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(.tcGray02, lineWidth: 1)
+                    }
+            )
+            .onTapGesture {
+                selectedSegmentedControlIndex = 1
+            }
+            
+            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
+                .foregroundStyle(.tcGray10)
+                .font(.pretendardRegular16)
+        }
+        .padding(.bottom, 4)
+    }
+    
+    private var locationView: some View {
+        HStack(alignment: .top, spacing: 4) {
+            Image(.tcMapPinFill)
+                .resizable()
+                .frame(width: 18, height: 18)
+            
+            Text(viewModel.studioDetailEntity.address)
+                .foregroundStyle(.tcGray08)
+                .font(.pretendardRegular16)
+                .multilineTextAlignment(.leading)
+        }
+        .padding(.bottom, 4)
+    }
+    
+    private var workingTimeToggleButton: some View {
+        HStack(spacing: 4) {
+            Image(.tcClock)
+                .resizable()
+                .frame(width: 18, height: 18)
+            HStack {
+                //TODO: 영업 중임을 확인하는 로직 추가
+                Text("영업 중")
+                    .foregroundStyle(.tcGray08)
+                    .font(.pretendardRegular16)
+                Image(isShowingWorkingTime ? .tcTriangleUp : .tcTriangleDown)
+            }
+            .onTapGesture {
+                isShowingWorkingTime.toggle()
+            }
+        }
+    }
+    
     private var workingTimeView: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 8) {
             ForEach(viewModel.studioDetailEntity.operatingHours, id: \.self) { time in
                 Text("(\(time.dayOfWeek)) \(time.openTime) ~ \(time.closeTime)")
+                    .font(.pretendardMedium14)
             }
         }
         .padding(12)
@@ -391,8 +399,7 @@ fileprivate struct NoticeView: View {
     @Binding var isExpanded: Bool
     
     var body: some View {
-        HStack(alignment: .top) {
-            //TODO: 확성기 이미지
+        HStack(alignment: .top, spacing: 12) {
             Image(.tcSpeaker)
             
             if let notice {
@@ -411,15 +418,9 @@ fileprivate struct NoticeView: View {
                 }
             }
         }
-        .padding(24)
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.tcGray01)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(.tcGray02, lineWidth: 1)
-                }
-        }
+        .padding(.vertical, 16)
+        .padding(.horizontal, 27)
+        .background(.tcGray01, in: RoundedRectangle(cornerRadius: 8))
         .onTapGesture {
             isExpanded.toggle()
         }
