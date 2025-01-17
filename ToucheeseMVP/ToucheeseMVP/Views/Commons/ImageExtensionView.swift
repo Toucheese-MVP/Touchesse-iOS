@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct ImageExtensionView: View {
-    let imageURLs: [URL]
+    let imageStrings: [String]
     @Binding var currentIndex: Int
     @Binding var isShowingImageExtensionView: Bool
     
@@ -22,13 +22,15 @@ struct ImageExtensionView: View {
                 
                 ZStack(alignment: .bottom) {
                     TabView(selection: $currentIndex) {
-                        ForEach(imageURLs.indices, id:\.self) { index in
-                            KFImage(imageURLs[index])
-                                .placeholder { ProgressView() }
-                                .resizable()
-                                .fade(duration: 0.25)
-                                .scaledToFit()
-                                .tag(index)
+                        ForEach(imageStrings.indices, id:\.self) { index in
+                            if let imageURL = URL(string: imageStrings[index]) {
+                                KFImage(imageURL)
+                                    .placeholder { ProgressView() }
+                                    .resizable()
+                                    .fade(duration: 0.25)
+                                    .scaledToFit()
+                                    .tag(index)
+                            }
                         }
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
@@ -36,7 +38,7 @@ struct ImageExtensionView: View {
                     HStack(spacing: 3) {
                         Text("\(currentIndex + 1)")
                             .foregroundStyle(.tcGray01)
-                        Text("/ \(imageURLs.count)")
+                        Text("/ \(imageStrings.count)")
                             .foregroundStyle(.tcGray04)
                     }
                     .font(.pretendardMedium18)
@@ -113,13 +115,4 @@ fileprivate class ClearBackgroundView: UIView {
         parentView.backgroundColor = .clear
     }
     
-}
-
-
-#Preview {
-    NavigationStack {
-        StudioDetailView(
-            viewModel: StudioDetailViewModel(studio: Studio.sample, tempStudioData: TempStudio.sample)
-        )
-    }
 }

@@ -75,11 +75,11 @@ struct ReservationDetailView: View {
                             title: "스튜디오 홈",
                             height: 48
                         ) {
-                            navigationManager.appendPath(
-                                viewType: .studioDetailView,
-                                // TODO: 임시 스튜디오 정보 유저가 선택한 스튜디오 정보로 변경해야 함
-                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio, tempStudioData: TempStudio.sample))
-                            )
+//                            navigationManager.appendPath(
+//                                viewType: .studioDetailView,
+//                                // TODO: 임시 스튜디오 정보 유저가 선택한 스튜디오 정보로 변경해야 함
+//                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio, tempStudioData: TempStudio.sample))
+//                            )
                         }
                         
                         if viewModel.isShowingReservationCancelButton() {
