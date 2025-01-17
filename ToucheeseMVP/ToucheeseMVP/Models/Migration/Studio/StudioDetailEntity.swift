@@ -20,7 +20,7 @@ struct StudioDetailEntity: Decodable {
     let operatingHours: [OperatingHour]
 }
 
-struct ProductEntity: Decodable {
+struct ProductEntity: Decodable, Hashable {
     let id: Int
     let name: String
     let description: String
@@ -30,7 +30,7 @@ struct ProductEntity: Decodable {
     let price: Int
 }
 
-struct OperatingHour: Decodable {
+struct OperatingHour: Decodable, Hashable {
     let dayOfWeek: String
     let openTime: String
     let closeTime: String
