@@ -13,12 +13,14 @@ final class StudioDetailViewModel: ObservableObject {
     @Published private(set) var studioDetailEntity: StudioDetailEntity = StudioDetailEntity.sample
 //    @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
     
+    let networkManager = NetworkManager.shared
     
-    // MARK: - Output
-    
-    
+    init(studio: TempStudio) {
+        self.studio = studio
+    }
+     
     // MARK: - Logic
-    @MainActor
+//    @MainActor
 //    func fetchReviewDetail(reviewID: Int) async {
 //        do {
 //            reviewDetail = try await networkManager.getReviewDetailData(
@@ -29,21 +31,11 @@ final class StudioDetailViewModel: ObservableObject {
 //            print("Fetch ReviewDetail Error: \(error.localizedDescription)")
 //        }
 //    }
-//    
-    // MARK: - Migration
-    // MARK: - Data
-    let networkManager = NetworkManager.shared
-    
-    init(studio: TempStudio) {
-        self.studio = studio
-    }
-     
-    // MARK: - Logic
+
     @MainActor
     func fetchStudioDetail() async {
         do {
             studioDetailEntity = try await networkManager.getStudioDetail(studioID: studio.id)
-            print("🥺\(studioDetailEntity)")
         } catch {
             print("Fetch StudioDetail Error: \(error.localizedDescription)")
         }
