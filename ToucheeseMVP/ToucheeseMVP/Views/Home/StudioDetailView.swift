@@ -29,8 +29,6 @@ struct StudioDetailView: View {
     
     private let authManager = AuthenticationManager.shared
     
-    //MARK: - body
-    
     var body: some View {
         
         ZStack {
@@ -155,8 +153,9 @@ struct StudioDetailView: View {
         //        }
     }
     
-    //MARK: - views
-    
+}
+
+extension StudioDetailView {
     private var studioNameView: some View {
         HStack(spacing: 9) {
             ProfileImageView(
@@ -254,7 +253,6 @@ struct StudioDetailView: View {
         .padding(.top, 12)
     }
 }
-
 
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
