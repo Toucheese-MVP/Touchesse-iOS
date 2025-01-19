@@ -13,10 +13,7 @@ struct StudioDetailView: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     @StateObject var viewModel: StudioDetailViewModel
-    
-    @Environment(\.isPresented) private var isPresented
-    @Environment(\.dismiss) private var dismiss
-    
+
     @Namespace private var namespace
     
     @State private var selectedSegmentedControlIndex = 0
@@ -28,18 +25,17 @@ struct StudioDetailView: View {
     
     @State private var isShowingLoginAlert: Bool = false
     @State private var isShowingLoginView: Bool = false
+    @State private var isShowingWorkingTime: Bool = false
     
     private let authManager = AuthenticationManager.shared
     
     var body: some View {
-        let studio = viewModel.studio
-        let studioDetail = viewModel.studioDetail
         
         ZStack {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     ImageCarouselView(
-                        imageURLs: studioDetail.detailImageURLs,
+                        imageStrings: viewModel.studioDetailEntity.facilityImageUrls,
                         carouselIndex: $carouselIndex,
                         isShowingImageExtensionView: $isShowingImageExtensionView,
                         height: 280
@@ -48,74 +44,28 @@ struct StudioDetailView: View {
                     
                     // Studio 설명 View
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(studio.name)
-                            .foregroundStyle(.tcGray10)
-                            .font(.pretendardSemiBold18)
-                            .padding(.bottom, 4)
                         
-                        HStack(spacing: 4) {
-                            Image(.tcStarFill)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 18, height: 18)
-                            
-                            Text(studio.formattedRating)
-                                .foregroundStyle(.tcGray10)
-                                .font(.pretendardSemiBold16)
-                            
-                            Text("(\(studio.reviewCount))")
-                                .foregroundStyle(.tcGray10)
-                                .font(.pretendardRegular16)
-                        }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(.tcGray01)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(.tcGray02, lineWidth: 1)
-                                }
-                        )
-                        .onTapGesture {
-                            selectedSegmentedControlIndex = 1
+                        studioNameView
+                        ratingReviewView
+                        locationView
+                        workingTimeToggleButton
+
+                        if isShowingWorkingTime {
+                            workingTimeView
                         }
                         
-                        HStack(spacing: 4) {
-                            Image(.tcClock)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                            
-                            Text(viewModel.businessHourString)
-                                .foregroundStyle(.tcGray08)
-                                .font(.pretendardRegular16)
-                        }
-                        
-                        HStack(alignment: .top, spacing: 4) {
-                            Image(.tcMapPinFill)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                            
-                            Text(studioDetail.address)
-                                .foregroundStyle(.tcGray08)
-                                .font(.pretendardRegular16)
-                                .multilineTextAlignment(.leading)
+                        if viewModel.studioDetailEntity.notice != "" {
+                            NoticeView(notice: viewModel.studioDetailEntity.notice, isExpanded: $isExpanded)
+                                .padding(.bottom, 12)
                         }
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 24)
                     
-                    // Studio 공지 View
-                    if let notice = studioDetail.notice, notice != "" {
-                        NoticeView(notice: notice, isExpanded: $isExpanded)
-                            .padding(.bottom, 24)
-                            .padding(.horizontal, 16)
-                    }
-                    
                     CustomSegmentedControl(
                         selectedIndex: $selectedSegmentedControlIndex,
                         namespace: namespace,
-                        options: ["상품", "리뷰(\(studioDetail.reviewCount))"]
+                        options: ["상품", "리뷰"]
                     )
                     .padding(.horizontal, 16)
                     .padding(.bottom, 24)
@@ -123,19 +73,19 @@ struct StudioDetailView: View {
                     // 상품 또는 리뷰 View
                     if selectedSegmentedControlIndex == 0 {
                         ProductListView(
-                            studioDetail: studioDetail,
-                            studio: studio
+                            studioDetail: viewModel.studioDetailEntity,
+                            studio: viewModel.studio
                         )
                         .environmentObject(viewModel)
                         .padding(.horizontal, 16)
                     } else {
-                        ReviewImageGridView(
-                            reviews: studioDetail.reviews.content,
-                            reviewsCount: studioDetail.reviewCount,
-                            isPushingDetailView: $isPushingReviewDetailView
-                        )
-                        .environmentObject(viewModel)
-                        .padding(.horizontal, 16)
+                        //                        ReviewImageGridView(
+                        //                            reviews: studioDetail.reviews.content,
+                        //                            reviewsCount: studioDetail.reviewCount,
+                        //                            isPushingDetailView: $isPushingReviewDetailView
+                        //                        )
+                        //                        .environmentObject(viewModel)
+                        //                        .padding(.horizontal, 16)
                     }
                 }
             }
@@ -144,45 +94,28 @@ struct StudioDetailView: View {
                     EmptyView()
                 },
                 leftView: {
-                    HStack(spacing: 0) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            NavigationBackButtonView()
-                        }
-                        .padding(.trailing, 11)
-                        
-                        ProfileImageView(
-                            imageURL: studio.profileImageURL,
-                            size: 36
-                        )
-                        .padding(.trailing, 8)
-                        
-                        Text(studio.name)
-                            .foregroundStyle(.tcGray10)
-                            .font(.pretendardBold20)
-                    }
+                    BackbButtonView()
                 },
                 rightView: {
                     Button {
-                        if authManager.authStatus == .notAuthenticated {
-                            isShowingLoginAlert.toggle()
-                        }
-                        Task {
-                            if authManager.memberLikedStudios.contains(studio) {
-                                await studioListViewModel.cancelLikeStudio(
-                                    studioId: studio.id
-                                )
-                            } else {
-                                await studioListViewModel.likeStudio(
-                                    studioId: studio.id
-                                )
-                            }
-                            
-                            await studioLikeListViewModel.fetchLikedStudios()
-                        }
+                        //                        if authManager.authStatus == .notAuthenticated {
+                        //                            isShowingLoginAlert.toggle()
+                        //                        }
+                        //                        Task {
+                        //                            if authManager.memberLikedStudios.contains(studio) {
+                        //                                await studioListViewModel.cancelLikeStudio(
+                        //                                    studioId: studio.id
+                        //                                )
+                        //                            } else {
+                        //                                await studioListViewModel.likeStudio(
+                        //                                    studioId: studio.id
+                        //                                )
+                        //                            }
+                        //
+                        //                            await studioLikeListViewModel.fetchLikedStudios()
+                        //                        }
                     } label: {
-                        Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 30, height: 30)
@@ -206,53 +139,119 @@ struct StudioDetailView: View {
         }
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
-                imageURLs: studioDetail.detailImageURLs,
+                imageStrings: viewModel.studioDetailEntity.facilityImageUrls,
                 currentIndex: $carouselIndex,
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
         }
-        .navigationDestination(isPresented: $isPushingReviewDetailView) {
-            ReviewDetailView()
-                .environmentObject(viewModel)
+        .task {
+            await viewModel.fetchStudioDetail()
         }
+        //        .navigationDestination(isPresented: $isPushingReviewDetailView) {
+        //            ReviewDetailView()
+        //                .environmentObject(viewModel)
+        //        }
     }
     
-    private func leadingToolbarContent(
-        for studio: Studio
-    ) -> some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            HStack {
-                ProfileImageView(
-                    imageURL: studio.profileImageURL,
-                    size: 35
-                )
-                
-                Text("\(studio.name)")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-            }
-        }
-    }
-    
-    private var trailingToolbarContent: some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarTrailing) {
-            HStack {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "bookmark")
-                }
-            }
-        }
-    }
 }
 
+extension StudioDetailView {
+    private var studioNameView: some View {
+        HStack(spacing: 9) {
+            ProfileImageView(
+                imageURL: viewModel.studio.profileImageUrl,
+                size: 36
+            )
+            
+            Text(viewModel.studio.name)
+                .foregroundStyle(.tcGray10)
+                .font(.pretendardSemiBold18)
+        }
+        .padding(.bottom, 8)
+    }
+    
+    private var ratingReviewView: some View {
+        HStack {
+            HStack(spacing: 4) {
+                Image(.tcStarFill)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+                
+                Text(viewModel.studio.formattedRating)
+                    .foregroundStyle(.tcGray10)
+                    .font(.pretendardSemiBold16)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(.tcGray01)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(.tcGray02, lineWidth: 1)
+                    }
+            )
+            .onTapGesture {
+                selectedSegmentedControlIndex = 1
+            }
+            
+            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
+                .foregroundStyle(.tcGray10)
+                .font(.pretendardRegular16)
+        }
+        .padding(.bottom, 4)
+    }
+    
+    private var locationView: some View {
+        HStack(alignment: .top, spacing: 4) {
+            Image(.tcMapPinFill)
+                .resizable()
+                .frame(width: 18, height: 18)
+            
+            Text(viewModel.studioDetailEntity.address)
+                .foregroundStyle(.tcGray08)
+                .font(.pretendardRegular16)
+                .multilineTextAlignment(.leading)
+        }
+        .padding(.bottom, 4)
+    }
+    
+    private var workingTimeToggleButton: some View {
+        HStack(spacing: 4) {
+            Image(.tcClock)
+                .resizable()
+                .frame(width: 18, height: 18)
+            HStack {
+                Text(viewModel.studioDetailEntity.isOpen ? "영업 중" : "영업 마감")
+                    .foregroundStyle(.tcGray08)
+                    .font(.pretendardRegular16)
+                Image(isShowingWorkingTime ? .tcTriangleUp : .tcTriangleDown)
+            }
+            .onTapGesture {
+                isShowingWorkingTime.toggle()
+            }
+        }
+    }
+    
+    private var workingTimeView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(viewModel.studioDetailEntity.operatingHours, id: \.self) { time in
+                Text("(\(time.dayOfWeek)) \(time.openTime) ~ \(time.closeTime)")
+                    .font(.pretendardMedium14)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            Color.white
+                .mask(RoundedRectangle(cornerRadius: 12))
+                .shadow(color: .tcGray03 ,radius: 4)
+            
+        }
+        .padding(.top, 12)
+    }
+}
 
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
@@ -299,8 +298,8 @@ fileprivate struct CustomSegmentedControl: View {
 
 fileprivate struct ProductListView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    let studioDetail: StudioDetail
-    let studio: Studio
+    let studioDetail: StudioDetailEntity
+    let studio: TempStudio
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -309,78 +308,84 @@ fileprivate struct ProductListView: View {
                 .font(.pretendardMedium18)
             
             ForEach(studioDetail.products, id: \.self) { product in
-                Button {
-                    navigationManager.appendPath(viewType: .productDetailView, viewMaterial: ProductDetailViewMaterial(viewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product)))
-                } label: {
-                    HStack(spacing: 13) {
-                        KFImage(product.imageURL)
-                            .placeholder { ProgressView() }
-                            .resizable()
-                            .downsampling(size: CGSize(width: 250, height: 250))
-                            .fade(duration: 0.25)
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 85, height: 120)
-                            .clipShape(.rect(cornerRadius: 8))
-                        
-                        VStack(alignment: .leading) {
-                            Text(product.name)
-                                .foregroundStyle(.tcGray08)
-                                .font(.pretendardSemiBold16)
-                                .padding(.bottom, 4)
-                            
-                            Text(product.description)
-                                .foregroundStyle(.tcGray06)
-                                .font(.pretendardRegular13)
-                                .lineLimit(2)
-                                .lineSpacing(0)
-                                .multilineTextAlignment(.leading)
-                                .frame(alignment: .leading)
-                            
-                            HStack(spacing: 2) {
-                                Image(.tcReview)
-                                    .resizable()
-                                    .frame(width: 16, height: 16)
-                                
-                                Text("리뷰 \(product.reviewCount)개")
-                                    .foregroundStyle(.tcGray08)
-                                    .font(.pretendardMedium12)
-                            }
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.tcGray01)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(.tcGray02, lineWidth: 1)
-                                    )
-                            )
-                            
-                            Spacer()
-                            
-                            Text("\(product.price)원")
-                                .foregroundStyle(.tcGray10)
-                                .font(.pretendardSemiBold18)
-                        }
-                        
-                        Spacer()
-                    }
-                    .frame(height: 123)
-                    .frame(maxWidth: .infinity)
-                    .padding(12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.tcGray02, lineWidth: 1)
-                    )
-                    .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .padding(.bottom, 4)
+                productCell(product: product)
             }
             
             Color.clear
                 .frame(height: 30)
         }
+    }
+    
+    private func productCell(product: ProductEntity) -> some View {
+        Button {
+            navigationManager.appendPath(
+                viewType: .productDetailView,
+                viewMaterial: ProductDetailViewMaterial(
+                    viewModel: ProductDetailViewModel(
+                        studio: studio,
+                        studioDetails: studioDetail,
+                        product: product
+                    )
+                )
+            )
+        } label: {
+            HStack(spacing: 13) {
+                if let imageURL = URL(string: product.productImage) {
+                    KFImage(imageURL)
+                        .placeholder { ProgressView() }
+                        .resizable()
+                        .downsampling(size: CGSize(width: 250, height: 250))
+                        .fade(duration: 0.25)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 85, height: 120)
+                        .clipShape(.rect(cornerRadius: 8))
+                }
+                VStack(alignment: .leading) {
+                    Text(product.name)
+                        .foregroundStyle(.tcGray08)
+                        .font(.pretendardSemiBold16)
+                        .padding(.bottom, 4)
+                    
+                    Text(product.description)
+                        .foregroundStyle(.tcGray06)
+                        .font(.pretendardRegular13)
+                        .lineLimit(2)
+                        .lineSpacing(0)
+                        .multilineTextAlignment(.leading)
+                        .frame(alignment: .leading)
+                    
+                    HStack(spacing: 2) {
+                        Image(.tcReview)
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                        
+                        Text("리뷰 \(product.reviewCount)개 >")
+                            .foregroundStyle(.tcGray08)
+                            .font(.pretendardMedium12)
+                    }
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 8)
+                    
+                    Spacer()
+                    
+                    Text("\(product.price)원")
+                        .foregroundStyle(.tcGray10)
+                        .font(.pretendardSemiBold18)
+                }
+                
+                Spacer()
+            }
+            .frame(height: 123)
+            .frame(maxWidth: .infinity)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.tcGray02, lineWidth: 1)
+            )
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .padding(.bottom, 4)
     }
 }
 
@@ -390,10 +395,8 @@ fileprivate struct NoticeView: View {
     @Binding var isExpanded: Bool
     
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 12) {
             Image(.tcSpeaker)
-                .resizable()
-                .frame(width: 24, height: 24)
             
             if let notice {
                 Text("\(notice)")
@@ -411,27 +414,12 @@ fileprivate struct NoticeView: View {
                 }
             }
         }
-        .padding(24)
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.tcGray01)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(.tcGray02, lineWidth: 1)
-                }
-        }
+        .padding(.vertical, 16)
+        .padding(.horizontal, 27)
+        .frame(maxWidth: .infinity)
+        .background(.tcGray01, in: RoundedRectangle(cornerRadius: 8))
         .onTapGesture {
             isExpanded.toggle()
         }
-    }
-}
-
-
-#Preview {
-    NavigationStack {
-        StudioDetailView(
-            viewModel: StudioDetailViewModel(studio: Studio.sample, tempStudioData: TempStudio.sample)
-        )
-        .environmentObject(NavigationManager())
     }
 }

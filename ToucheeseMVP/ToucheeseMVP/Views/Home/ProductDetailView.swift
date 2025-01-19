@@ -49,32 +49,32 @@ struct ProductDetailView: View {
                 
                 Spacer()
                 
-                FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
-                    
-                    if authManager.authStatus == .authenticated {
-                        navigationManager
-                            .appendPath(
-                                viewType: .reservationConfirmView,
-                                viewMaterial: ReservationConfirmViewMaterial(
-                                    viewModel: ReservationViewModel(
-                                        studio: productDetailViewModel.studio,
-                                        studioDetail: productDetailViewModel.studioDetail,
-                                        product: productDetailViewModel.product,
-                                        productDetail: productDetailViewModel.productDetail,
-                                        productOptions: productDetailViewModel.selectedProductOptionArray,
-                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                        totalPrice: productDetailViewModel.totalPrice,
-                                        addPeopleCount: productDetailViewModel.addPeopleCount
-                                    )
-                                )
-                            )
-                    } else {
-                        isShowingLoginView.toggle()
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                
+//                FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
+//                    
+//                    if authManager.authStatus == .authenticated {
+//                        navigationManager
+//                            .appendPath(
+//                                viewType: .reservationConfirmView,
+//                                viewMaterial: ReservationConfirmViewMaterial(
+//                                    viewModel: ReservationViewModel(
+//                                        studio: productDetailViewModel.studio,
+//                                        studioDetail: productDetailViewModel.studioDetail,
+//                                        product: productDetailViewModel.product,
+//                                        productDetail: productDetailViewModel.productDetail,
+//                                        productOptions: productDetailViewModel.selectedProductOptionArray,
+//                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
+//                                        totalPrice: productDetailViewModel.totalPrice,
+//                                        addPeopleCount: productDetailViewModel.addPeopleCount
+//                                    )
+//                                )
+//                            )
+//                    } else {
+//                        isShowingLoginView.toggle()
+//                    }
+//                }
+//                .padding(.horizontal, 16)
+//                .padding(.vertical, 8)
+//                
                 Color.clear.frame(height: 25)
             }
         }
@@ -108,7 +108,7 @@ struct ProductDetailView: View {
     }
     
     @ViewBuilder
-    private func infoView(product: Product) -> some View {
+    private func infoView(product: ProductEntity) -> some View {
         // 이미지 프레임 값
         let imageFrame: CGFloat = 144
         
@@ -118,13 +118,15 @@ struct ProductDetailView: View {
                     .strokeBorder(.tcGray03, lineWidth: 1)
                     .frame(width: imageFrame, height: imageFrame)
                     .background {
-                        KFImage(product.imageURL)
-                            .placeholder { ProgressView() }
-                            .resizable()
-                            .cancelOnDisappear(true)
-                            .fade(duration: 0.25)
-                            .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        if let imageURL = URL(string: product.productImage) {
+                            KFImage(imageURL)
+                                .placeholder { ProgressView() }
+                                .resizable()
+                                .cancelOnDisappear(true)
+                                .fade(duration: 0.25)
+                                .scaledToFit()
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     }
                     .padding(.bottom, 12)
                 
@@ -545,34 +547,34 @@ fileprivate struct CustomCalendar: View {
                 }
                 
                 // 날짜 표시
-                ForEach(displayMonth.daysInMonth, id: \.self) { date in
-                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.studioDetail.holidays)
-                    
-                    let isSelected = calendar.isDate(date, inSameDayAs: displayDate)
-                    
-                    Button {
-                        displayDate = date
-                        displayTime = ""
-                        Task {
-                            await productDetailViewModel.fetchReservableTime(date: displayDate)
-                        }
-                    } label: {
-                        Text("\(date.dayNumber)")
-                            .font(isSelected ? .pretendardSemiBold14 : .pretendardMedium14)
-                            .fontWeight(isSelected ? .semibold : .medium)
-                            .foregroundStyle(
-                                isSelected ? Color.white : (isHoliday || date.isPast ? .tcGray04 : .tcGray06))
-                            .frame(idealWidth: 50, idealHeight: 40)
-                            .background(
-                                Circle()
-                                    .fill(
-                                        (isHoliday && isSelected) ? .tcPrimary06 : (isSelected ? .tcYellow : .clear)
-                                    )
-                                    .frame(width: 38, height: 38)
-                            )
-                    }
-                    .disabled(isHoliday || date.isPast)
-                }
+//                ForEach(displayMonth.daysInMonth, id: \.self) { date in
+//                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.studioDetail.holidays)
+//                    
+//                    let isSelected = calendar.isDate(date, inSameDayAs: displayDate)
+//                    
+//                    Button {
+//                        displayDate = date
+//                        displayTime = ""
+//                        Task {
+//                            await productDetailViewModel.fetchReservableTime(date: displayDate)
+//                        }
+//                    } label: {
+//                        Text("\(date.dayNumber)")
+//                            .font(isSelected ? .pretendardSemiBold14 : .pretendardMedium14)
+//                            .fontWeight(isSelected ? .semibold : .medium)
+//                            .foregroundStyle(
+//                                isSelected ? Color.white : (isHoliday || date.isPast ? .tcGray04 : .tcGray06))
+//                            .frame(idealWidth: 50, idealHeight: 40)
+//                            .background(
+//                                Circle()
+//                                    .fill(
+//                                        (isHoliday && isSelected) ? .tcPrimary06 : (isSelected ? .tcYellow : .clear)
+//                                    )
+//                                    .frame(width: 38, height: 38)
+//                            )
+//                    }
+//                    .disabled(isHoliday || date.isPast)
+//                }
             }
         }
         .onAppear {
@@ -582,11 +584,5 @@ fileprivate struct CustomCalendar: View {
                 await productDetailViewModel.fetchReservableTime(date: displayDate)
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
     }
 }

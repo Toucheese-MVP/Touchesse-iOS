@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct ImageCarouselView: View {
-    let imageURLs: [URL]
+    let imageStrings: [String]
     @Binding var carouselIndex: Int
     @Binding var isShowingImageExtensionView: Bool
     
@@ -18,15 +18,17 @@ struct ImageCarouselView: View {
     
     var body: some View {
         TabView(selection: $carouselIndex) {
-            ForEach(imageURLs.indices, id:\.self) { index in
-                KFImage(imageURLs[index])
-                    .placeholder { ProgressView() }
-                    .resizable()
-                    .fade(duration: 0.25)
-                    .scaledToFill()
-                    .onTapGesture {
-                        isShowingImageExtensionView.toggle()
-                    }
+            ForEach(imageStrings.indices, id:\.self) { index in
+                if let imageURL = URL(string: imageStrings[index]) {
+                    KFImage(imageURL)
+                        .placeholder { ProgressView() }
+                        .resizable()
+                        .fade(duration: 0.25)
+                        .scaledToFill()
+                        .onTapGesture {
+                            isShowingImageExtensionView.toggle()
+                        }
+                }
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
@@ -37,7 +39,7 @@ struct ImageCarouselView: View {
                 HStack(spacing: 3) {
                     Text("\(carouselIndex + 1)")
                         .foregroundStyle(.tcGray01)
-                    Text("/ \(imageURLs.count)")
+                    Text("/ \(imageStrings.count)")
                         .foregroundStyle(.tcGray04)
                 }
                 .font(.pretendardMedium14)
@@ -51,18 +53,4 @@ struct ImageCarouselView: View {
             }
         }
     }
-}
-
-#Preview {
-    ImageCarouselView(
-        imageURLs: [
-            .defaultImageURL,
-            .defaultImageURL,
-            .defaultImageURL,
-            .defaultImageURL,
-            .defaultImageURL
-        ],
-        carouselIndex: .constant(0),
-        isShowingImageExtensionView: .constant(false)
-    )
 }

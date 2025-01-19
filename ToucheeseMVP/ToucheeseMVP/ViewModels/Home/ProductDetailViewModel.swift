@@ -11,9 +11,9 @@ final class ProductDetailViewModel: ObservableObject {
     // MARK: - Data
     let networkManager = NetworkManager.shared
     
-    @Published private(set) var studio: Studio
-    @Published private(set) var studioDetail: StudioDetail
-    @Published private(set) var product: Product
+    @Published private(set) var studio: TempStudio
+    @Published private(set) var studioDetail: StudioDetailEntity
+    @Published private(set) var product: ProductEntity
     @Published private(set) var productDetail: ProductDetail = ProductDetail.sample1
     
     // 예약한 날짜
@@ -70,7 +70,7 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     // MARK: - Init
-    init(studio: Studio, studioDetails: StudioDetail, product: Product) {
+    init(studio: TempStudio, studioDetails: StudioDetailEntity, product: ProductEntity) {
         self.studio = studio
         self.studioDetail = studioDetails
         self.product = product

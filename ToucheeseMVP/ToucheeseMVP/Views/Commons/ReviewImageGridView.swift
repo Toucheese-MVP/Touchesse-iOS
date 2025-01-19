@@ -53,9 +53,9 @@ struct ReviewImageGridView: View {
                             .onTapGesture {
                                 isPushingDetailView.toggle()
                                 
-                                Task {
-                                    await viewModel.fetchReviewDetail(reviewID: review.id)
-                                }
+//                                Task {
+//                                    await viewModel.fetchReviewDetail(reviewID: review.id)
+//                                }
                             }
                     }
                 }

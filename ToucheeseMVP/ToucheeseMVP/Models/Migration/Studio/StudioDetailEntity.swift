@@ -20,7 +20,7 @@ struct StudioDetailEntity: Decodable {
     let operatingHours: [OperatingHour]
 }
 
-struct ProductEntity: Decodable {
+struct ProductEntity: Decodable, Hashable {
     let id: Int
     let name: String
     let description: String
@@ -30,13 +30,34 @@ struct ProductEntity: Decodable {
     let price: Int
 }
 
-struct OperatingHour: Decodable {
+struct OperatingHour: Decodable, Hashable {
     let dayOfWeek: String
     let openTime: String
     let closeTime: String
 }
 
 extension StudioDetailEntity {
+    //TODO: 현재 시간이 영업 시간 내에 포함되는지
+    var isOpen: Bool {
+        let currentDayOfWeek = Date().dayWeek
+        let currentComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        guard let currentTime = Calendar.current.date(from: currentComponents) else { return false }
+        
+        for hour in operatingHours {
+            guard hour.dayOfWeek == currentDayOfWeek,
+                  let openTime = hour.openTime.toDate(dateFormat: .hourMinute),
+                  let closeTime = hour.closeTime.toDate(dateFormat: .hourMinute) else { return false }
+            
+            if currentTime >= openTime && currentTime <= closeTime {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        return false
+    }
+    
     static let sample = StudioDetailEntity(
         id: 1,
         name: "",

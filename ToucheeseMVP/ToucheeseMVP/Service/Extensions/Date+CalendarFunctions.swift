@@ -52,4 +52,11 @@ extension Date {
     var dayNumber: Int {
         Calendar.current.component(.day, from: self)
     }
+    
+    static let weekString: [String] = ["", "일", "월", "화", "수", "목", "금", "토"]
+    
+    /// 해당 Date의 요일을 반환하는 변수
+    var dayWeek: String {
+        Date.weekString[Calendar.current.component(.weekday, from: self)]
+    }
 }
