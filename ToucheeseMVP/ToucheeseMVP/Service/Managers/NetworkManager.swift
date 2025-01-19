@@ -71,6 +71,7 @@ final class NetworkManager {
         }
     }
     
+    
     /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
     func performWithTokenRetry<T>(
         accessToken: String?,
@@ -593,8 +594,9 @@ final class NetworkManager {
         return studioEntity
     }
     
+    @MainActor
     func getStudioCalendar(studioId: Int, yearMonth: String?) async throws -> [StudioCalendarEntity] {
-        let fetchRequest = Network.studioCalendarType(studioID: studioId, yearMont: yearMonth)
+        let fetchRequest = Network.studioCalendarType(studioID: studioId, yearMonth: yearMonth)
         
         let entity = try await performRequest(fetchRequest, decodingType: [StudioCalendarEntity].self)
         

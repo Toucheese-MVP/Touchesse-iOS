@@ -7,8 +7,26 @@
 
 import Foundation
 
-struct StudioCalendarEntity: Decodable {
+struct StudioCalendarEntity: Decodable, Hashable {
     let date: String
     let status: Bool
-    let tiems: [String]
+    let times: [String]
+}
+
+extension StudioCalendarEntity {
+    var presentingDate: String {
+        // 날짜 문자열 - 기준으로 분리
+        let dateParts = self.date.split(separator: "-")
+        
+        // 숫자로 변환하면 앞의 0이 제거됨
+        if let day = dateParts.last, let dayInt = Int(day) {
+            return "\(dayInt)"
+        }
+        
+        return self.date
+    }
+    
+    var dateType: Date {
+        return date.toDate(dateFormat: .requestYearMonthDay) ?? Date()
+    }
 }
