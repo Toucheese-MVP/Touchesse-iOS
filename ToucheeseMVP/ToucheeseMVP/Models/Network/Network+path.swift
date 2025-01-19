@@ -97,12 +97,8 @@ extension Network {
             } else {
                 return "/\(conceptedStudioRequest.studioConceptId)/studios/filters?"
             }
-        case .studioCalendarType(let studioID, let yearMonth):
-            if let yearMonth {
-                return "/\(studioID)/calendars?yearMonth=\(yearMonth)"
-            } else {
-                return "/\(studioID)/calendars"
-            }
+        case .studioCalendarType(let studioID, _):
+            return "/\(studioID)/calendars"
         case .studioDetailType(let studioID):
             return "/\(studioID)"
         }

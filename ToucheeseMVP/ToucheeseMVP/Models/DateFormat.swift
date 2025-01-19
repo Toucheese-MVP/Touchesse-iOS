@@ -17,6 +17,7 @@ enum DateFormat: String {
     case requestTime = "HH:mm:ss"
     case reservationInfoDay = "yyyy년 MM월 dd일"
     case reservationInfoTime = "a hh:mm"
+    case studioCalendarRequest = "yyyy-MM"
     
     func toDateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
