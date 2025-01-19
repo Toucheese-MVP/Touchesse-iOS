@@ -223,8 +223,7 @@ extension StudioDetailView {
                 .resizable()
                 .frame(width: 18, height: 18)
             HStack {
-                //TODO: 영업 중임을 확인하는 로직 추가
-                Text("영업 중")
+                Text(viewModel.studioDetailEntity.isOpen ? "영업 중" : "영업 마감")
                     .foregroundStyle(.tcGray08)
                     .font(.pretendardRegular16)
                 Image(isShowingWorkingTime ? .tcTriangleUp : .tcTriangleDown)
