@@ -48,11 +48,9 @@ extension StudioDetailEntity {
           
         for hour in operatingHours {
             if hour.dayOfWeek == currentWeekDay {
-                let openTime = Int(String(hour.openTime.prefix(2)))!
-                let closeTime = Int(String(hour.closeTime.prefix(2)))!
-                print(currentHour)
-                print(openTime)
-                print(closeTime)
+                guard let openTime = Int(hour.openTime.split(separator: ":").first!),
+                let closeTime = Int(hour.closeTime.split(separator: ":").first!) else { return false }
+
                 if currentHour >= openTime && currentHour <= closeTime {
                     return true
                 }

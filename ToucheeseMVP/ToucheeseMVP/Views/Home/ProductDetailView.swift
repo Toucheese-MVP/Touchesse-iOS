@@ -10,8 +10,6 @@ import Kingfisher
 
 struct ProductDetailView: View {
     @EnvironmentObject var navigationManager: NavigationManager
-    @Environment(\.dismiss) private var dismiss
-    
     @StateObject var productDetailViewModel: ProductDetailViewModel
     
     private let authManager = AuthenticationManager.shared
@@ -25,7 +23,7 @@ struct ProductDetailView: View {
         let productDetail = productDetailViewModel.productDetail
         let addPeoplePriceString = productDetailViewModel.getAddPeoplePriceString()
         let basePeopleCnt = productDetail.basePeopleCnt ?? 1
-        let isBottomButtonSelectable = productDetailViewModel.isReservationDate
+//        let isBottomButtonSelectable = productDetailViewModel.isReservationDate
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 0) {
@@ -90,7 +88,7 @@ struct ProductDetailView: View {
             },
             leftView: {
                 Button {
-                    dismiss()
+                    navigationManager.pop(1)
                 } label: {
                     NavigationBackButtonView()
                 }
