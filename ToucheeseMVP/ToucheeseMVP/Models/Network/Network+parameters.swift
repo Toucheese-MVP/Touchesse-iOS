@@ -156,6 +156,11 @@ extension Network {
             }
             
             return params
+        case .productDetailType(let productId):
+//            var params: Parameters = [:]
+//            params["productId"] = productId
+            
+            return [:]
         }
     }
 }
