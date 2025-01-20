@@ -16,6 +16,8 @@ final class ProductDetailViewModel: ObservableObject {
     @Published private(set) var product: ProductEntity
     @Published private(set) var productDetail: ProductDetail = ProductDetail.sample1
     
+    @Published private(set) var tempProductDetail: ProductDetailEntity = ProductDetailEntity.sample1
+    
     // 예약한 날짜
     @Published private(set) var reservationDate: Date?
     
@@ -124,7 +126,8 @@ final class ProductDetailViewModel: ObservableObject {
     /// ProductDetail 정보를 네트워크 통신을 통해 가져오는 함수
     private func fetchProductDetail() async {
         do {
-            productDetail = try await networkManager.getProductDetailData(productID: product.id)
+            print("view model call")
+            tempProductDetail = try await networkManager.getProductDetail(productId: product.id)
         } catch {
             print("Fetch ProductDetail Error: \(error.localizedDescription)")
         }

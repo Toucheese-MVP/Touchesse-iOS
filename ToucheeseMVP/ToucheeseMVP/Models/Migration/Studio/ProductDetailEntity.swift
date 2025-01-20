@@ -23,3 +23,19 @@ struct OptionEntity: Decodable {
     let price: Int
     let name: String
 }
+
+extension ProductDetailEntity {
+    static let sample1 = ProductDetailEntity(
+        id: 1,
+        name: "상품 예시",
+        description: "상품 설명 예시",
+        productImage: "",
+        reviewCount: 1,
+        standard: 1,
+        price: 10000,
+        addOptions: [
+            .init(id: 1, price: 3000, name: "옵션1"),
+            .init(id: 2, price: 4000, name: "옵션2"),
+        ]
+    )
+}
