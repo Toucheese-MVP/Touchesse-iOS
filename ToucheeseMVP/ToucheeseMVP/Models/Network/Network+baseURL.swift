@@ -32,6 +32,8 @@ extension Network {
             return "\(server_url)/v1/concepts"
         case .studioCalendarType, .studioDetailType:
             return "\(server_url)/v1/studios"
+        case .productDetailType:
+            return "\(server_url)/v1/products"
         }
     }
 }

@@ -613,4 +613,11 @@ final class NetworkManager {
         
         return studioDetailEntity
     }
+    
+    func getProductDetail(productId: Int) async throws -> ProductDetailEntity {
+        let fetchRequest = Network.productDetailType(productId: productId)
+        let result = try await performRequest(fetchRequest, decodingType: ProductDetailEntity.self)
+        print("get product api call!!!")
+        return result
+    }
 }

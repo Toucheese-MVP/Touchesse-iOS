@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TempCustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
+    @ObservedObject var detailViewModel: ProductDetailViewModel
     
     @Binding var isCalendarPresented: Bool
     @Binding var selectedDate: Date?
@@ -36,6 +37,7 @@ struct TempCustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
                 /// 예약 날짜를 선택하는 버튼
                 FillBottomButton(isSelectable: viewModel.isConfirmable, title: "날짜 선택") {
                     selectedDate = viewModel.confirmSelect()
+                    detailViewModel.selectedDate = selectedDate ?? Date()
                     isCalendarPresented = false
                 }
                 
@@ -215,7 +217,8 @@ struct TempCustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
         }
     }
 }
-
-#Preview {
-    TempCustomCalendarView(viewModel: MockCustomCalendarViewModel(studioID: 1), isCalendarPresented: .constant(true), selectedDate: .constant(Date()))
-}
+//
+//#Preview {
+//    TempCustomCalendarView(viewModel: MockCustomCalendarViewModel(studioID: 1),
+//                           isCalendarPresented: .constant(true), selectedDate: .constant(Date()))
+//}

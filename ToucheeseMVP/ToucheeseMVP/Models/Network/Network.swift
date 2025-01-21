@@ -63,4 +63,7 @@ enum Network {
     case conceptedStudioListType(ConceptedStudioRequest)
     case studioDetailType(studioID: Int)
     case studioCalendarType(studioID: Int, yearMonth: String?)
+    
+    // 상품 상세 조회
+    case productDetailType(productId: Int)
 }

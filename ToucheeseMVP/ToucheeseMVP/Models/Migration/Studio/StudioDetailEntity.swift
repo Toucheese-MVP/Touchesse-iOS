@@ -38,18 +38,22 @@ struct OperatingHour: Decodable, Hashable {
 
 extension StudioDetailEntity {
     //TODO: 현재 시간이 영업 시간 내에 포함되는지
+    
+    
+    
     var isOpen: Bool {
-        let currentDayOfWeek = Date().dayWeek
-        let currentComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
-        guard let currentTime = Calendar.current.date(from: currentComponents) else { return false }
-        
+        let currentWeekDay = Date().dayWeek
+
+        guard let currentHour = Calendar.current.dateComponents([.hour], from: Date()).hour else { return false }
+          
         for hour in operatingHours {
-            guard hour.dayOfWeek == currentDayOfWeek,
-                  let openTime = hour.openTime.toDate(dateFormat: .hourMinute),
-                  let closeTime = hour.closeTime.toDate(dateFormat: .hourMinute) else { return false }
-            
-            if currentTime >= openTime && currentTime <= closeTime {
-                return true
+            if hour.dayOfWeek == currentWeekDay {
+                guard let openTime = Int(hour.openTime.split(separator: ":").first!),
+                let closeTime = Int(hour.closeTime.split(separator: ":").first!) else { return false }
+
+                if currentHour >= openTime && currentHour <= closeTime {
+                    return true
+                }
             } else {
                 return false
             }

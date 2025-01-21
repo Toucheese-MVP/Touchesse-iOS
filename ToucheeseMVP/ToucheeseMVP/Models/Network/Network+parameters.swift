@@ -127,7 +127,7 @@ extension Network {
             return params
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .studioDetailType:
+        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType:
             return [:]
         case .conceptedStudioListType(let conceptedStudioRequest):
             var params: Parameters = [:]
@@ -144,15 +144,6 @@ extension Network {
             
             if let location = conceptedStudioRequest.location {
                 params["locations"] = location
-            }
-            
-            return params
-            
-        case .studioCalendarType(_, let yearMonth):
-            var params: Parameters = [:]
-
-            if let yearMonth {
-                params["yearMonth"] = yearMonth
             }
             
             return params

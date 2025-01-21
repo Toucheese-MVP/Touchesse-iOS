@@ -101,6 +101,8 @@ extension Network {
             return "/\(studioID)/calendars"
         case .studioDetailType(let studioID):
             return "/\(studioID)"
+        case .productDetailType(let productId):
+            return "/\(productId)"
         }
     }
 }
