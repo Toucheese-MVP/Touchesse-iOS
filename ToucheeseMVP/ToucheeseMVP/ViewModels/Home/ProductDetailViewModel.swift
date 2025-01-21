@@ -14,7 +14,6 @@ final class ProductDetailViewModel: ObservableObject {
     @Published private(set) var studio: TempStudio
     @Published private(set) var studioDetail: StudioDetailEntity
     @Published private(set) var product: ProductEntity
-    @Published private(set) var productDetail: ProductDetail = ProductDetail.sample1
     
     @Published private(set) var tempProductDetail: ProductDetailEntity = ProductDetailEntity.sample1
     
@@ -26,7 +25,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     
     // 추가 인원 변수
-    @Published private(set) var addPeopleCount: Int = 0 {
+    @Published private(set) var addPeopleCount: Int = 1 {
         didSet {
             calTotalPrice()
         }
@@ -48,11 +47,8 @@ final class ProductDetailViewModel: ObservableObject {
         }
     }
     
-    // 선택된 시간
-    @Published var selectedTime: Date?
-    
-    // 선택된 날짜
-    @Published var selectedDate: Date = Date() {
+    @Published var selectedDate: Date = Date()
+    {
         didSet {
             calReservationDate()
         }
@@ -67,8 +63,10 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     // 선택된 옵션 배열
-    var selectedProductOptionArray: [ProductOption] {
-        productDetail.parsedProductOptions.filter { selectedOptionIDArray.contains($0.id) }
+    var selectedProductOptionArray: [OptionEntity] {
+        tempProductDetail.addOptions.filter {
+            selectedOptionIDArray.contains($0.id)
+        }
     }
     
     // MARK: - Init
@@ -76,12 +74,11 @@ final class ProductDetailViewModel: ObservableObject {
         self.studio = studio
         self.studioDetail = studioDetails
         self.product = product
+        self.totalPrice = product.price
         
         Task {
             await fetchProductDetail()
         }
-        
-        calTotalPrice()
     }
     
     // MARK: - Input
@@ -90,7 +87,7 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     func decreaseAddPeopleCount() {
-        if addPeopleCount > 0 {
+        if addPeopleCount > 1 {
             addPeopleCount -= 1
         }
     }
@@ -104,29 +101,11 @@ final class ProductDetailViewModel: ObservableObject {
         }
     }
     
-    /// 상품의 예약 시간을 선택했을 때 동작하는 함수
-    func selectTime(time: String) {
-        selectedTime = time.toDate(dateFormat: .hourMinute)
-    }
-    
-    /// 상품의 예약 날짜를 선택했을 때 동작하는 함수
-    func selectDate(date: Date) {
-        selectedDate = date
-    }
-    
-    // MARK: - Output
-    /// 인원 추가 가격을 문자열로 리턴하는 함수
-    func getAddPeoplePriceString() -> String {
-        guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
-        return addPeoplePrice
-    }
-    
     // MARK: - Logic
     @MainActor
     /// ProductDetail 정보를 네트워크 통신을 통해 가져오는 함수
     private func fetchProductDetail() async {
         do {
-            print("view model call")
             tempProductDetail = try await networkManager.getProductDetail(productId: product.id)
         } catch {
             print("Fetch ProductDetail Error: \(error.localizedDescription)")
@@ -144,16 +123,13 @@ final class ProductDetailViewModel: ObservableObject {
     
     /// 상품의 총 가격을 계산하는 함수
     private func calTotalPrice() {
-        var totalPrice: Int = 0
+        var totalPrice: Int = tempProductDetail.price
         
-        // 상품 기본 가격 추가
-        totalPrice += product.price
-        
-        // 단체 인원별 가격 추가
-        totalPrice += (productDetail.addPeoplePrice ?? 0) * addPeopleCount
+        // 인원별 가격 추가
+        totalPrice += tempProductDetail.price * (addPeopleCount - 1)
         
         // 옵션 별 상품 가격 추가
-        for option in productDetail.parsedProductOptions {
+        for option in tempProductDetail.addOptions {
             if selectedOptionIDArray.contains(option.id) {
                 totalPrice += option.price
             }
@@ -164,21 +140,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     /// 예약 시간을 계산하는 함수
     func calReservationDate() {
-        guard let selectedTime else { return }
-        
-        let calendar = Calendar.current
-        
-        let dateComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
-        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedTime)
-        
-        var reservationDate = DateComponents()
-        reservationDate.year = dateComponents.year
-        reservationDate.month = dateComponents.month
-        reservationDate.day = dateComponents.day
-        reservationDate.hour = timeComponents.hour
-        reservationDate.minute = timeComponents.minute
-      
-        self.reservationDate = calendar.date(from: reservationDate)
+        self.reservationDate = selectedDate
     }
     
     /// 예약 가능한 시간을 계산하는 함수

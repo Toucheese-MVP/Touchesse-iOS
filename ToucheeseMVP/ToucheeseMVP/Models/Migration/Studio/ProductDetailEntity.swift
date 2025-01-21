@@ -18,7 +18,7 @@ struct ProductDetailEntity: Decodable {
     let addOptions: [OptionEntity]
 }
 
-struct OptionEntity: Decodable {
+struct OptionEntity: Decodable, Hashable {
     let id: Int
     let price: Int
     let name: String

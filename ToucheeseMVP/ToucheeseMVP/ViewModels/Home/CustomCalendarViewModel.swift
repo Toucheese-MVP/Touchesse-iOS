@@ -115,12 +115,16 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
     
     // MARK: - Logics
     func selectDate(date: Date) {
-        displayDate = date
-        calReservableTimes()
+        DispatchQueue.main.async { [weak self] in
+            self?.displayDate = date
+            self?.calReservableTimes()
+        }
     }
     
     func selectTime(date: Date) {
-        displayTimeString = date.toString(format: .hourMinute)
+        DispatchQueue.main.async { [weak self] in
+            self?.displayTimeString = date.toString(format: .hourMinute)
+        }
     }
     
     func selectPreviousMonth() {
