@@ -127,7 +127,7 @@ extension Network {
             return params
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType:
+        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType, .reservationInstantType:
             return [:]
         case .conceptedStudioListType(let conceptedStudioRequest):
             var params: Parameters = [:]

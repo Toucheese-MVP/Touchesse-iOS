@@ -34,6 +34,9 @@ extension Network {
             return "\(server_url)/v1/studios"
         case .productDetailType:
             return "\(server_url)/v1/products"
+            
+        case .reservationInstantType:
+            return "\(server_url)/v1/members/reservations"
         }
     }
 }

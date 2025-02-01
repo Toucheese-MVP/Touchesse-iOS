@@ -66,4 +66,7 @@ enum Network {
     
     // 상품 상세 조회
     case productDetailType(productId: Int)
+    
+    // 즉시 예약
+    case reservationInstantType(ReservationInstantRequest)
 }

@@ -103,6 +103,8 @@ extension Network {
             return "/\(studioID)"
         case .productDetailType(let productId):
             return "/\(productId)"
+        case .reservationInstantType:
+            return "/instant"
         }
     }
 }

@@ -18,6 +18,9 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             return URLEncoding.default
+            
+        case .reservationInstantType:
+            return JSONEncoding.default
         }
     }
 }

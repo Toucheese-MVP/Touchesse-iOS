@@ -22,6 +22,9 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             return .get
+            
+        case .reservationInstantType:
+            return .post
         }
     }
 }

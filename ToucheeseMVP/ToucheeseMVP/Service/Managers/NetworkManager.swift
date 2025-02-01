@@ -620,4 +620,11 @@ final class NetworkManager {
         print("get product api call!!!")
         return result
     }
+    
+    func postReservationInstant(reservation: ReservationInstantRequest) async throws {
+        let fetchRequest = Network.reservationInstantType(reservation)
+        let result = try await performRequest(fetchRequest, decodingType: EmptyEntity.self)
+        print("post complete")
+    }
+
 }
