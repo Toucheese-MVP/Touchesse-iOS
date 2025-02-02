@@ -147,6 +147,32 @@ extension Network {
             }
             
             return params
+            
+        case .studioCalendarType(_, let yearMonth):
+            var params: Parameters = [:]
+
+            if let yearMonth {
+                params["yearMonth"] = yearMonth
+            }
+            
+            return params
+        case .kakaoLoginType(let kakaoLoginRequest):
+            var params: Parameters = [:]
+            
+            params["idToken"] = kakaoLoginRequest.idToken
+            params["accessToken"] = kakaoLoginRequest.accessToken
+            params["platform"] = kakaoLoginRequest.platform
+            params["deviceId"] = kakaoLoginRequest.deviceId
+            
+            return params
+            
+        case .reissueToken(let reissueTokenRequest):
+            var params: Parameters = [:]
+            
+            params["refreshToken"] = reissueTokenRequest.refreshToken
+            params["deviceId"] = reissueTokenRequest.deviceId
+            
+            return params
         }
     }
 }

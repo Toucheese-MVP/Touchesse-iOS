@@ -66,4 +66,8 @@ enum Network {
     
     // 상품 상세 조회
     case productDetailType(productId: Int)
+    
+    /// 카카오 로그인
+    case kakaoLoginType(KakaoLoginRequest)
+    case reissueToken(ReissueTokenRequest)
 }

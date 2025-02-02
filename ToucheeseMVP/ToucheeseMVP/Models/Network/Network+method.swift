@@ -21,7 +21,11 @@ extension Network {
             return .put
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
+            // MARK: - SERVER Migration WORK
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType:
             return .get
+        case .kakaoLoginType, .reissueToken:
+            return .post
         }
     }
 }
