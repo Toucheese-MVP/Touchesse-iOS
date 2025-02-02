@@ -10,6 +10,7 @@ import FirebaseCore
 import FirebaseMessaging
 import KakaoSDKCommon
 import KakaoSDKAuth
+import KakaoSDKUser
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -101,6 +102,7 @@ struct ToucheeseMVPApp: App {
     private let keychainManager = KeychainManager.shared
     private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
+    private let tempAuthManager = TempAuthenticationManager.shared
     
     init() {
         CacheManager.configureKingfisherCache()
@@ -123,84 +125,47 @@ struct ToucheeseMVPApp: App {
                     }
                 })
                 .task {
-                    switch await checkAuthentication() {
-                    case .authenticated:
-                        AuthenticationManager.shared.successfulAuthentication()
-                        await reservationListViewModel.fetchReservations()
-                        await reservationListViewModel.fetchPastReservations()
-                        await studioLikeListViewModel.fetchLikedStudios()
+                    switch await tempAuthManager.initialCheckAuthStatus() {
                     case .notAuthenticated:
-                        AuthenticationManager.shared.failedAuthentication()
+                        print("로그아웃 상태")
+                    case .authenticated:
+                        print("로그인 상태(토큰 갱신 성공)")
+//                        // 예약 정보 불러오기
+//                        await reservationListViewModel.fetchReservations()
+//                        // 이전 예약 정보 불러오기
+//                        await reservationListViewModel.fetchPastReservations()
+//                        // 좋아요 표시한 스튜디오 불러오기
+//                        AuthenticationManager.shared.failedAuthentication()
                     }
                 }
         }
     }
 }
-
-
-extension ToucheeseMVPApp {
-    /// 앱을 처음 실행했을 때, 로그인 상태를 확인하는 메서드
-    private func checkAuthentication() async -> AuthStatus {
-        guard let accessToken = keychainManager.read(forAccount: .accessToken),
-              let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
-            return .notAuthenticated
-        }
-        
-        do {
-            let appOpenRequest = AppOpenRequest(
-                accessToken: accessToken,
-                refreshToken: refreshToken
-            )
-            let appOpenResponse = try await networkManager.postAppOpen(
-                appOpenRequest
-            )
-            
-            keychainManager.update(
-                token: appOpenResponse.accessToken,
-                forAccount: .accessToken
-            )
-            
-            #if DEBUG
-            print("New access token: \(appOpenResponse.accessToken)")
-            print("member ID: \(appOpenResponse.memberId)")
-            #endif
-            
-            authManager.memberId = appOpenResponse.memberId
-            authManager.memberNickname = appOpenResponse.memberName
-            
-            postDeviceTokenRegistrationData()
-            
-            return .authenticated
-        } catch {
-            print("AccessToken refresh failed: \(error.localizedDescription)")
-            return .notAuthenticated
-        }
-    }
     
-    /// FCM 토큰을 백엔드 서버에 POST 하는 메서드
-    private func postDeviceTokenRegistrationData() {
-        Task {
-            if let fcmToken = Messaging.messaging().fcmToken,
-               let memberId = authManager.memberId {
-                do {
-                    try await networkManager.performWithTokenRetry(
-                        accessToken: authManager.accessToken,
-                        refreshToken: authManager.refreshToken
-                    ) { token in
-                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
-                            memberId: memberId,
-                            deviceToken: fcmToken
-                        )
-                        try await networkManager.postDeviceTokenRegistrationData(
-                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
-                            accessToken: token
-                        )
-                    }
-                } catch {
-                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
-                    authManager.logout()
-                }
-            }
-        }
-    }
-}
+//    /// FCM 토큰을 백엔드 서버에 POST 하는 메서드
+//    private func postDeviceTokenRegistrationData() {
+//        Task {
+//            if let fcmToken = Messaging.messaging().fcmToken,
+//               let memberId = authManager.memberId {
+//                do {
+//                    try await networkManager.performWithTokenRetry(
+//                        accessToken: authManager.accessToken,
+//                        refreshToken: authManager.refreshToken
+//                    ) { token in
+//                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
+//                            memberId: memberId,
+//                            deviceToken: fcmToken
+//                        )
+//                        try await networkManager.postDeviceTokenRegistrationData(
+//                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
+//                            accessToken: token
+//                        )
+//                    }
+//                } catch {
+//                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
+//                    authManager.logout()
+//                }
+//            }
+//        }
+//    }
+//}
