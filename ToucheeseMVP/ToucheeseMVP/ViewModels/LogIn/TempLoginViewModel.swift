@@ -32,9 +32,12 @@ final class TempLogInViewModel: LoginViewModelProtocol {
         // 서버로 유저 정보 전송
         guard let response = await postKakaoUserInfoToServer(kakaoUserInfo: kakaoUserInfo) else { return }
         
+        // postKakaoUserInfoToServer 응답값의 헤더의 accessToken에 접근
+        guard let accessToken = response.headers["Authorization"]?.removeBearer else { return }
+        
         // 키체인에 토큰 저장
         authManager.updateOrCreateTokens(
-            accessToken: kakaoUserInfo.accessToken,
+            accessToken: accessToken,
             refreshToken: response.kakaoLoginResponse.refreshToken,
             deviceId: response.kakaoLoginResponse.deviceId
         )

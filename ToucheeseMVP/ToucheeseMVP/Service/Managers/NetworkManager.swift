@@ -686,11 +686,11 @@ final class NetworkManager {
     }
     
     /// 토큰 재발행
-    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> ReissueTokenResponse{
+    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
         let fetchRequest = Network.reissueToken(reissueTokenRequest)
-        let response = try await performRequest(fetchRequest,
-                                                decodingType: ReissueTokenResponse.self)
-        
-        return response
+        let response = try await performRequestWithResponseHeaders(fetchRequest,
+                                                                   decodingType: ReissueTokenResponse.self)
+
+        return (response.data, response.headers)
     }
 }

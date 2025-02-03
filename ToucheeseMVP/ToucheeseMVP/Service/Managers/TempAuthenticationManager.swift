@@ -41,13 +41,10 @@ final class TempAuthenticationManager: ObservableObject {
     }
     
     /// 토큰 값을 키체인에 업데이트 하거나  저장하는 함수
-    func updateOrCreateTokens(accessToken: String? = nil, refreshToken: String, deviceId: String) {
-        if let accessToken {
-            keychainManager.updateOrCreate(token: accessToken, forAccount: .accessToken)
-        }
-        
-        keychainManager.updateOrCreate(token: refreshToken, forAccount: .refreshToken)
-        keychainManager.updateOrCreate(token: deviceId, forAccount: .deviceId)
+    func updateOrCreateTokens(accessToken: String, refreshToken: String, deviceId: String) {
+        keychainManager.updateOrCreateToken(token: accessToken, forAccount: .accessToken)
+        keychainManager.updateOrCreateToken(token: refreshToken, forAccount: .refreshToken)
+        keychainManager.updateOrCreateToken(token: deviceId, forAccount: .deviceId)
     }
     
     /// 로그인 후 멤버 정보 저장
@@ -65,16 +62,23 @@ final class TempAuthenticationManager: ObservableObject {
             return authStatus
         }
         
-        // TODO: Refresh 토큰이 만료된 경우 - 로그아웃 처리를 해야함
         /// 토큰 재발행 요청, 실패 시 로그아웃 상태 리턴
         guard let reissueTokenResponse = await reissueToken(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
+            // Refresh 토큰이 만료된 경우 - 기존 데이터 삭제(로그아웃 처리)
+            deleteAllAuthDatas()
             await failedAuthentication()
             return authStatus
         }
         
+        /// reissueTokenResponse 헤더의 accessToken 접근
+        guard let accessToken = reissueTokenResponse.headers["Authorization"]?.removeBearer else {
+            await failedAuthentication()
+            return authStatus
+        }
+                
         // MARK: 로그인 상태
         /// 계정 정보 업데이트
-        updateAuthenticationInfo(reissueTokenResponse)
+        updateAuthenticationInfo(reissueTokenResponse.reissueTokenResponse, accessToken)
         
         /// 로그인 상태로 변경
         await successfulAuthentication()
@@ -91,7 +95,7 @@ final class TempAuthenticationManager: ObservableObject {
     }
     
     /// 서버에 토큰 재발행을 요청하는 함수
-    private func reissueToken(refreshToken: String, deviceId: String) async -> ReissueTokenResponse? {
+    private func reissueToken(refreshToken: String, deviceId: String) async -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
         let request = ReissueTokenRequest(refreshToken: refreshToken, deviceId: deviceId)
         
         do {
@@ -104,8 +108,19 @@ final class TempAuthenticationManager: ObservableObject {
     }
     
     /// 토큰 재발행 성공 후 계정 정보 업데이트
-    private func updateAuthenticationInfo(_ reissueTokenResponse: ReissueTokenResponse) {
+    private func updateAuthenticationInfo(_ reissueTokenResponse: ReissueTokenResponse, _ accessToken: String) {
         saveMemberInfo(memberNickname: reissueTokenResponse.name, memberEmail: reissueTokenResponse.email, memberId: reissueTokenResponse.memberId)
-        updateOrCreateTokens(refreshToken: reissueTokenResponse.refreshToken, deviceId: reissueTokenResponse.deviceId)
+        updateOrCreateTokens(accessToken: accessToken, refreshToken: reissueTokenResponse.refreshToken, deviceId: reissueTokenResponse.deviceId)
+    }
+    
+    /// 모든 계정 정보 삭제
+    private func deleteAllAuthDatas() {
+        memberNickname = nil
+        memberEmail = nil
+        memberId = nil
+    
+        keychainManager.delete(forAccount: .accessToken)
+        keychainManager.delete(forAccount: .refreshToken)
+        keychainManager.delete(forAccount: .deviceId)
     }
 }
