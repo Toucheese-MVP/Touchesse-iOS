@@ -34,6 +34,10 @@ extension Network {
             return "\(server_url)/v1/studios"
         case .productDetailType:
             return "\(server_url)/v1/products"
+        case .kakaoLoginType:
+            return "\(server_url)/v1/auth/kakao"
+        case .reissueToken:
+            return "\(server_url)/v1/tokens/reissue"
         }
     }
 }

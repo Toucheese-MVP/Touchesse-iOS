@@ -10,7 +10,12 @@ import SwiftUI
 struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     @EnvironmentObject var studioConceptViewModel: StudioConceptViewModel
-
+    private var tempAuthenticationManager = TempAuthenticationManager.shared
+    
+    @State private var isLogined: Bool = false
+    @State private var isShowingLoginView: Bool = false
+    
+    
     private let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -26,7 +31,11 @@ struct HomeConceptView: View {
             LazyVGrid(columns: columns, spacing:12) {
                 ForEach(studioConceptViewModel.concepts) { concept in
                     Button {
-                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
+                        if tempAuthenticationManager.authStatus == .authenticated {
+                            navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
+                        } else {
+                            isShowingLoginView.toggle()
+                        }
                     } label: {
                         conceptCardView(imageString: "concept\(concept.id)", concept: concept.shortedName)
                     }
@@ -42,6 +51,12 @@ struct HomeConceptView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 325)
+        }
+        .fullScreenCover(isPresented: $isShowingLoginView) {
+            TempLoginView(
+                TviewModel: TempLogInViewModel(),
+                isPresented: $isShowingLoginView
+            )
         }
     }
     
@@ -91,6 +106,7 @@ fileprivate struct ConceptCard: Identifiable, Hashable {
     NavigationStack {
         HomeConceptView()
     }
+    .environmentObject(StudioConceptViewModel())
     .environmentObject(StudioListViewModel())
     .environmentObject(NavigationManager())
 }
