@@ -148,14 +148,6 @@ extension Network {
             
             return params
             
-        case .studioCalendarType(_, let yearMonth):
-            var params: Parameters = [:]
-
-            if let yearMonth {
-                params["yearMonth"] = yearMonth
-            }
-            
-            return params
         case .kakaoLoginType(let kakaoLoginRequest):
             var params: Parameters = [:]
             
