@@ -16,9 +16,8 @@ final class KeychainManager {
     private let serviceName = "touchcheese"
     
     @discardableResult
-    /// 기존에 토큰이 있는 경우 ->  업데이트
-    /// 기존에 토큰이 없는 경우 ->  생성
-    func updateOrCreate(token: String, forAccount account: AccountType) -> Bool {
+    /// 기존에 토큰이 있는 경우 - (업데이트), 기존에 토큰이 없는 경우 - (생성)
+    func updateOrCreateToken(token: String, forAccount account: AccountType) -> Bool {
         if !update(token: token, forAccount: account) {
             return create(token: token, forAccount: account)
         }
