@@ -22,6 +22,7 @@ final class TempLogInViewModel: LoginViewModelProtocol {
     // MARK: - Datas
     private let networkManager = NetworkManager.shared
     private let authManager = TempAuthenticationManager.shared
+    private let keychainManager = KeychainManager.shared
 
     // MARK: - Logics
     /// 카카오 로그인 처리
@@ -92,17 +93,14 @@ final class TempLogInViewModel: LoginViewModelProtocol {
     private func postKakaoUserInfoToServer(kakaoUserInfo: OAuthToken) async -> (kakaoLoginResponse: KakaoLoginResponse, headers: [String: String])? {
             do {
                 guard let idToken = kakaoUserInfo.idToken else { return nil }
-                
-                // TODO: 키체인에서 가져와야 함?
-                let deviceId: String? = nil
-                
+            
                 let response = try await networkManager
                     .postKakaoUserInfoToServer(
                         KakaoLoginRequest(
                             idToken: idToken,
                             accessToken: kakaoUserInfo.accessToken,
                             platform: SocialType.KAKAO.rawValue,
-                            deviceId: deviceId
+                            deviceId: keychainManager.read(forAccount: .deviceId)
                         )
                     )
                 
