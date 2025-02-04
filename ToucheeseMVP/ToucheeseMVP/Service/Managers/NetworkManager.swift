@@ -20,7 +20,6 @@ enum NetworkError: Error {
 }
 
 final class NetworkManager {
-    
     static let shared = NetworkManager()
     private init () { }
     
@@ -70,6 +69,59 @@ final class NetworkManager {
             throw NetworkError.unexpectedStatusCode(statusCode)
         }
     }
+    
+    /// 응답값에 헤더가 포함된 네트워크 요청 함수
+    /// 원래 performRequest와 통합하여 사용해야하지만 수정해야 하는 코드가 많아 분리 상태
+    func performRequestWithResponseHeaders<T: Decodable>(
+        _ fetchRequest: Network,
+        decodingType: T.Type
+    ) async throws -> (data: T, headers: [String: String]) {
+        let url = fetchRequest.baseURL + fetchRequest.path
+        print("\(url)")
+        
+        let request = AF.request(
+            url,
+            method: fetchRequest.method,
+            parameters: fetchRequest.parameters,
+            encoding: fetchRequest.encoding,
+            headers: fetchRequest.headers
+        )
+        
+        let response = await request.validate()
+            .serializingData()
+            .response
+        
+        guard let statusCode = response.response?.statusCode else {
+            throw NetworkError.unknown
+        }
+        
+        switch statusCode {
+        case 200...299:
+            switch response.result {
+            case .success(let data):
+                print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+                let decoder = JSONDecoder()
+                
+                do {
+                    let decodedData = try decoder.decode(T.self, from: data)
+                    let headers = response.response?.allHeaderFields as? [String: String] ?? [:]
+                    
+                    return (decodedData, headers)
+                } catch {
+                    print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
+                    throw NetworkError.decodingFailed(error)
+                }
+            case .failure(let error):
+                print("\(decodingType) 네트워크 요청 실패: \(error.localizedDescription)")
+                throw NetworkError.requestFailed(error)
+            }
+        case 401:
+            throw NetworkError.unauthorized
+        default:
+            throw NetworkError.unexpectedStatusCode(statusCode)
+        }
+    }
+    
     
     
     /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
@@ -338,33 +390,6 @@ final class NetworkManager {
         return loginResponseData
     }
     
-    // 로그인 Wrapping
-    @MainActor
-    func loginWithKakaoTalk() async throws -> OAuthToken {
-        return try await withCheckedThrowingContinuation { continuation in
-            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if let oauthToken = oauthToken {
-                    continuation.resume(returning: oauthToken)
-                }
-            }
-        }
-    }
-    
-    // 사용자 정보 가져오기 Wrapping
-    func fetchKakaoUserInfo() async throws -> User {
-        return try await withCheckedThrowingContinuation { continuation in
-            UserApi.shared.me { user, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if let user = user {
-                    continuation.resume(returning: user)
-                }
-            }
-        }
-    }
-    
     /// Access Token을 갱신을 서버에 요청하기 위해 사용하는 메서드
     func postRefreshAccessToken(
         _ refreshAccessTokenRequest: RefreshAccessTokenRequest
@@ -627,4 +652,51 @@ final class NetworkManager {
         print("post complete")
     }
 
+    // 카카오 로그인 Wrapping
+    // @MainActor
+    func loginWithKakaoTalk() async throws -> OAuthToken {
+        return try await withCheckedThrowingContinuation { continuation in
+            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let oauthToken = oauthToken {
+                    continuation.resume(returning: oauthToken)
+                }
+            }
+        }
+    }
+    
+    // 카카오 사용자 정보 가져오기 Wrapping
+    func fetchKakaoUserInfo() async throws -> User {
+        return try await withCheckedThrowingContinuation { continuation in
+            UserApi.shared.me { user, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let user = user {
+                    continuation.resume(returning: user)
+                }
+            }
+        }
+    }
+    
+    /// 카카오 유저 정보를 서버에 전송
+    func postKakaoUserInfoToServer(_ kakaoLoginRequest: KakaoLoginRequest) async throws -> (kakaoLoginResponse: KakaoLoginResponse, headers: [String: String])? {
+        let fetchRequest = Network.kakaoLoginType(kakaoLoginRequest)
+        
+        let response = try await performRequestWithResponseHeaders(
+            fetchRequest,
+            decodingType: KakaoLoginResponse.self
+        )
+                
+        return (response.data, response.headers)
+    }
+    
+    /// 토큰 재발행
+    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
+        let fetchRequest = Network.reissueToken(reissueTokenRequest)
+        let response = try await performRequestWithResponseHeaders(fetchRequest,
+                                                                   decodingType: ReissueTokenResponse.self)
+
+        return (response.data, response.headers)
+    }
 }

@@ -18,8 +18,8 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             return URLEncoding.default
-            
-        case .reservationInstantType:
+
+        case .kakaoLoginType, .reissueToken, .reservationInstantType:
             return JSONEncoding.default
         }
     }

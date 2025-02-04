@@ -69,4 +69,8 @@ enum Network {
     
     // 즉시 예약
     case reservationInstantType(ReservationInstantRequest)
+    
+    /// 카카오 로그인
+    case kakaoLoginType(KakaoLoginRequest)
+    case reissueToken(ReissueTokenRequest)
 }
