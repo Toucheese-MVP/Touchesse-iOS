@@ -78,58 +78,6 @@ final class NetworkManager {
         }
     }
     
-    /// 응답값에 헤더가 포함된 네트워크 요청 함수
-    /// 원래 performRequest와 통합하여 사용해야하지만 수정해야 하는 코드가 많아 분리 상태
-    func performRequestWithResponseHeaders<T: Decodable>(
-        _ fetchRequest: Network,
-        decodingType: T.Type
-    ) async throws -> (data: T, headers: [String: String]) {
-        let url = fetchRequest.baseURL + fetchRequest.path
-        print("\(url)")
-        
-        let request = AF.request(
-            url,
-            method: fetchRequest.method,
-            parameters: fetchRequest.parameters,
-            encoding: fetchRequest.encoding,
-            headers: fetchRequest.headers
-        )
-        
-        let response = await request.validate()
-            .serializingData()
-            .response
-        
-        guard let statusCode = response.response?.statusCode else {
-            throw NetworkError.unknown
-        }
-        
-        switch statusCode {
-        case 200...299:
-            switch response.result {
-            case .success(let data):
-                print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
-                let decoder = JSONDecoder()
-                
-                do {
-                    let decodedData = try decoder.decode(T.self, from: data)
-                    let headers = response.response?.allHeaderFields as? [String: String] ?? [:]
-                                        
-                    return (decodedData, headers)
-                } catch {
-                    print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
-                    throw NetworkError.decodingFailed(error)
-                }
-            case .failure(let error):
-                print("\(decodingType) 네트워크 요청 실패: \(error.localizedDescription)")
-                throw NetworkError.requestFailed(error)
-            }
-        case 401:
-            throw NetworkError.unauthorized
-        default:
-            throw NetworkError.unexpectedStatusCode(statusCode)
-        }
-    }
-    
     /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
     func performWithTokenRetry<T>(
         accessToken: String?,
@@ -713,11 +661,11 @@ final class NetworkManager {
     }
     
     /// 토큰 재발행
-    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
+    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> ReissueTokenResponse {
         let fetchRequest = Network.reissueToken(reissueTokenRequest)
-        let response = try await performRequestWithResponseHeaders(fetchRequest,
-                                                                   decodingType: ReissueTokenResponse.self)
+        let response = try await performRequest(fetchRequest,
+                                                decodingType: ReissueTokenResponse.self)
 
-        return (response.data, response.headers)
+        return response
     }
 }

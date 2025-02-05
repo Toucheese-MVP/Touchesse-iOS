@@ -71,14 +71,14 @@ final class TempAuthenticationManager: ObservableObject {
         }
         
         /// reissueTokenResponse 헤더의 accessToken 접근
-        guard let accessToken = reissueTokenResponse.headers["Authorization"]?.removeBearer else {
+        guard let accessToken = reissueTokenResponse.headers?["Authorization"]?.removeBearer else {
             await failedAuthentication()
             return authStatus
         }
                 
         // MARK: 로그인 상태
         /// 계정 정보 업데이트
-        updateAuthenticationInfo(reissueTokenResponse.reissueTokenResponse, accessToken)
+        updateAuthenticationInfo(reissueTokenResponse, accessToken)
         
         /// 로그인 상태로 변경
         await successfulAuthentication()
@@ -95,7 +95,7 @@ final class TempAuthenticationManager: ObservableObject {
     }
     
     /// 서버에 토큰 재발행을 요청하는 함수
-    private func reissueToken(refreshToken: String, deviceId: String) async -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
+    private func reissueToken(refreshToken: String, deviceId: String) async -> ReissueTokenResponse? {
         let request = ReissueTokenRequest(refreshToken: refreshToken, deviceId: deviceId)
         
         do {
