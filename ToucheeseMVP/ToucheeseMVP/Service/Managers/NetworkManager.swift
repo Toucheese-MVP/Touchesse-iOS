@@ -113,7 +113,7 @@ final class NetworkManager {
                 do {
                     let decodedData = try decoder.decode(T.self, from: data)
                     let headers = response.response?.allHeaderFields as? [String: String] ?? [:]
-                    
+                                        
                     return (decodedData, headers)
                 } catch {
                     print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
@@ -656,12 +656,21 @@ final class NetworkManager {
     // @MainActor
     func loginWithKakaoTalk() async throws -> OAuthToken {
         return try await withCheckedThrowingContinuation { continuation in
-            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
+            // 토큰이나 에러를 처리하는 핸들러
+            let resultHandler: (OAuthToken?, Error?) -> Void = { oauthToken, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else if let oauthToken = oauthToken {
                     continuation.resume(returning: oauthToken)
                 }
+            }
+            
+            // 카카오톡 앱으로 로그인이 가능한 경우
+            if UserApi.isKakaoTalkLoginAvailable() {
+                UserApi.shared.loginWithKakaoTalk(completion: resultHandler)
+            } else {
+                // 웹으로 로그인 해야하는 경우
+                UserApi.shared.loginWithKakaoAccount(completion: resultHandler)
             }
         }
     }
@@ -680,15 +689,15 @@ final class NetworkManager {
     }
     
     /// 카카오 유저 정보를 서버에 전송
-    func postKakaoUserInfoToServer(_ kakaoLoginRequest: KakaoLoginRequest) async throws -> (kakaoLoginResponse: KakaoLoginResponse, headers: [String: String])? {
+    func postKakaoUserInfoToServer(_ kakaoLoginRequest: KakaoLoginRequest) async throws -> SocialLoginResponse {
         let fetchRequest = Network.kakaoLoginType(kakaoLoginRequest)
         
-        let response = try await performRequestWithResponseHeaders(
+        let response = try await performRequest(
             fetchRequest,
-            decodingType: KakaoLoginResponse.self
+            decodingType: SocialLoginResponse.self
         )
                 
-        return (response.data, response.headers)
+        return response
     }
     
     /// 애플 유저 정보를 서버에 전송

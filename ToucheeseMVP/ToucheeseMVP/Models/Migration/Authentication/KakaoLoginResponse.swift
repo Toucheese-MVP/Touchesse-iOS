@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct KakaoLoginResponse: Decodable {
+struct KakaoLoginResponse: Decodable, ResponseWithHeadersProtocol {
     let memberId: Int
+    let email: String
     let nickname: String
     let isFirstLogin: Bool
     let refreshToken: String
     let deviceId: String
+    var headers: [String : String]?
 }
