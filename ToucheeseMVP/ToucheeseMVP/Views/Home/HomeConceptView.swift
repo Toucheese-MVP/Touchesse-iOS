@@ -12,7 +12,6 @@ struct HomeConceptView: View {
     @EnvironmentObject var studioConceptViewModel: StudioConceptViewModel
     private var tempAuthenticationManager = TempAuthenticationManager.shared
     
-    @State private var isLogined: Bool = false
     @State private var isShowingLoginView: Bool = false
     
     
