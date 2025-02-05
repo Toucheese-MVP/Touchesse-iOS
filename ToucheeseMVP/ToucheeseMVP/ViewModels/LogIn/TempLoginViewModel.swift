@@ -126,18 +126,16 @@ final class TempLogInViewModel: LoginViewModelProtocol {
     /// 서버로 사용자 정보 전송하기
     private func postAppleUserInfoToServer(appleUserInfo: ASAuthorizationAppleIDCredential) async -> SocialLoginResponse? {
         do {
-            
-            // TODO: 토큰 인코딩 확인하기
-            guard let idToken = appleUserInfo.identityToken?.base64EncodedString() else {
-                print("Error: identityToken is nil")
+            // 토큰 데이터 가져오기
+            guard let idToken = appleUserInfo.identityToken,
+                  let idTokenString = String(data: idToken, encoding: .utf8) else {
+                print("Error: identityToken Error(nil or String conversion failed)")
                 return nil
             }
-            
-            print("=================idToken: \(idToken)")
-            
+                        
             let response = try await networkManager
                 .postAppleUserInfoToServer(
-                    AppleLoginRequest(idToken: idToken,
+                    AppleLoginRequest(idToken: idTokenString,
                                       platform: SocialType.APPLE.rawValue,
                                       deviceId: keychainManager.read(forAccount: .deviceId)))
             
