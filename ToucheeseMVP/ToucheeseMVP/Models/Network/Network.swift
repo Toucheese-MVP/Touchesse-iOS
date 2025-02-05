@@ -69,5 +69,6 @@ enum Network {
     
     /// 카카오 로그인
     case kakaoLoginType(KakaoLoginRequest)
+    case appleLoginType(AppleLoginRequest)
     case reissueToken(ReissueTokenRequest)
 }

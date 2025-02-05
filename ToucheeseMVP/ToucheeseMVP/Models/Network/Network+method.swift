@@ -22,7 +22,7 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             return .get
-        case .kakaoLoginType, .reissueToken:
+        case .kakaoLoginType, .appleLoginType, .reissueToken:
             return .post
         }
     }
