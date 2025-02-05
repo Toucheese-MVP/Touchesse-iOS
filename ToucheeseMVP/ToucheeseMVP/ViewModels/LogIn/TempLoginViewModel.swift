@@ -55,15 +55,29 @@ final class TempLogInViewModel: LoginViewModelProtocol {
     
     /// 애플 로그인 처리
     func handleAppleLogin(_ authResults: ASAuthorization) async {
-//         guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential else { return }
-//
-//        let userID = appleIDCredential.user
-//        let userFullName = (appleIDCredential.fullName?.familyName ?? "") + (appleIDCredential.fullName?.givenName ?? "")
-//        let userEmail = appleIDCredential.email
-//
-//        print("========userID: \(userID)\n ========userFullName: \(userFullName)\n ==========userEmail: \(userEmail), ====name==\(appleIDCredential.fullName?.givenName)")
-//
-//         await postUserInfoToServer(.APPLE)
+        // 애플 ID 정보
+        guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential else { return }
+    
+        // 서버로 유저 정보 전송
+        guard let response = await postAppleUserInfoToServer(appleUserInfo: appleIDCredential) else { return }
+        
+        // postAppleUserInfoToServer 응답값의 헤더의 accessToken에 접근
+        guard let accessToken = response.headers?["Authorization"]?.removeBearer else { return }
+        
+        // 키체인에 토큰 저장
+        authManager.updateOrCreateTokens(
+            accessToken: accessToken,
+            refreshToken: response.refreshToken,
+            deviceId: response.deviceId
+        )
+        
+        // 유저 정보 갱신
+        authManager.saveMemberInfo(memberNickname: response.nickname,
+                                   memberEmail: response.email,
+                                   memberId: response.memberId)
+                
+        // 로그인 상태 갱신
+        await authManager.successfulAuthentication()
     }
     
     /// 카카오 로그인
@@ -100,14 +114,37 @@ final class TempLogInViewModel: LoginViewModelProtocol {
                             idToken: idToken,
                             accessToken: kakaoUserInfo.accessToken,
                             platform: SocialType.KAKAO.rawValue,
-                            deviceId: keychainManager.read(forAccount: .deviceId)
-                        )
-                    )
+                            deviceId: keychainManager.read(forAccount: .deviceId)))
                 
                 return response
             } catch {
                 print("카카오 유저 정보 서버로 보내기 실패 \(error.localizedDescription)")
                 return nil
             }
+    }
+    
+    /// 서버로 사용자 정보 전송하기
+    private func postAppleUserInfoToServer(appleUserInfo: ASAuthorizationAppleIDCredential) async -> SocialLoginResponse? {
+        do {
+            
+            // TODO: 토큰 인코딩 확인하기
+            guard let idToken = appleUserInfo.identityToken?.base64EncodedString() else {
+                print("Error: identityToken is nil")
+                return nil
+            }
+            
+            print("=================idToken: \(idToken)")
+            
+            let response = try await networkManager
+                .postAppleUserInfoToServer(
+                    AppleLoginRequest(idToken: idToken,
+                                      platform: SocialType.APPLE.rawValue,
+                                      deviceId: keychainManager.read(forAccount: .deviceId)))
+            
+            return response
+        } catch {
+            print("애플 유저 정보 서버로 보내기 실패 \(error.localizedDescription)")
+            return nil
+        }
     }
 }

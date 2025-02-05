@@ -54,7 +54,15 @@ final class NetworkManager {
                 let decoder = JSONDecoder()
                 
                 do {
-                    return try decoder.decode(T.self, from: data)
+                    let decodedData = try decoder.decode(T.self, from: data)
+                    
+                    // ResponseWithHeadersProtocol 프로토콜을 준수하는 경우 headers 추가해서 리턴
+                    if var responseWithHeaders = decodedData as? ResponseWithHeadersProtocol {
+                        responseWithHeaders.headers = response.response?.allHeaderFields as? [String: String]
+                        return responseWithHeaders as! T
+                    }
+                    
+                    return decodedData
                 } catch {
                     print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
                     throw NetworkError.decodingFailed(error)
@@ -121,8 +129,6 @@ final class NetworkManager {
             throw NetworkError.unexpectedStatusCode(statusCode)
         }
     }
-    
-    
     
     /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
     func performWithTokenRetry<T>(
@@ -683,6 +689,18 @@ final class NetworkManager {
         )
                 
         return (response.data, response.headers)
+    }
+    
+    /// 애플 유저 정보를 서버에 전송
+    func postAppleUserInfoToServer(_ appleLoginRequest: AppleLoginRequest) async throws -> SocialLoginResponse {
+        let fetchRequest = Network.appleLoginType(appleLoginRequest)
+        
+        let response = try await performRequest(
+            fetchRequest,
+            decodingType: SocialLoginResponse.self
+        )
+                
+        return response
     }
     
     /// 토큰 재발행
