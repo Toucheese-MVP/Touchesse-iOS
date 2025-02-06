@@ -89,7 +89,7 @@ extension Network {
             return "/delete/\(studioLikeRelationRequest.studioId)"
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .kakaoLoginType, .reissueToken:
+        case .studioConceptType, .kakaoLoginType, .appleLoginType, .reissueToken:
             return ""
         case .conceptedStudioListType(let conceptedStudioRequest):
             if conceptedStudioRequest.location == [] && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {

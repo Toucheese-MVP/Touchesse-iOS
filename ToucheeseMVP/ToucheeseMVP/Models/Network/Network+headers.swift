@@ -72,10 +72,8 @@ extension Network {
             let headers: HTTPHeaders = ["accept": "*/*"]
             
             return headers
-        case .kakaoLoginType, .reissueToken:
-            var headers: HTTPHeaders = ["accept": "*/*"]
-            
-            headers = ["Content-Type": "application/json"]
+        case .kakaoLoginType, .appleLoginType, .reissueToken:
+            let headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             return headers
         }
