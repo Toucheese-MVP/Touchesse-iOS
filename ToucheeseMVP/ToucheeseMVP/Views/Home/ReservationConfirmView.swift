@@ -11,24 +11,34 @@ import Kingfisher
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
+    private let tempAuthenticationManager = TempAuthenticationManager.shared
+    
     @EnvironmentObject var reservationListViewModel: ReservationListViewModel
-    @Environment(\.dismiss) private var dismiss
     @StateObject var reservationViewModel: ReservationViewModel
+    @StateObject var tempReservationViewModel: TempReservationViewModel
     
     var body: some View {
-        let studioName = reservationViewModel.studio.name
-        let address = reservationViewModel.studioDetail.address
-        let userName = reservationViewModel.userName ?? ""
-        let productOptions = reservationViewModel.productOptions
-        let productName = reservationViewModel.product.name
-        let productPriceString = reservationViewModel.product.price.moneyStringFormat
-        let totalPriceString = reservationViewModel.totalPrice.moneyStringFormat
-        let reservationDateString = reservationViewModel.reservationDate.toString(format: .reservationInfoDay)
-        let reservationTimeString = reservationViewModel.reservationDate.toString(format: .reservationInfoTime)
-        let addPeopleCount = reservationViewModel.addPeopleCount
-        let addPeoplePrice = reservationViewModel.productDetail.addPeoplePrice
+        let studioName = tempReservationViewModel.studio.name
+        let address = tempReservationViewModel.studioDetail.address
+    
+        let userName = tempAuthenticationManager.memberNickname
+        
+        let productOptions = reservationViewModel.xProductOptions
+        let tempProductOptions = tempReservationViewModel.productOptions
+        
+        let productName = tempReservationViewModel.product.name
+        
+        let productPriceString = tempReservationViewModel.product.price.moneyStringFormat
+        let totalPriceString = tempReservationViewModel.totalPrice.moneyStringFormat
+        
+        let reservationDateString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoDay)
+        
+        let reservationTimeString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoTime)
+        
+        let addPeopleCount = tempReservationViewModel.addPeopleCount
+        let addPeoplePrice = reservationViewModel.xProductDetail.addPeoplePrice
         let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
-        let productImageURL = reservationViewModel.product.imageURL
+        let productImageURL = reservationViewModel.xProduct.imageURL
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -37,7 +47,7 @@ struct ReservationConfirmView: View {
                     studioName: studioName,
                     studioAddress: address,
                     reservationStatus: .waiting,
-                    userName: userName,
+                    userName: userName ?? "",
                     reservationDateString: reservationDateString,
                     reservationTimeString: reservationTimeString
                 )
@@ -47,21 +57,17 @@ struct ReservationConfirmView: View {
                 ReservationProductView(
                     studioName: studioName,
                     productName: productName,
-                    productImageURL: productImageURL,
                     productPriceString: productPriceString,
-                    productOptions: productOptions,
-                    addPeopleCount: addPeopleCount,
-                    addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원"
+                    productOptions: tempProductOptions,
+                    peopleCount: addPeopleCount
                 )
                 
                 DividerView(color: .tcGray01, height: 8)
                 
                 // 주문자 정보 입력 뷰
                 UserInfoInputView(
-                    userEmail: $reservationViewModel.userEmail,
-                    userPhone: $reservationViewModel.userPhone,
-                    isEmailFormat: reservationViewModel.isEmailFormat,
-                    isPhoneLength: reservationViewModel.isPhoneLength
+                    userPhone: $tempReservationViewModel.userPhone,
+                    isPhoneLength: tempReservationViewModel.isPhoneLength
                 )
                 
                 // 주문자 정보 입력 뷰
@@ -71,7 +77,7 @@ struct ReservationConfirmView: View {
                 PayInfoView(
                     productName: productName,
                     productPrice: productPriceString,
-                    productOptions: productOptions,
+                    productOptions: tempProductOptions,
                     addPeopleCount: addPeopleCount,
                     addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원",
                     totalPriceString: totalPriceString,
@@ -79,20 +85,27 @@ struct ReservationConfirmView: View {
                 )
                 .padding(.bottom, 31)
                 
-                FillBottomButton(isSelectable: reservationViewModel.isBottomButtonSelectable, title: "예약하기") {
-                    if !reservationViewModel.isReserving {
-                        reservationViewModel.setIsReserving()
+                FillBottomButton(isSelectable: tempReservationViewModel.isBottomButtonSelectable, title: "예약하기") {
+                    if !tempReservationViewModel.isReserving {
+                        tempReservationViewModel.setIsReserving()
                         
                         Task {
-                            await reservationViewModel.requestStudioReservation()
+                            let result = await tempReservationViewModel.requestStudioReservation()
+//
+//                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
+//                            if reservationViewModel.reservationResponseData?.statusCode == 200 {
+//                                await reservationListViewModel.fetchReservations()
+//                                navigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
+//                            } else {
+//                                navigationManager.goFirstView()
+//                            }
                             
-                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
-                            if reservationViewModel.reservationResponseData?.statusCode == 200 {
-                                await reservationListViewModel.fetchReservations()
+                            if result {
                                 navigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
                             } else {
-                                navigationManager.goFirstView()
+                                print("fail")
                             }
+                            
                         }
                     }
                 }
@@ -104,16 +117,12 @@ struct ReservationConfirmView: View {
         .onAppear(perform : UIApplication.shared.hideKeyboard)
         .customNavigationBar(
             centerView: {
-                Text(
-                    "주문/예약"
-                )
-                .modifier(
-                    NavigationTitleModifier()
-                )
+                Text("주문/예약")
+                .modifier(NavigationTitleModifier())
             },
             leftView: {
             Button {
-                dismiss()
+                navigationManager.pop(1)
             } label: {
                 NavigationBackButtonView()
             }
@@ -124,11 +133,9 @@ struct ReservationConfirmView: View {
 struct ReservationProductView: View {
     let studioName: String
     let productName: String
-    let productImageURL: URL
     let productPriceString: String
-    let productOptions: [ProductOption]
-    let addPeopleCount: Int
-    let addPeoplePriceString: String
+    let productOptions: [OptionEntity]
+    let peopleCount: Int
     
     var body: some View {
         VStack {
@@ -137,20 +144,6 @@ struct ReservationProductView: View {
                     .padding(.bottom, 16)
                 
                 HStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(.tcGray03, lineWidth: 1)
-                        .frame(width: 62, height: 62)
-                        .background {
-                            KFImage(productImageURL)
-                                .placeholder { ProgressView() }
-                                .fade(duration: 0.25)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 62, height: 62)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                        }
-                        .padding(.trailing, 12)
-                    
                     VStack {
                         HStack {
                             Text(productName)
@@ -164,6 +157,15 @@ struct ReservationProductView: View {
                                 .foregroundStyle(.tcGray08)
                         }
                         .padding(.bottom, 4)
+                        
+                        HStack {
+                            Text("예약인원")
+                                .font(.pretendardRegular14)
+                            Spacer()
+                            Text("\(peopleCount)명")
+                                .font(.pretendardRegular14)
+                        }
+                        .foregroundStyle(.tcGray08)
                         
                         VStack(spacing: 0) {
                             ForEach(productOptions.indices, id: \.self) { index in
@@ -184,23 +186,23 @@ struct ReservationProductView: View {
                                 .foregroundStyle(.tcGray05)
                             }
                             
-                            if addPeopleCount > 0 {
-                                HStack {
-                                    Text("ㄴ")
-                                        .font(.pretendardRegular14)
-                                        .padding(.trailing, 2)
-                                    
-                                    Text("추가 인원")
-                                        .font(.pretendardRegular14)
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(addPeopleCount)인")
-                                        .font(.pretendardMedium12)
-                                }
-                                .frame(height: 18)
-                                .foregroundStyle(.tcGray05)
-                            }
+//                            if addPeopleCount > 0 {
+//                                HStack {
+//                                    Text("ㄴ")
+//                                        .font(.pretendardRegular14)
+//                                        .padding(.trailing, 2)
+//                                    
+//                                    Text("추가 인원")
+//                                        .font(.pretendardRegular14)
+//                                    
+//                                    Spacer()
+//                                    
+//                                    Text("\(addPeopleCount)인")
+//                                        .font(.pretendardMedium12)
+//                                }
+//                                .frame(height: 18)
+//                                .foregroundStyle(.tcGray05)
+//                            }
                         }
                     }
                 }
@@ -218,12 +220,10 @@ struct ReservationProductView: View {
 }
 
 fileprivate struct UserInfoInputView: View {
-    @Binding var userEmail: String
     @Binding var userPhone: String
     
     @FocusState private var focusedField: FocusedField?
-    
-    var isEmailFormat: Bool
+
     var isPhoneLength: Bool
     
     private var isUserPhoneCorrect: Bool {
@@ -240,43 +240,6 @@ fileprivate struct UserInfoInputView: View {
         VStack {
             LeadingTextView(text: "주문자 정보")
                 .padding(.bottom, 16)
-            
-            VStack {
-                HStack(spacing: 0) {
-                    Text("이메일")
-                        .font(.pretendardMedium14)
-                        .foregroundStyle(.tcGray07)
-                        .padding(.trailing, 2)
-                    
-                    Text("*")
-                        .font(.pretendardSemiBold14)
-                        .foregroundStyle(.tcTempError)
-                    
-                    Spacer()
-                    
-                    TextFieldView(
-                        inputValue: $userEmail,
-                        placeHolder: "이메일을 입력해주세요.",
-                        keyboardType: .emailAddress,
-                        submitAction: { focusedField = .phoneNumber }
-                    )
-                    .focused($focusedField, equals: .email)
-                }
-                
-                if !userEmail.isEmpty && !isEmailFormat {
-                    HStack {
-                        Spacer()
-                        
-                        LeadingTextView(
-                            text: "이메일 형식에 맞게 입력해주세요.",
-                            font: .pretendardRegular14,
-                            textColor: .tcTempError
-                        )
-                        .frame(width: 253)
-                    }
-                }
-            }
-            .padding(.bottom, 12)
             
             VStack {
                 HStack(spacing: 0) {
@@ -324,7 +287,6 @@ fileprivate struct UserInfoInputView: View {
 
 extension UserInfoInputView {
     enum FocusedField: Hashable {
-        case email
         case phoneNumber
     }
 }
@@ -332,7 +294,7 @@ extension UserInfoInputView {
 struct PayInfoView: View {
     let productName: String
     let productPrice: String
-    let productOptions: [ProductOption]
+    let productOptions: [OptionEntity]
     let addPeopleCount: Int
     let addPeoplePriceString: String
     let totalPriceString: String
@@ -382,17 +344,11 @@ struct PayInfoView: View {
                 
                 if addPeopleCount > 0 {
                     HStack {
-                        Text("ㄴ")
+                        Text("예약인원")
                             .font(.pretendardRegular14)
-                            .padding(.trailing, 2)
-                        
-                        Text("추가 인원 \(addPeopleCount)명")
-                            .font(.pretendardRegular14)
-                        
                         Spacer()
-                        
-                        Text(addPeopleTotalPriceString)
-                            .font(.pretendardMedium16)
+                        Text("\(addPeopleCount)명")
+                            .font(.pretendardRegular14)
                     }
                     .frame(height: 18)
                     .foregroundStyle(.tcGray05)
@@ -419,9 +375,9 @@ struct PayInfoView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
-            .environmentObject(NavigationManager())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
+//            .environmentObject(NavigationManager())
+//    }
+//}

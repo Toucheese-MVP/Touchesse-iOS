@@ -8,11 +8,12 @@
 import Foundation
 
 struct ReservationInstantRequest: Encodable {
-    var productId: Int
-    var studioId: Int
-    var totalPrice: Int
-    var createDate: String
-    var createTime: String
-    var personnel: Int
-    var addOptions: [Int]
+    let productId: Int
+    let studioId: Int
+    let memberId: Int
+    let totalPrice: Int
+    let createDate: String
+    let createTime: String
+    let personnel: Int
+    let addOptions: [Int]
 }

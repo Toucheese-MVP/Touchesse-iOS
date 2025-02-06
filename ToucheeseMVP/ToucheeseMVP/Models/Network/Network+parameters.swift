@@ -127,7 +127,7 @@ extension Network {
             return params
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType, .reservationInstantType:
+        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType:
             return [:]
         case .conceptedStudioListType(let conceptedStudioRequest):
             var params: Parameters = [:]
@@ -165,6 +165,21 @@ extension Network {
             params["deviceId"] = reissueTokenRequest.deviceId
             
             return params
+            
+        case .reservationInstantType(let request):
+            var params: Parameters = [:]
+            
+            params["productId"] = request.productId
+            params["studioId"] = request.studioId
+            params["memberId"] = request.memberId
+            params["totalPrice"] = request.totalPrice
+            params["createDate"] = request.createDate
+            params["createTime"] = request.createTime
+            params["personnel"] = request.personnel
+            params["addOptions"] = request.addOptions
+            
+            return params
         }
     }
 }
+

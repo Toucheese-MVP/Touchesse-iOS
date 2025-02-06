@@ -11,11 +11,14 @@ final class ReservationViewModel: ObservableObject {
     let networkmanager = NetworkManager.shared
     let authManager = AuthenticationManager.shared
     
-    let studio: Studio
-    let studioDetail: StudioDetail
-    let product: Product
-    let productDetail: ProductDetail
-    let productOptions: [ProductOption]
+    let studio: TempStudio
+    let studioDetail: StudioDetailEntity
+    let product: ProductEntity
+    let xProduct: Product = .init(id: 1, name: "", description: "", imageString: "", price: 0, reviewCount: 0)
+    let productDetail: ProductDetailEntity
+    let xProductDetail: ProductDetail = .init(isGroup: true, basePeopleCnt: nil, addPeoplePrice: nil, productOptions: [])
+    let productOptions: [OptionEntity]
+    let xProductOptions: [ProductOption] = []
     let reservationDate: Date
     let totalPrice: Int
     let addPeopleCount: Int
@@ -45,8 +48,10 @@ final class ReservationViewModel: ObservableObject {
     }
     
     var addpeopleTotalPriceString: String {
-        guard let addPeoplePrice = productDetail.addPeoplePrice else { return "error"}
-        return (addPeoplePrice * addPeopleCount).moneyStringFormat
+//        guard let addPeoplePrice = productDetail.addPeoplePrice else { return "error"}
+//        return (addPeoplePrice * addPeopleCount).moneyStringFormat
+        
+        return ""
     }
     
     // MARK: - TODO: 추후 응답값에 따라 에러처리 가능
@@ -54,11 +59,11 @@ final class ReservationViewModel: ObservableObject {
     
     // MARK: - Init
     init(
-        studio: Studio,
-        studioDetail: StudioDetail,
-        product: Product,
-        productDetail: ProductDetail,
-        productOptions: [ProductOption],
+        studio: TempStudio,
+        studioDetail: StudioDetailEntity,
+        product: ProductEntity,
+        productDetail: ProductDetailEntity,
+        productOptions: [OptionEntity],
         reservationDate: Date,
         totalPrice: Int,
         addPeopleCount: Int
@@ -90,7 +95,7 @@ final class ReservationViewModel: ObservableObject {
             studioId: studio.id,
             reservationDate: reservationDate,
             productId: product.id,
-            productOptions: productOptions,
+            productOptions: xProductOptions,
             totalPrice: totalPrice,
             phoneNumber: userPhone,
             email: userEmail,
