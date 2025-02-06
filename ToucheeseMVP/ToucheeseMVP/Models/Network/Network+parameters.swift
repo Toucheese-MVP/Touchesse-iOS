@@ -158,6 +158,15 @@ extension Network {
             
             return params
             
+        case .appleLoginType(let appleLoginRequest):
+            var params: Parameters = [:]
+            
+            params["idToken"] = appleLoginRequest.idToken
+            params["platform"] = appleLoginRequest.platform
+            params["deviceId"] = appleLoginRequest.deviceId
+            
+            return params
+            
         case .reissueToken(let reissueTokenRequest):
             var params: Parameters = [:]
             

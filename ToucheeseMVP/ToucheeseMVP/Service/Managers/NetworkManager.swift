@@ -54,59 +54,15 @@ final class NetworkManager {
                 let decoder = JSONDecoder()
                 
                 do {
-                    return try decoder.decode(T.self, from: data)
-                } catch {
-                    print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
-                    throw NetworkError.decodingFailed(error)
-                }
-            case .failure(let error):
-                print("\(decodingType) 네트워크 요청 실패: \(error.localizedDescription)")
-                throw NetworkError.requestFailed(error)
-            }
-        case 401:
-            throw NetworkError.unauthorized
-        default:
-            throw NetworkError.unexpectedStatusCode(statusCode)
-        }
-    }
-    
-    /// 응답값에 헤더가 포함된 네트워크 요청 함수
-    /// 원래 performRequest와 통합하여 사용해야하지만 수정해야 하는 코드가 많아 분리 상태
-    func performRequestWithResponseHeaders<T: Decodable>(
-        _ fetchRequest: Network,
-        decodingType: T.Type
-    ) async throws -> (data: T, headers: [String: String]) {
-        let url = fetchRequest.baseURL + fetchRequest.path
-        print("\(url)")
-        
-        let request = AF.request(
-            url,
-            method: fetchRequest.method,
-            parameters: fetchRequest.parameters,
-            encoding: fetchRequest.encoding,
-            headers: fetchRequest.headers
-        )
-        
-        let response = await request.validate()
-            .serializingData()
-            .response
-        
-        guard let statusCode = response.response?.statusCode else {
-            throw NetworkError.unknown
-        }
-        
-        switch statusCode {
-        case 200...299:
-            switch response.result {
-            case .success(let data):
-                print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
-                let decoder = JSONDecoder()
-                
-                do {
                     let decodedData = try decoder.decode(T.self, from: data)
-                    let headers = response.response?.allHeaderFields as? [String: String] ?? [:]
                     
-                    return (decodedData, headers)
+                    // ResponseWithHeadersProtocol 프로토콜을 준수하는 경우 headers 추가해서 리턴
+                    if var responseWithHeaders = decodedData as? ResponseWithHeadersProtocol {
+                        responseWithHeaders.headers = response.response?.allHeaderFields as? [String: String]
+                        return responseWithHeaders as! T
+                    }
+                    
+                    return decodedData
                 } catch {
                     print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
                     throw NetworkError.decodingFailed(error)
@@ -121,8 +77,6 @@ final class NetworkManager {
             throw NetworkError.unexpectedStatusCode(statusCode)
         }
     }
-    
-    
     
     /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
     func performWithTokenRetry<T>(
@@ -656,12 +610,21 @@ final class NetworkManager {
     // @MainActor
     func loginWithKakaoTalk() async throws -> OAuthToken {
         return try await withCheckedThrowingContinuation { continuation in
-            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
+            // 토큰이나 에러를 처리하는 핸들러
+            let resultHandler: (OAuthToken?, Error?) -> Void = { oauthToken, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else if let oauthToken = oauthToken {
                     continuation.resume(returning: oauthToken)
                 }
+            }
+            
+            // 카카오톡 앱으로 로그인이 가능한 경우
+            if UserApi.isKakaoTalkLoginAvailable() {
+                UserApi.shared.loginWithKakaoTalk(completion: resultHandler)
+            } else {
+                // 웹으로 로그인 해야하는 경우
+                UserApi.shared.loginWithKakaoAccount(completion: resultHandler)
             }
         }
     }
@@ -680,23 +643,35 @@ final class NetworkManager {
     }
     
     /// 카카오 유저 정보를 서버에 전송
-    func postKakaoUserInfoToServer(_ kakaoLoginRequest: KakaoLoginRequest) async throws -> (kakaoLoginResponse: KakaoLoginResponse, headers: [String: String])? {
+    func postKakaoUserInfoToServer(_ kakaoLoginRequest: KakaoLoginRequest) async throws -> SocialLoginResponse {
         let fetchRequest = Network.kakaoLoginType(kakaoLoginRequest)
         
-        let response = try await performRequestWithResponseHeaders(
+        let response = try await performRequest(
             fetchRequest,
-            decodingType: KakaoLoginResponse.self
+            decodingType: SocialLoginResponse.self
         )
                 
-        return (response.data, response.headers)
+        return response
+    }
+    
+    /// 애플 유저 정보를 서버에 전송
+    func postAppleUserInfoToServer(_ appleLoginRequest: AppleLoginRequest) async throws -> SocialLoginResponse {
+        let fetchRequest = Network.appleLoginType(appleLoginRequest)
+        
+        let response = try await performRequest(
+            fetchRequest,
+            decodingType: SocialLoginResponse.self
+        )
+                
+        return response
     }
     
     /// 토큰 재발행
-    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> (reissueTokenResponse: ReissueTokenResponse, headers: [String: String])? {
+    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> ReissueTokenResponse {
         let fetchRequest = Network.reissueToken(reissueTokenRequest)
-        let response = try await performRequestWithResponseHeaders(fetchRequest,
-                                                                   decodingType: ReissueTokenResponse.self)
+        let response = try await performRequest(fetchRequest,
+                                                decodingType: ReissueTokenResponse.self)
 
-        return (response.data, response.headers)
+        return response
     }
 }
