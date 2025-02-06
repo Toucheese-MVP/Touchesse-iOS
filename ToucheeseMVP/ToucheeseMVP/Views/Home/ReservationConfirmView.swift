@@ -23,7 +23,6 @@ struct ReservationConfirmView: View {
     
         let userName = tempAuthenticationManager.memberNickname
         
-        let productOptions = reservationViewModel.xProductOptions
         let tempProductOptions = tempReservationViewModel.productOptions
         
         let productName = tempReservationViewModel.product.name
@@ -38,7 +37,6 @@ struct ReservationConfirmView: View {
         let addPeopleCount = tempReservationViewModel.addPeopleCount
         let addPeoplePrice = reservationViewModel.xProductDetail.addPeoplePrice
         let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
-        let productImageURL = reservationViewModel.xProduct.imageURL
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -322,6 +320,19 @@ struct PayInfoView: View {
             }
             .padding(.bottom, 8)
             
+            if addPeopleCount > 1 {
+                HStack {
+                    Text("예약인원")
+                        .font(.pretendardRegular14)
+                    Spacer()
+                    Text("\(addPeopleCount)명")
+                        .font(.pretendardRegular14)
+                }
+                .frame(height: 18)
+                .foregroundStyle(.tcGray10)
+                .padding(.bottom, 12)
+            }
+            
             VStack {
                 ForEach(productOptions.indices, id: \.self) { index in
                     HStack {
@@ -340,18 +351,6 @@ struct PayInfoView: View {
                     .frame(height: 18)
                     .foregroundStyle(.tcGray05)
                     .padding(.bottom, 2)
-                }
-                
-                if addPeopleCount > 0 {
-                    HStack {
-                        Text("예약인원")
-                            .font(.pretendardRegular14)
-                        Spacer()
-                        Text("\(addPeopleCount)명")
-                            .font(.pretendardRegular14)
-                    }
-                    .frame(height: 18)
-                    .foregroundStyle(.tcGray05)
                 }
             }
             .padding(.leading, 16)

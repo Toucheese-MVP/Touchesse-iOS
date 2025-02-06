@@ -37,6 +37,7 @@ struct OperatingHour: Decodable, Hashable {
 }
 
 extension StudioDetailEntity {
+    //TODO: 고치기
     var isOpen: Bool {
         let currentWeekDay = Date().dayWeek
 

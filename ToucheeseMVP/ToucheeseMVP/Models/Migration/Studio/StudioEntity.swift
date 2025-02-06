@@ -15,14 +15,13 @@ struct StudioEntity: Codable {
     let last: Bool
     let size: Int
     let number: Int
-    let sort: StudioPageSort
     let numberOfElements: Int
     let first: Bool
     let empty: Bool
     
     private enum CodingKeys: String, CodingKey {
         case studio = "content"
-        case pageable, totalPages, totalElements, last, size, number, sort, numberOfElements, first, empty
+        case pageable, totalPages, totalElements, last, size, number, numberOfElements, first, empty
     }
 }
 
@@ -66,7 +65,7 @@ extension TempStudio {
 struct Pageable: Codable {
     let pageNumber: Int
     let pageSize: Int
-    let sort: StudioPageSort
+//    let sort: StudioPageSort
     let offset: Int
     let paged: Bool
     let unpaged: Bool

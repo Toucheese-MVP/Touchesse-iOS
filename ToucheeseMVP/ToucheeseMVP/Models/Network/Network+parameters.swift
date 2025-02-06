@@ -181,11 +181,14 @@ extension Network {
             params["productId"] = request.productId
             params["studioId"] = request.studioId
             params["memberId"] = request.memberId
+            params["phone"] = request.phone
             params["totalPrice"] = request.totalPrice
             params["createDate"] = request.createDate
             params["createTime"] = request.createTime
             params["personnel"] = request.personnel
             params["addOptions"] = request.addOptions
+            
+            print("\(params)")
             
             return params
         }

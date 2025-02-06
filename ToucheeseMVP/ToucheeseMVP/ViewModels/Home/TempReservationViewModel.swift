@@ -75,6 +75,7 @@ final class TempReservationViewModel: ObservableObject {
             productId: product.id,
             studioId: studio.id,
             memberId: memberId,
+            phone: userPhone.phoneNumberString,
             totalPrice: totalPrice,
             createDate: reservationDate.toString(format: .requestYearMonthDay),
             createTime: reservationDate.toString(format: .hourMinute),
@@ -83,8 +84,8 @@ final class TempReservationViewModel: ObservableObject {
         )
         
         do {
-            try await networkmanager.postReservationInstant(reservation: reservationRequestType)
-            return true
+            let result = try await networkmanager.postReservationInstant(reservation: reservationRequestType).status
+            return result
            
         } catch {
             print("post fail!")

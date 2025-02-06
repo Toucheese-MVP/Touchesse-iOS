@@ -223,6 +223,7 @@ extension StudioDetailView {
                 .resizable()
                 .frame(width: 18, height: 18)
             HStack {
+                //TODO: 고치기
                 Text(viewModel.studioDetailEntity.isOpen ? "영업 중" : "영업 마감")
                     .foregroundStyle(.tcGray08)
                     .font(.pretendardRegular16)

@@ -68,12 +68,22 @@ extension Network {
             
             return headers
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType, .reservationInstantType:
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             let headers: HTTPHeaders = ["accept": "*/*"]
             
             return headers
         case .kakaoLoginType, .appleLoginType, .reissueToken:
             let headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            return headers
+            
+        case .reservationInstantType:
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            guard let token = TempAuthenticationManager.shared.accessToken else { return headers }
+
+            headers["Authorization"] =
+            "Bearer \(token)"
             
             return headers
         }
