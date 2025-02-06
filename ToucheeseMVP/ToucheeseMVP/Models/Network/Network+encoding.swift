@@ -18,7 +18,7 @@ extension Network {
         // MARK: - SERVER Migration WORK
         case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
             return URLEncoding.default
-        case .kakaoLoginType, .appleLoginType, .reissueToken:
+        case .kakaoLoginType, .appleLoginType, .reissueToken, .reservationInstantType:
             return JSONEncoding.default
         }
     }

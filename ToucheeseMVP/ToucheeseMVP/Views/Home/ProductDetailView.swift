@@ -11,8 +11,8 @@ import Kingfisher
 struct ProductDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @StateObject var productDetailViewModel: ProductDetailViewModel
-    
-    private let authManager = AuthenticationManager.shared
+
+    private let tempAuthManager = TempAuthenticationManager.shared
     
     @State private var displayDate: Date?
     
@@ -40,23 +40,33 @@ struct ProductDetailView: View {
                 
                 FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
                     
-                    if authManager.authStatus == .authenticated {
-                        //                        navigationManager
-                        //                            .appendPath(
-                        //                                viewType: .reservationConfirmView,
-                        //                                viewMaterial: ReservationConfirmViewMaterial(
-                        //                                    viewModel: ReservationViewModel(
-                        //                                        studio: productDetailViewModel.studio,
-                        //                                        studioDetail: productDetailViewModel.studioDetail,
-                        //                                        product: productDetailViewModel.product,
-                        //                                        productDetail: productDetailViewModel.productDetail,
-                        //                                        productOptions: productDetailViewModel.selectedProductOptionArray,
-                        //                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                        //                                        totalPrice: productDetailViewModel.totalPrice,
-                        //                                        addPeopleCount: productDetailViewModel.addPeopleCount
-                        //                                    )
-                        //                                )
-                        //                            )
+                    if tempAuthManager.authStatus == .authenticated {
+                        navigationManager
+                            .appendPath(
+                                viewType: .reservationConfirmView,
+                                viewMaterial: ReservationConfirmViewMaterial(
+                                    viewModel: ReservationViewModel(
+                                        studio: productDetailViewModel.studio,
+                                        studioDetail: productDetailViewModel.studioDetail,
+                                        product: productDetailViewModel.product,
+                                        productDetail: productDetailViewModel.tempProductDetail,
+                                        productOptions: productDetailViewModel.selectedProductOptionArray,
+                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                        totalPrice: productDetailViewModel.totalPrice,
+                                        addPeopleCount: productDetailViewModel.addPeopleCount
+                                    ),
+                                    tempViewModel: TempReservationViewModel(
+                                        studio: productDetailViewModel.studio,
+                                        studioDetail: productDetailViewModel.studioDetail,
+                                        product: productDetailViewModel.product,
+                                        productDetail: productDetailViewModel.tempProductDetail,
+                                        productOptions: productDetailViewModel.selectedProductOptionArray,
+                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                        totalPrice: productDetailViewModel.totalPrice,
+                                        addPeopleCount: productDetailViewModel.addPeopleCount
+                                    )
+                                )
+                            )
                     } else {
                         isShowingLoginView.toggle()
                     }

@@ -96,7 +96,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                         Button {
                             navigationManager.appendPath(
                                 viewType: .reservationDetailView,
-                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation))
+                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation), tempViewModel: TempReservationDetailViewModel(reservation: reservation))
                             )
                         } label: {
                             ReservationRow(reservation: reservation)

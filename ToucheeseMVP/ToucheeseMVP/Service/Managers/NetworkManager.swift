@@ -600,6 +600,13 @@ final class NetworkManager {
         return result
     }
     
+    func postReservationInstant(reservation: ReservationInstantRequest) async throws -> ReservationInstantEntity {
+        let fetchRequest = Network.reservationInstantType(reservation)
+        let result = try await performRequest(fetchRequest, decodingType: ReservationInstantEntity.self)
+    
+        return result
+    }
+
     // 카카오 로그인 Wrapping
     // @MainActor
     func loginWithKakaoTalk() async throws -> OAuthToken {

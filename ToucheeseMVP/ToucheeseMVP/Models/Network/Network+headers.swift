@@ -76,6 +76,16 @@ extension Network {
             let headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             return headers
+            
+        case .reservationInstantType:
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            guard let token = TempAuthenticationManager.shared.accessToken else { return headers }
+
+            headers["Authorization"] =
+            "Bearer \(token)"
+            
+            return headers
         }
     }
 }
