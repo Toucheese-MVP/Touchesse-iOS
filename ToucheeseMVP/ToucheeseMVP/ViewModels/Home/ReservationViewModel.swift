@@ -102,21 +102,23 @@ final class ReservationViewModel: ObservableObject {
             addPeopleCnt: addPeopleCount
         )
         
-        do {
-            reservationResponseData = try await networkmanager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken
-            ) { [unowned self] token in
-                return try await networkmanager.postStudioReservation(
-                    reservationRequest: reservationRequestType,
-                    accessToken: token
-                )
-            }
-        } catch NetworkError.unauthorized {
-            print("requestStudioReservation Error: AccessToken is expired")
-            await authManager.logout()
-        } catch {
-            print("requestStudioReservation Error: \(error.localizedDescription)")
-        }
+        // MARK: 예약 로직을 적용해야 함
+        
+//        do {
+//            reservationResponseData = try await networkmanager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken
+//            ) { [unowned self] token in
+//                return try await networkmanager.postStudioReservation(
+//                    reservationRequest: reservationRequestType,
+//                    accessToken: token
+//                )
+//            }
+//        } catch NetworkError.unauthorized {
+//            print("requestStudioReservation Error: AccessToken is expired")
+//            await authManager.logout()
+//        } catch {
+//            print("requestStudioReservation Error: \(error.localizedDescription)")
+//        }
     }
 }
