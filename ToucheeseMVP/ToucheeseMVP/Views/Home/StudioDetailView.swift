@@ -135,7 +135,8 @@ struct StudioDetailView: View {
         }
         .animation(.easeInOut, value: isExpanded)
         .fullScreenCover(isPresented: $isShowingLoginView) {
-            LogInView(isPresented: $isShowingLoginView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLoginView)
         }
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(

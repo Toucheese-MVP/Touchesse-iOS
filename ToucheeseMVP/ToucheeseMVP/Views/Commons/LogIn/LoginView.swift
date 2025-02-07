@@ -1,18 +1,20 @@
 //
-//  LogInView.swift
-//  TOUCHEESE
+//  TempLoginView.swift
+//  ToucheeseMVP
 //
-//  Created by 김성민 on 12/22/24.
+//  Created by Healthy on 1/20/25.
 //
+
+import Foundation
 
 import SwiftUI
 import AuthenticationServices
 
-struct LogInView: View {
+struct LoginView<ViewModel: LoginViewModelProtocol>: View {
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
-    
-    private let viewModel: LogInViewModel = LogInViewModel()
+   
+    @ObservedObject var TviewModel: ViewModel
     
     @Binding var isPresented: Bool
     
@@ -38,14 +40,16 @@ struct LogInView: View {
                 VStack(spacing: 8) {
                     Button {
                         Task {
-                            await viewModel.loginWithKakaotalk()
-                            await viewModel.handleAuthorizationWithKakao {
-                                await studioLikeListViewModel.fetchLikedStudios()
-                                await reservationListViewModel.fetchReservations()
-                                await reservationListViewModel.fetchPastReservations()
-                            }
-                            
+                            await TviewModel.handleKakaoTalkLogin()
                             isPresented.toggle()
+                            
+//                            await viewModel.loginWithKakaotalk()
+//                            await viewModel.handleAuthorizationWithKakao {
+//                                await studioLikeListViewModel.fetchLikedStudios()
+//                                await reservationListViewModel.fetchReservations()
+//                                await reservationListViewModel.fetchPastReservations()
+//                            }
+                            
                         }
                     } label: {
                         Image(.kakaoLoginButton)
@@ -55,19 +59,20 @@ struct LogInView: View {
                     
                     
                     SignInWithAppleButton { request in
-                        request.requestedScopes = []
+                        request.requestedScopes = [.fullName, .email]
                     } onCompletion: { result in
                         switch result {
                         case .success(let authResults):
                             print("Apple Authorization successful.")
                             Task {
-                                await viewModel.handleAuthorizationWithApple(authResults) {
-                                    await studioLikeListViewModel.fetchLikedStudios()
-                                    await reservationListViewModel.fetchReservations()
-                                    await reservationListViewModel.fetchPastReservations()
-                                    
-                                    isPresented.toggle()
-                                }
+                                await TviewModel.handleAppleLogin(authResults)
+                                isPresented.toggle()
+                                
+//                                await viewModel.handleAuthorizationWithApple(authResults) {
+//                                    await studioLikeListViewModel.fetchLikedStudios()
+//                                    await reservationListViewModel.fetchReservations()
+//                                    await reservationListViewModel.fetchPastReservations()
+//                                }
                             }
                         case .failure(let error):
                             print("Apple Authorization failed: \(error.localizedDescription)")
@@ -103,5 +108,5 @@ struct LogInView: View {
 }
 
 #Preview {
-    LogInView(isPresented: .constant(true))
+    LoginView(TviewModel: LogInViewModel(), isPresented: .constant(true))
 }

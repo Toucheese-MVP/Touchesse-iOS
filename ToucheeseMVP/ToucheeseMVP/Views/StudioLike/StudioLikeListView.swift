@@ -74,7 +74,8 @@ struct StudioLikeListView: View {
             }
         }
         .fullScreenCover(isPresented: $isShowingLogInView) {
-            LogInView(isPresented: $isShowingLogInView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLogInView)
         }
         .customNavigationBar {
             Text("찜 목록")

@@ -52,8 +52,8 @@ struct HomeConceptView: View {
                 .frame(width: 325)
         }
         .fullScreenCover(isPresented: $isShowingLoginView) {
-            TempLoginView(
-                TviewModel: TempLogInViewModel(),
+            LoginView(
+                TviewModel: LogInViewModel(),
                 isPresented: $isShowingLoginView
             )
         }

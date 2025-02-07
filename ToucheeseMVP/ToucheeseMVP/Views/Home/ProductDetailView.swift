@@ -109,7 +109,8 @@ struct ProductDetailView: View {
             
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
-            LogInView(isPresented: $isShowingLoginView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLoginView)
         })
     }
     

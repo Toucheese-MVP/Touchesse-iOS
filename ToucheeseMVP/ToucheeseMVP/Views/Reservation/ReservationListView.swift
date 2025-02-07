@@ -60,7 +60,8 @@ struct ReservationListView: View {
         }
         .padding(.horizontal)
         .fullScreenCover(isPresented: $isShowingLogInView) {
-            LogInView(isPresented: $isShowingLogInView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLogInView)
         }
         .customNavigationBar {
             Text("예약 내역")

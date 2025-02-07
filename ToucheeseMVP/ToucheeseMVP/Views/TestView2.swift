@@ -32,7 +32,8 @@ struct TestView2: View {
             Spacer()
         }
         .fullScreenCover(isPresented: $isShowingLogInView) {
-            LogInView(isPresented: $isShowingLogInView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLogInView)
         }
     }
 }

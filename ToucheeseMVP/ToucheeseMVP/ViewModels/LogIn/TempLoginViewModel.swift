@@ -18,7 +18,7 @@ protocol LoginViewModelProtocol: ObservableObject {
     func handleAppleLogin(_ authResults: ASAuthorization) async
 }
 
-final class TempLogInViewModel: LoginViewModelProtocol {
+final class LogInViewModel: LoginViewModelProtocol {
     // MARK: - Datas
     private let networkManager = NetworkManager.shared
     private let authManager = TempAuthenticationManager.shared
