@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// MARK: 커스텀 네비게이션 컨트롤러 사용을 위한 확장자
 extension View {
     func customNavigationBar<C>(
         centerView: @escaping (() -> C)

@@ -8,5 +8,6 @@
 import Foundation
 
 extension URL {
+    /// 디폴트 이미지 URL 주소
     static let defaultImageURL = URL(string: "https://imgur.com/YJaYOeA.png")!
 }
