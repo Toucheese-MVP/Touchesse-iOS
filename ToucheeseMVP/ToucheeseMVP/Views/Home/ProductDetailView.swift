@@ -95,7 +95,7 @@ struct ProductDetailView: View {
             })
         .sheet(isPresented: $isCalendarPresented) {
             // 예약할 날짜를 선택하는 캘린더 뷰
-            TempCustomCalendarView(
+            CustomCalendarView(
                 viewModel: CustomCalendarViewModel(
                     studioID: studioId,
                     preSelectedDate: displayDate

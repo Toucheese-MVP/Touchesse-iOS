@@ -1,5 +1,5 @@
 //
-//  TempLoginViewModel.swift
+//  LogInViewModel.swift
 //  ToucheeseMVP
 //
 //  Created by 강건 on 2/1/25.
