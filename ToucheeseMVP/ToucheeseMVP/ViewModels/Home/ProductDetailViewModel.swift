@@ -114,11 +114,12 @@ final class ProductDetailViewModel: ObservableObject {
     
     @MainActor
     func fetchReservableTime(date: Date) async {
-        do {
-            reservableTime = try await networkManager.getReservableTime(studioId: studio.id, date: date).data
-        } catch {
-            print("Fetch ProductDetail Error: \(error.localizedDescription)")
-        }
+        // TODO: 예약 가능한 시간을 불러오는 로직을 적용해야 함
+//        do {
+//            reservableTime = try await networkManager.getReservableTime(studioId: studio.id, date: date).data
+//        } catch {
+//            print("Fetch ProductDetail Error: \(error.localizedDescription)")
+//        }
     }
     
     /// 상품의 총 가격을 계산하는 함수

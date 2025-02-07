@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TempCustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
+struct CustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @ObservedObject var detailViewModel: ProductDetailViewModel
     

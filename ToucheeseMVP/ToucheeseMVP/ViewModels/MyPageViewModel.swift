@@ -78,75 +78,82 @@ final class MyPageViewModel: ObservableObject {
     
     /// 로그아웃
     func logout() async {
-        guard authManager.authStatus == .authenticated else { return }
+        // TODO: 로그아웃 로직을 적용해야함
+
         
-        do {
-            _ = try await networkManager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken
-            ) { [self] token in
-                try await networkManager.postLogout(accessToken: token)
-            }
-            
-            await authManager.logout()
-        } catch NetworkError.unauthorized {
-            print("Logout Error: Refresh Token Expired.")
-            await authManager.logout()
-        } catch {
-            print("Logout Error: \(error.localizedDescription)")
-        }
+//        guard authManager.authStatus == .authenticated else { return }
+//        
+//        do {
+//            _ = try await networkManager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken
+//            ) { [self] token in
+//                // try await networkManager.postLogout(accessToken: token)
+//            }
+//            
+//            await authManager.logout()
+//        } catch NetworkError.unauthorized {
+//            print("Logout Error: Refresh Token Expired.")
+//            await authManager.logout()
+//        } catch {
+//            print("Logout Error: \(error.localizedDescription)")
+//        }
     }
     
     /// 회원탈퇴
     func withdrawal() async {
-        guard authManager.authStatus == .authenticated else { return }
-        
-        do {
-            _ = try await networkManager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken
-            ) { [self] token in
-                try await networkManager.postWithdrawal(accessToken: token)
-            }
-            
-            await authManager.withdrawal()
-        } catch NetworkError.unauthorized {
-            print("Withdrawal Error: Refresh Token Expired.")
-            await authManager.withdrawal()
-        } catch {
-            print("Withdrawal Error: \(error.localizedDescription)")
-        }
+        // TODO: 회원 탈퇴 로직을 적용해야함
+//        guard authManager.authStatus == .authenticated else { return }
+//        
+//        do {
+//            _ = try await networkManager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken
+//            ) { [self] token in
+//
+//                // try await networkManager.postWithdrawal(accessToken: token)
+//            }
+//            
+//            await authManager.withdrawal()
+//        } catch NetworkError.unauthorized {
+//            print("Withdrawal Error: Refresh Token Expired.")
+//            await authManager.withdrawal()
+//        } catch {
+//            print("Withdrawal Error: \(error.localizedDescription)")
+//        }
     }
     
     @MainActor
     func changeNickname(newName: String) async {
-        guard authManager.authStatus == .authenticated else { return }
-        
-        do {
-            _ = try await networkManager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken
-            ) { [self] token in
-                if let memberId = authManager.memberId {
-                    let nicknameChangeRequest = NicknameChangeRequest(
-                        accessToken: token,
-                        memberId: memberId,
-                        newName: newName
-                    )
-                    
-                    try await networkManager.putNicknameChange(nicknameChangeRequest)
-                    
-                    authManager.memberNickname = newName
-                } else {
-                    print("Nickname Change Error: memberID is nil")
-                    authManager.logout()
-                }
-            }
-        } catch NetworkError.unauthorized {
-            print("Nickname Change Error: Refresh Token Expired.")
-            authManager.logout()
-        } catch {
-            print("Nickname Change Error: \(error.localizedDescription)")
-        }
+        // TODO: 닉네임 변경 로직을 적용해야함
+
+//        guard authManager.authStatus == .authenticated else { return }
+//        
+//        do {
+//            _ = try await networkManager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken
+//            ) { [self] token in
+//                if let memberId = authManager.memberId {
+//                    let nicknameChangeRequest = NicknameChangeRequest(
+//                        accessToken: token,
+//                        memberId: memberId,
+//                        newName: newName
+//                    )
+//                    
+//                    try await networkManager.putNicknameChange(nicknameChangeRequest)
+//                    
+//                    authManager.memberNickname = newName
+//                } else {
+//                    print("Nickname Change Error: memberID is nil")
+//                    authManager.logout()
+//                }
+//            }
+//        } catch NetworkError.unauthorized {
+//            print("Nickname Change Error: Refresh Token Expired.")
+//            authManager.logout()
+//        } catch {
+//            print("Nickname Change Error: \(error.localizedDescription)")
+//        }
     }
 }

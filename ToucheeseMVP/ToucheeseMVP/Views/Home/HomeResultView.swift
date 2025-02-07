@@ -127,7 +127,8 @@ struct HomeResultView: View {
                 .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $isShowingLoginView) {
-            LogInView(isPresented: $isShowingLoginView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLoginView)
         }
         .onAppear {
             studioListViewModel.selectStudioConcept(conceptId: concept.id)

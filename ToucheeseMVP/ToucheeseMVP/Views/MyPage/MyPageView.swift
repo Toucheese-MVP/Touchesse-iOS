@@ -25,7 +25,7 @@ struct MyPageView: View {
                     if authenticationManager.authStatus == .authenticated {
                         GreetingView(isNicknameEditing: $isNicknameEditing)
                     } else if authenticationManager.authStatus == .notAuthenticated{
-                        LoginView(isShowingLoginView: $isShowingLoginView)
+                        LoginButtonView(isShowingLoginView: $isShowingLoginView)
                     }
                     
                     DividerView(color: .tcGray01, height: 9)
@@ -77,7 +77,8 @@ struct MyPageView: View {
             }
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
-            LogInView(isPresented: $isShowingLoginView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLoginView)
         })
         .onAppear {
             myPageViewModel.calImageCacheUse()
@@ -114,7 +115,7 @@ fileprivate struct GreetingView: View {
     }
 }
 
-fileprivate struct LoginView: View {
+fileprivate struct LoginButtonView: View {
     @Binding var isShowingLoginView: Bool
     
     var body: some View {

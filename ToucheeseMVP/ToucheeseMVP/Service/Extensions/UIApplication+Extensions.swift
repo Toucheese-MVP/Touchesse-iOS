@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// MARK: 화면 터치시 키보드를 내려가게 하기 위한 확장자
 extension UIApplication {
     func hideKeyboard() {
         guard let windowScene = connectedScenes.first as? UIWindowScene,

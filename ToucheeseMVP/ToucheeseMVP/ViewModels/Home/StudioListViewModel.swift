@@ -245,28 +245,29 @@ final class StudioListViewModel: ObservableObject {
             return
         }
         
-        do {
-            _ = try await networkManager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken) { [unowned self] token in
-                    if let memberId = authManager.memberId {
-                        let studioLikeRelationRequest = StudioLikeRelationRequest(
-                            accessToken: token,
-                            memberId: memberId,
-                            studioId: studioId
-                        )
-                        
-                        try await networkManager.postStudioLike(studioLikeRelationRequest)
-                    } else {
-                        print("Failed to like studio: Member ID not found")
-                    }
-                }
-        } catch NetworkError.unauthorized {
-            print("Failed to like studio: Refresh token expired")
-            await authManager.logout()
-        } catch {
-            print("Failed to like studio: \(error.localizedDescription)")
-        }
+        // MARK: 찜하기 로직을 적용해야 함
+//        do {
+//            _ = try await networkManager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken) { [unowned self] token in
+//                    if let memberId = authManager.memberId {
+//                        let studioLikeRelationRequest = StudioLikeRelationRequest(
+//                            accessToken: token,
+//                            memberId: memberId,
+//                            studioId: studioId
+//                        )
+//                        
+//                        try await networkManager.postStudioLike(studioLikeRelationRequest)
+//                    } else {
+//                        print("Failed to like studio: Member ID not found")
+//                    }
+//                }
+//        } catch NetworkError.unauthorized {
+//            print("Failed to like studio: Refresh token expired")
+//            await authManager.logout()
+//        } catch {
+//            print("Failed to like studio: \(error.localizedDescription)")
+//        }
     }
     
     func cancelLikeStudio(studioId: Int) async {
@@ -275,28 +276,29 @@ final class StudioListViewModel: ObservableObject {
             return
         }
         
-        do {
-            _ = try await networkManager.performWithTokenRetry(
-                accessToken: authManager.accessToken,
-                refreshToken: authManager.refreshToken
-            ) { [unowned self] token in
-                if let memberId = authManager.memberId {
-                    let studioLikeRelationRequest = StudioLikeRelationRequest(
-                        accessToken: token,
-                        memberId: memberId,
-                        studioId: studioId
-                    )
-                    
-                    try await networkManager.deleteStudioLike(studioLikeRelationRequest)
-                } else {
-                    print("Failed to cancel like studio: Member ID not found")
-                }
-            }
-        } catch NetworkError.unauthorized {
-            print("Failed to cancel like studio: Refresh token expired")
-            await authManager.logout()
-        } catch {
-            print("Failed to cancel like studio: \(error.localizedDescription)")
-        }
+        // MARK: 찜하기 취소 로직을 적용해야 함
+//        do {
+//            _ = try await networkManager.performWithTokenRetry(
+//                accessToken: authManager.accessToken,
+//                refreshToken: authManager.refreshToken
+//            ) { [unowned self] token in
+//                if let memberId = authManager.memberId {
+//                    let studioLikeRelationRequest = StudioLikeRelationRequest(
+//                        accessToken: token,
+//                        memberId: memberId,
+//                        studioId: studioId
+//                    )
+//                    
+//                    try await networkManager.deleteStudioLike(studioLikeRelationRequest)
+//                } else {
+//                    print("Failed to cancel like studio: Member ID not found")
+//                }
+//            }
+//        } catch NetworkError.unauthorized {
+//            print("Failed to cancel like studio: Refresh token expired")
+//            await authManager.logout()
+//        } catch {
+//            print("Failed to cancel like studio: \(error.localizedDescription)")
+//        }
     }
 }

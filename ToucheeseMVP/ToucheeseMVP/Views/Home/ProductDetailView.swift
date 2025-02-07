@@ -12,7 +12,7 @@ struct ProductDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @StateObject var productDetailViewModel: ProductDetailViewModel
 
-    private let tempAuthManager = TempAuthenticationManager.shared
+    private let authManager = AuthenticationManager.shared
     
     @State private var displayDate: Date?
     
@@ -40,7 +40,7 @@ struct ProductDetailView: View {
                 
                 FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
                     
-                    if tempAuthManager.authStatus == .authenticated {
+                    if authManager.authStatus == .authenticated {
                         navigationManager
                             .appendPath(
                                 viewType: .reservationConfirmView,
@@ -95,7 +95,7 @@ struct ProductDetailView: View {
             })
         .sheet(isPresented: $isCalendarPresented) {
             // 예약할 날짜를 선택하는 캘린더 뷰
-            TempCustomCalendarView(
+            CustomCalendarView(
                 viewModel: CustomCalendarViewModel(
                     studioID: studioId,
                     preSelectedDate: displayDate
@@ -109,7 +109,8 @@ struct ProductDetailView: View {
             
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
-            LogInView(isPresented: $isShowingLoginView)
+            LoginView(TviewModel: LogInViewModel(),
+                          isPresented: $isShowingLoginView)
         })
     }
     

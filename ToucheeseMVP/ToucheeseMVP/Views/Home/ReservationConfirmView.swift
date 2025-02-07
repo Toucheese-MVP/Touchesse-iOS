@@ -11,7 +11,7 @@ import Kingfisher
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
-    private let tempAuthenticationManager = TempAuthenticationManager.shared
+    private let authenticationManager = AuthenticationManager.shared
     
     @EnvironmentObject var reservationListViewModel: ReservationListViewModel
     @StateObject var reservationViewModel: ReservationViewModel
@@ -21,7 +21,7 @@ struct ReservationConfirmView: View {
         let studioName = tempReservationViewModel.studio.name
         let address = tempReservationViewModel.studioDetail.address
     
-        let userName = tempAuthenticationManager.memberNickname
+        let userName = authenticationManager.memberNickname
         
         let tempProductOptions = tempReservationViewModel.productOptions
         
