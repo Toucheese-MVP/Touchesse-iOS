@@ -21,7 +21,7 @@ protocol LoginViewModelProtocol: ObservableObject {
 final class LogInViewModel: LoginViewModelProtocol {
     // MARK: - Datas
     private let networkManager = NetworkManager.shared
-    private let authManager = TempAuthenticationManager.shared
+    private let authManager = AuthenticationManager.shared
     private let keychainManager = KeychainManager.shared
 
     // MARK: - Logics

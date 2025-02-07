@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     @EnvironmentObject var studioConceptViewModel: StudioConceptViewModel
-    private var tempAuthenticationManager = TempAuthenticationManager.shared
+    private var authenticationManager = AuthenticationManager.shared
     
     @State private var isShowingLoginView: Bool = false
     
@@ -30,7 +30,7 @@ struct HomeConceptView: View {
             LazyVGrid(columns: columns, spacing:12) {
                 ForEach(studioConceptViewModel.concepts) { concept in
                     Button {
-                        if tempAuthenticationManager.authStatus == .authenticated {
+                        if authenticationManager.authStatus == .authenticated {
                             navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
                         } else {
                             isShowingLoginView.toggle()

@@ -31,7 +31,7 @@ extension Network {
         case .reservationInstantType:
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
-            guard let token = TempAuthenticationManager.shared.accessToken else { return headers }
+            guard let token = AuthenticationManager.shared.accessToken else { return headers }
 
             headers["Authorization"] =
             "Bearer \(token)"

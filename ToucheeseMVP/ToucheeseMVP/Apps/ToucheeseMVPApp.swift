@@ -102,7 +102,6 @@ struct ToucheeseMVPApp: App {
     private let keychainManager = KeychainManager.shared
     private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
-    private let tempAuthManager = TempAuthenticationManager.shared
     
     init() {
         CacheManager.configureKingfisherCache()
@@ -125,7 +124,7 @@ struct ToucheeseMVPApp: App {
                     }
                 })
                 .task {
-                    switch await tempAuthManager.initialCheckAuthStatus() {
+                    switch await authManager.initialCheckAuthStatus() {
                     case .notAuthenticated:
                         print("로그아웃 상태")
                     case .authenticated:

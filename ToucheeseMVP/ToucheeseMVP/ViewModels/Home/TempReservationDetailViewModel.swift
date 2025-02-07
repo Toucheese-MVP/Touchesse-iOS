@@ -10,7 +10,7 @@ import Foundation
 final class TempReservationDetailViewModel: ObservableObject {
     
     let networkManager = NetworkManager.shared
-    let authManager = TempAuthenticationManager.shared
+    let authManager = AuthenticationManager.shared
     
     @Published private(set) var reservation: Reservation
     @Published private(set) var reservationDetail: ReservationDetail = ReservationDetail.sample

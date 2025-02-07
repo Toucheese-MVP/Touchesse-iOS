@@ -9,7 +9,7 @@ import Foundation
 
 final class TempReservationViewModel: ObservableObject {
     let networkmanager = NetworkManager.shared
-    let authManager = TempAuthenticationManager.shared
+    let authManager = AuthenticationManager.shared
     
     let studio: TempStudio
     let studioDetail: StudioDetailEntity

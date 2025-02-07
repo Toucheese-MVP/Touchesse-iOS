@@ -12,7 +12,7 @@ struct ProductDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @StateObject var productDetailViewModel: ProductDetailViewModel
 
-    private let tempAuthManager = TempAuthenticationManager.shared
+    private let authManager = AuthenticationManager.shared
     
     @State private var displayDate: Date?
     
@@ -40,7 +40,7 @@ struct ProductDetailView: View {
                 
                 FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
                     
-                    if tempAuthManager.authStatus == .authenticated {
+                    if authManager.authStatus == .authenticated {
                         navigationManager
                             .appendPath(
                                 viewType: .reservationConfirmView,
