@@ -22,14 +22,14 @@ extension Network {
             return "\(server_url)/v1/studios"
         case .productDetailType:
             return "\(server_url)/v1/products"
-        case .reservationInstantType:
+        case .reservationInstantType, .getReservationType:
             return "\(server_url)/v1/members/reservations"
         case .kakaoLoginType:
             return "\(server_url)/v1/auth/kakao"
         case .appleLoginType:
             return "\(server_url)/v1/auth/apple"
         case .reissueToken:
-            return "\(server_url)/v1/tokens/reissue" 
+            return "\(server_url)/v1/tokens/reissue"
         }
     }
 }

@@ -15,7 +15,7 @@ extension Network {
             return .post
 
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType:
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType, .getReservationType:
             return .get
         case .kakaoLoginType, .appleLoginType, .reissueToken, .reservationInstantType:
             return .post

@@ -84,6 +84,13 @@ extension Network {
             print("\(params)")
             
             return params
+            
+        case .getReservationType:
+            var params: Parameters = [:]
+            //TODO: 페이지네이션 적용하기
+            params["page"] = 1
+            
+            return params
         }
     }
 }

@@ -14,7 +14,7 @@ extension Network {
             return ""
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .kakaoLoginType, .appleLoginType, .reissueToken:
+        case .studioConceptType, .kakaoLoginType, .appleLoginType, .reissueToken, .getReservationType:
             return ""
         case .conceptedStudioListType(let conceptedStudioRequest):
             if conceptedStudioRequest.location == [] && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {

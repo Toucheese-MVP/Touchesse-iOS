@@ -155,6 +155,13 @@ final class NetworkManager {
     
         return result
     }
+    
+    func getReservationList() async throws -> ReservationEntity {
+        let request = Network.getReservationType
+        let result = try await performRequest(request, decodingType: ReservationEntity.self)
+        
+        return result
+    }
 
     // 카카오 로그인 Wrapping
     // @MainActor

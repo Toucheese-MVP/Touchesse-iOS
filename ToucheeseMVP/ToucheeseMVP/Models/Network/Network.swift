@@ -19,11 +19,13 @@ enum Network {
     case studioDetailType(studioID: Int)
     case studioCalendarType(studioID: Int, yearMonth: String?)
     
-    // 상품 상세 조회
+    /// 상품 상세 조회
     case productDetailType(productId: Int)
     
-    // 즉시 예약
+    /// 예약
     case reservationInstantType(ReservationInstantRequest)
+    case getReservationType
+    
     
     /// 카카오 로그인
     case kakaoLoginType(KakaoLoginRequest)
