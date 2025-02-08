@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct ReservationRow: View {
-    let reservation: Reservation
-    private var status: ReservationStatus {
-        ReservationStatus(rawValue: reservation.reservationStatus)!
-    }
+    let reservation: TempReservation
+    //TODO: status 명세 맞추기
+//    private var status: ReservationStatus {
+//        ReservationStatus(rawValue: reservation.status)!
+//    }
     
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             RoundedRectangleProfileImageView(
-                imageURL: reservation.studioProfileImageURL,
+                imageString: reservation.studioImage,
                 size: 74,
                 cornerRadius: 6,
                 downsamplingSize: 150
@@ -30,7 +31,7 @@ struct ReservationRow: View {
                     
                     Spacer()
                     
-                    ReservationStatusView(status)
+//                    ReservationStatusView(status)
                 }
                 
                 Spacer()
@@ -42,7 +43,7 @@ struct ReservationRow: View {
                     
                     Spacer()
                     
-                    Text(reservation.reservationDate.toReservationDateType)
+                    Text(reservation.createDate.toReservationDateType)
                         .font(.pretendardMedium(13))
                         .foregroundStyle(.tcGray08)
                 }
@@ -54,7 +55,7 @@ struct ReservationRow: View {
                     
                     Spacer()
                     
-                    Text(reservation.reservationTimeString)
+                    Text(reservation.createTime)
                         .font(.pretendardMedium(13))
                         .foregroundStyle(.tcGray08)
                 }
@@ -74,13 +75,4 @@ struct ReservationRow: View {
         }
         .frame(height: 106)
     }
-}
-
-#Preview {
-    VStack(spacing: 8) {
-        ReservationRow(reservation: Reservation.sample)
-        ReservationRow(reservation: Reservation.sample)
-        ReservationRow(reservation: Reservation.sample)
-    }
-    .padding()
 }

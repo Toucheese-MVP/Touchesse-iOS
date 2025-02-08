@@ -8,9 +8,11 @@
 import Foundation
 
 protocol ReservationTabViewModelProtocol: ObservableObject {
-    var reservationList: [TempReservation] { get}
+    var reservationList: [TempReservation] { get }
+    
     /// 예약 리스트 불러오기
     func getReservationList() async
+  
 }
 
 final class TempReservationListViewModel: ReservationTabViewModelProtocol {

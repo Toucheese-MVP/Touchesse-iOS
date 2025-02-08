@@ -7,13 +7,15 @@
 
 import Foundation
 
-final class TempReservationDetailViewModel: ObservableObject {
-    
+protocol ReservationDetailViewModelProtocol: ObservableObject {
+    var reservation: TempReservation { get }
+}
+
+final class TempReservationDetailViewModel: ReservationDetailViewModelProtocol {
     let networkManager = NetworkManager.shared
     let authManager = AuthenticationManager.shared
     
     @Published private(set) var reservation: TempReservation
-    @Published private(set) var reservationDetail: ReservationDetail = ReservationDetail.sample
     @Published private(set) var reservedStudio: TempStudio = TempStudio.sample
     
     init(reservation: TempReservation) {
@@ -34,18 +36,6 @@ final class TempReservationDetailViewModel: ObservableObject {
         default:
             false
         }
-    }
-    
-    @MainActor
-    func fetchReservationDetail(reservationID: Int) async {
-        // TODO: 예약 상세를 불러오는 로직을 적용해야 함
-//        do {
-//            reservationDetail = try await networkManager.getReservationDetailData(
-//                reservationID: reservationID
-//            )
-//        } catch {
-//            print("ReservationDetail Fetch Error: \(error.localizedDescription)")
-//        }
     }
     
     @MainActor

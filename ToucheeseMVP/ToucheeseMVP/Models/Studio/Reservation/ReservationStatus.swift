@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUICore
-
+//TODO: BE랑 명세 맞추기
 enum ReservationStatus: String, CaseIterable {
     case waiting
     case confirm

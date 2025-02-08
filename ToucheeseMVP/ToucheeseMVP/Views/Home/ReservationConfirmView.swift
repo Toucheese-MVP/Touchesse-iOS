@@ -45,7 +45,6 @@ struct ReservationConfirmView: View {
                     studioName: studioName,
                     studioAddress: address,
                     reservationStatus: .waiting,
-                    userName: userName ?? "",
                     reservationDateString: reservationDateString,
                     reservationTimeString: reservationTimeString
                 )
@@ -133,7 +132,7 @@ struct ReservationProductView: View {
     let productName: String
     let productPriceString: String
     let productOptions: [OptionEntity]
-    let peopleCount: Int
+    let peopleCount: Int?
     
     var body: some View {
         VStack {
@@ -156,14 +155,16 @@ struct ReservationProductView: View {
                         }
                         .padding(.bottom, 4)
                         
-                        HStack {
-                            Text("예약인원")
-                                .font(.pretendardRegular14)
-                            Spacer()
-                            Text("\(peopleCount)명")
-                                .font(.pretendardRegular14)
+                        if let peopleCount {
+                            HStack {
+                                Text("예약인원")
+                                    .font(.pretendardRegular14)
+                                Spacer()
+                                Text("\(peopleCount)명")
+                                    .font(.pretendardRegular14)
+                            }
+                            .foregroundStyle(.tcGray08)
                         }
-                        .foregroundStyle(.tcGray08)
                         
                         VStack(spacing: 0) {
                             ForEach(productOptions.indices, id: \.self) { index in

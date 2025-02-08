@@ -9,9 +9,8 @@ import SwiftUI
 
 struct ReservationInfoView: View {
     let studioName: String
-    let studioAddress: String
+    let studioAddress: String?
     let reservationStatus: ReservationStatus
-    let userName: String
     let reservationDateString: String
     let reservationTimeString: String
     
@@ -36,28 +35,30 @@ struct ReservationInfoView: View {
                                 }
                                 .padding(.bottom, 8)
                                 
-                                RoundedRectangle(cornerRadius: 6)
-                                    .foregroundStyle(.tcGray01)
-                                    .frame(height: 36)
-                                    .overlay {
-                                        HStack {
-                                            Image(.tcLocationPin)
-                                                .frame(width: 16, height: 16)
-                                            
-                                            Text(studioAddress)
-                                                .font(.pretendardMedium13)
-                                                .foregroundStyle(.tcGray06)
-                                            
-                                            Spacer()
+                                if let studioAddress {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .foregroundStyle(.tcGray01)
+                                        .frame(height: 36)
+                                        .overlay {
+                                            HStack {
+                                                Image(.tcLocationPin)
+                                                    .frame(width: 16, height: 16)
+                                                
+                                                Text(studioAddress)
+                                                    .font(.pretendardMedium13)
+                                                    .foregroundStyle(.tcGray06)
+                                                
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal, 8)
                                         }
-                                        .padding(.horizontal, 8)
-                                    }
+                                }
                                 
                                 DividerView(color: .tcGray02)
                                     .padding(.vertical, 4)
                                 
                                 VStack(spacing: 8) {
-                                    horizontalPaddingTextView(leadingText: "예약자 성함", trailingText: userName)
+                                    horizontalPaddingTextView(leadingText: "예약자 성함", trailingText: AuthenticationManager.shared.memberNickname ?? "")
                                     
                                     horizontalPaddingTextView(leadingText: "예약 날짜", trailingText: reservationDateString)
                                     
@@ -94,7 +95,6 @@ struct ReservationInfoView: View {
         studioName: "유프스튜디오",
         studioAddress: "서울 성동구 아차산로 97",
         reservationStatus: .waiting,
-        userName: "김마루",
         reservationDateString: "2024년 12월 13일",
         reservationTimeString: "오후 01:00"
     )

@@ -9,13 +9,7 @@ import SwiftUI
 
 struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    
     @ObservedObject var viewModel: ViewModel
-    
-    @Namespace private var namespace
-    
-    @State private var selectedIndex = 0
-    @State private var activeTab: SegmentedTab = .reservation
     
     @State private var isShowingLogInView = false
     
@@ -28,38 +22,17 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                     isShowingLogInView.toggle()
                 })
             } else {
-                ReservationCustomSegmentedControl(
-                    tabs: SegmentedTab.allCases,
-                    activeTab: $activeTab,
-                    namespace: namespace
-                )
-                .padding(.top, 11)
+                FilteredReservationListView(
+                    viewModel: viewModel
+                ) {
+                    CustomEmptyView(viewType: .reservation)
+                } refreshAction: {
+                    Task {
+                        await viewModel.getReservationList()
+                    }
+                }
                 .task {
                     await viewModel.getReservationList()
-                }
-                
-                switch activeTab {
-                case .reservation:
-                    FilteredReservationListView(
-                        viewModel: viewModel
-                    ) {
-                        CustomEmptyView(viewType: .reservation)
-                    } refreshAction: {
-                        Task {
-                            await viewModel.getReservationList()
-                        }
-                    }
-                case .history:
-                    Text("history")
-//                    FilteredReservationListView(
-//                        reservations: viewModel.pastReservations
-//                    ) {
-//                        CustomEmptyView(viewType: .pastReservation)
-//                    } refreshAction: {
-//                        Task {
-//                            await viewModel.fetchPastReservations()
-//                        }
-//                    }
                 }
             }
         }
@@ -72,12 +45,11 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
         }
-        .onChange(of: isShowingLogInView) { _ in
-            Task {
-                await viewModel.getReservationList()
-//                await viewModel.fetchPastReservations()
-            }
-        }
+//        .onChange(of: isShowingLogInView) { _ in
+//            Task {
+//                await viewModel.getReservationList()
+//            }
+//        }
     }
     
     struct FilteredReservationListView<Content>: View where Content: View {
@@ -103,7 +75,7 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                                     viewMaterial: ReservationDetailViewMaterial(viewModel: TempReservationDetailViewModel(reservation: reservation))
                                 )
                             } label: {
-//                                ReservationRow(reservation: reservation)
+                                ReservationRow(reservation: reservation)
                             }
                         }
                     }
@@ -120,6 +92,8 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     }
 
 }
+
+// 혹시 몰라서 남겨두는 레거시 코드
 
 fileprivate struct ReservationCustomSegmentedControl: View {
     var tabs: [SegmentedTab]

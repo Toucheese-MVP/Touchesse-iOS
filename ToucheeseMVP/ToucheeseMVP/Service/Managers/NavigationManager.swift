@@ -81,7 +81,7 @@ final class NavigationManager: ObservableObject {
             ReservationCompleteView()
             
         case .reservationDetailView:
-            ReservationDetailView(tempViewModel: self.reservationDetailViewMaterial!.viewModel)
+            ReservationDetailView(viewModel: TempReservationDetailViewModel(reservation: .init(reservationId: 0, studioId: 0, studioName: "", studioImage: "", productName: "", createDate: "", createTime: "", status: "")))
         }
     }
     

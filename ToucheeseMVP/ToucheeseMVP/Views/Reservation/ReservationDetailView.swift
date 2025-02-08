@@ -7,59 +7,50 @@
 
 import SwiftUI
 
-struct ReservationDetailView: View {
+struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: View {
+    private let authManager = AuthenticationManager.shared
     @EnvironmentObject private var navigationManager: NavigationManager
-//    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
-//    @StateObject var viewModel: ReservationDetailViewModel
-    @StateObject var tempViewModel: TempReservationDetailViewModel
+    @ObservedObject var viewModel: ViewModel
     
     @State private var isShowingReservationCancelAlert = false
     @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
     
     var body: some View {
-//        let reservation = viewModel.reservation
-//        let reservationDetail = viewModel.reservationDetail
-        
-        let tempReservation = tempViewModel.reservation
-        let tempReservationDetail = tempViewModel.reservationDetail
         
         ZStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
                     // 예약 정보
                     ReservationInfoView(
-                        studioName: tempReservation.studioName,
-                        studioAddress: tempReservationDetail.studioAddress,
-                        reservationStatus: ReservationStatus(rawValue: tempReservation.status) ?? .waiting,
-                        userName: tempReservationDetail.memberName,
-                        reservationDateString: tempReservation.createDate.toReservationDateType,
-                        reservationTimeString: tempReservation.createTime
+                        studioName: viewModel.reservation.studioName,
+                        studioAddress: nil,
+                        reservationStatus: ReservationStatus(rawValue: viewModel.reservation.status) ?? .waiting,
+                        reservationDateString: viewModel.reservation.createDate.toReservationDateType,
+                        reservationTimeString: viewModel.reservation.createTime
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
                     // 주문 상품
                     ReservationProductView(
-                        studioName: tempReservation.studioName,
-                        productName: tempReservationDetail.productName,
-//                        productImageURL: reservationDetail.productImageURL,
+                        studioName: viewModel.reservation.studioName,
+                        productName: viewModel.reservation.productName,
                         //TODO: detail viewmodel 고치기
                         productPriceString: "",
                         //TODO: detail viewmodel 고치기
                         productOptions: [],
-                        peopleCount: 1
-//                        addPeopleCount: reservationDetail.addPeopleCnt,
-//                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat
+                        peopleCount: nil
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
+                    //TODO: 예약자 정보에 phone 받을지 상의하기
                     // 예약자 정보
-//                    userInfoView(
-//                        userEmail: reservationDetail.memberEmail,
-//                        userPhoneNumber: reservationDetail.phoneNumber
-//                    )
+                    userInfoView(
+                        userEmail: authManager.memberEmail ?? "",
+                        userPhoneNumber: ""
+                    )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
@@ -88,13 +79,13 @@ struct ReservationDetailView: View {
 //                            )
                         }
                         
-                        if tempViewModel.isShowingReservationCancelButton() {
-                            StrokeBottomButton(title: "예약 취소하기") {
-                                withAnimation(.easeOut(duration: 0.15)) {
-                                    isShowingReservationCancelAlert.toggle()
-                                }
-                            }
-                        }
+//                        if tempViewModel.isShowingReservationCancelButton() {
+//                            StrokeBottomButton(title: "예약 취소하기") {
+//                                withAnimation(.easeOut(duration: 0.15)) {
+//                                    isShowingReservationCancelAlert.toggle()
+//                                }
+//                            }
+//                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 21)
