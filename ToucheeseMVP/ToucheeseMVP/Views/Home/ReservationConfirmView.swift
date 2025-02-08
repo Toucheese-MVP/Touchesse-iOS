@@ -13,7 +13,7 @@ struct ReservationConfirmView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     private let authenticationManager = AuthenticationManager.shared
     
-    @EnvironmentObject var reservationListViewModel: ReservationListViewModel
+//    @EnvironmentObject var reservationListViewModel: ReservationListViewModel
     @StateObject var reservationViewModel: ReservationViewModel
     @StateObject var tempReservationViewModel: TempReservationViewModel
     
@@ -88,7 +88,7 @@ struct ReservationConfirmView: View {
                         tempReservationViewModel.setIsReserving()
                         
                         Task {
-                            let result = await tempReservationViewModel.requestStudioReservation()
+                            let result = await tempReservationViewModel.postInstantReservation()
 //
 //                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
 //                            if reservationViewModel.reservationResponseData?.statusCode == 200 {

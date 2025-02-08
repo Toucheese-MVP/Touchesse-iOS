@@ -12,7 +12,7 @@ import AuthenticationServices
 
 struct LoginView<ViewModel: LoginViewModelProtocol>: View {
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
-    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
+//    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
    
     @ObservedObject var TviewModel: ViewModel
     

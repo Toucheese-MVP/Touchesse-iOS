@@ -20,7 +20,7 @@ extension Network {
             return params
 
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType:
+        case .studioConceptType, .studioDetailType, .studioCalendarType, .productDetailType, .getReservationType:
             return [:]
         case .conceptedStudioListType(let conceptedStudioRequest):
             var params: Parameters = [:]
@@ -82,13 +82,6 @@ extension Network {
             params["addOptions"] = request.addOptions
             
             print("\(params)")
-            
-            return params
-            
-        case .getReservationType:
-            var params: Parameters = [:]
-            //TODO: 페이지네이션 적용하기
-            params["page"] = 1
             
             return params
         }

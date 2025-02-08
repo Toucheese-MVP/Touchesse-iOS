@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct ReservationListView: View {
+struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject private var viewModel: ReservationListViewModel
+    
+    @ObservedObject var viewModel: ViewModel
     
     @Namespace private var namespace
     
@@ -33,28 +34,32 @@ struct ReservationListView: View {
                     namespace: namespace
                 )
                 .padding(.top, 11)
+                .task {
+                    await viewModel.getReservationList()
+                }
                 
                 switch activeTab {
                 case .reservation:
                     FilteredReservationListView(
-                        reservations: viewModel.reservations
+                        viewModel: viewModel
                     ) {
                         CustomEmptyView(viewType: .reservation)
                     } refreshAction: {
                         Task {
-                            await viewModel.fetchReservations()
+                            await viewModel.getReservationList()
                         }
                     }
                 case .history:
-                    FilteredReservationListView(
-                        reservations: viewModel.pastReservations
-                    ) {
-                        CustomEmptyView(viewType: .pastReservation)
-                    } refreshAction: {
-                        Task {
-                            await viewModel.fetchPastReservations()
-                        }
-                    }
+                    Text("history")
+//                    FilteredReservationListView(
+//                        reservations: viewModel.pastReservations
+//                    ) {
+//                        CustomEmptyView(viewType: .pastReservation)
+//                    } refreshAction: {
+//                        Task {
+//                            await viewModel.fetchPastReservations()
+//                        }
+//                    }
                 }
             }
         }
@@ -69,53 +74,52 @@ struct ReservationListView: View {
         }
         .onChange(of: isShowingLogInView) { _ in
             Task {
-                await viewModel.fetchReservations()
-                await viewModel.fetchPastReservations()
+                await viewModel.getReservationList()
+//                await viewModel.fetchPastReservations()
             }
         }
     }
-}
-
-
-fileprivate struct FilteredReservationListView<Content>: View where Content: View {
-    @EnvironmentObject private var navigationManager: NavigationManager
     
-    var reservations: [Reservation]
-    @ViewBuilder let emptyView: Content
-    let refreshAction: () -> Void
-    
-    var body: some View {
-        if reservations.isEmpty {
-            emptyView
-        } else {
-            ScrollView(.vertical, showsIndicators: false) {
-                Color.clear
-                    .frame(height: 20)
-                
-                LazyVStack(spacing: 8) {
-                    ForEach(reservations) { reservation in
-                        Button {
-                            navigationManager.appendPath(
-                                viewType: .reservationDetailView,
-                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation), tempViewModel: TempReservationDetailViewModel(reservation: reservation))
-                            )
-                        } label: {
-                            ReservationRow(reservation: reservation)
+    struct FilteredReservationListView<Content>: View where Content: View {
+        @EnvironmentObject private var navigationManager: NavigationManager
+        @ObservedObject var viewModel: ViewModel
+
+        @ViewBuilder let emptyView: Content
+        let refreshAction: () -> Void
+        
+        var body: some View {
+            if viewModel.reservationList.isEmpty {
+                emptyView
+            } else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    Color.clear
+                        .frame(height: 20)
+                    
+                    LazyVStack(spacing: 8) {
+                        ForEach(viewModel.reservationList, id:\.self) { reservation in
+                            Button {
+                                navigationManager.appendPath(
+                                    viewType: .reservationDetailView,
+                                    viewMaterial: ReservationDetailViewMaterial(viewModel: TempReservationDetailViewModel(reservation: reservation))
+                                )
+                            } label: {
+//                                ReservationRow(reservation: reservation)
+                            }
                         }
                     }
+                    
+                    Color.clear
+                        .frame(height: 25)
                 }
-                
-                Color.clear
-                    .frame(height: 25)
+                .refreshable {
+                    refreshAction()
+                }
+                .animation(.easeInOut, value: viewModel.reservationList)
             }
-            .refreshable {
-                refreshAction()
-            }
-            .animation(.easeInOut, value: reservations)
         }
     }
-}
 
+}
 
 fileprivate struct ReservationCustomSegmentedControl: View {
     var tabs: [SegmentedTab]
@@ -159,10 +163,4 @@ fileprivate struct ReservationCustomSegmentedControl: View {
 fileprivate enum SegmentedTab: String, CaseIterable {
     case reservation = "예약 일정"
     case history = "이전 내역"
-}
-
-
-#Preview {
-    ReservationListView()
-        .environmentObject(ReservationListViewModel())
 }

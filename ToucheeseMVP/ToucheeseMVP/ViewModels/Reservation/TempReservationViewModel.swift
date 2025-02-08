@@ -7,9 +7,14 @@
 
 import Foundation
 
-final class TempReservationViewModel: ObservableObject {
-    let networkmanager = NetworkManager.shared
-    let authManager = AuthenticationManager.shared
+protocol ReservationViewModelProtocol {
+    /// 즉시 예약
+    func postInstantReservation() async -> Bool
+}
+
+final class TempReservationViewModel: ObservableObject, ReservationViewModelProtocol {
+    private let networkmanager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
     
     let studio: TempStudio
     let studioDetail: StudioDetailEntity
@@ -19,9 +24,11 @@ final class TempReservationViewModel: ObservableObject {
     let reservationDate: Date
     let totalPrice: Int
     let addPeopleCount: Int
+    
     private(set) var isReserving: Bool = false
 
     @Published var userPhone: String = ""
+    @Published private(set) var reservationList: [TempReservation] = []
     
     var isPhoneLength: Bool {
         userPhone.isPhoneLength
@@ -59,7 +66,9 @@ final class TempReservationViewModel: ObservableObject {
         isReserving = true
     }
     
-    func requestStudioReservation() async -> Bool {
+    //MARK: - Network
+    
+    func postInstantReservation() async -> Bool {
         guard let memberId = authManager.memberId
         else {
             print("memberid nil!")
@@ -92,5 +101,4 @@ final class TempReservationViewModel: ObservableObject {
             return false
         }
     }
-    
 }

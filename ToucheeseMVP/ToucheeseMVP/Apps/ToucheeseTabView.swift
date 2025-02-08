@@ -22,7 +22,7 @@ struct ToucheeseTabView: View {
                 }
             case .reservation:
                 NavigationStack(path: $navigationManager.reservationPath) {
-                    ReservationListView()
+                    ReservationListView(viewModel: TempReservationListViewModel())
                         .navigationDestination(for: ViewType.self) { viewType in
                             navigationManager.buildView(viewType: viewType)
                         }

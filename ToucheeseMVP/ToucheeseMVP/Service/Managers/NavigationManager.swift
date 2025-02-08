@@ -81,7 +81,7 @@ final class NavigationManager: ObservableObject {
             ReservationCompleteView()
             
         case .reservationDetailView:
-            ReservationDetailView(tempViewModel: self.reservationDetailViewMaterial!.tempViewModel)
+            ReservationDetailView(tempViewModel: self.reservationDetailViewMaterial!.viewModel)
         }
     }
     

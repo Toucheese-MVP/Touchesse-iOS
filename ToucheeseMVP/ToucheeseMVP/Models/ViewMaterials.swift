@@ -27,6 +27,5 @@ struct ReservationConfirmViewMaterial: ViewMaterial {
 }
 
 struct ReservationDetailViewMaterial: ViewMaterial {
-    var viewModel: ReservationDetailViewModel
-    var tempViewModel: TempReservationDetailViewModel
+    var viewModel: TempReservationDetailViewModel
 }

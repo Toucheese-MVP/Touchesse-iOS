@@ -91,7 +91,6 @@ extension AppDelegate: MessagingDelegate {
 @main
 struct ToucheeseMVPApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
-    @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
     @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
@@ -112,7 +111,6 @@ struct ToucheeseMVPApp: App {
         WindowGroup {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
-                .environmentObject(reservationListViewModel)
                 .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
                 .environmentObject(studioLikeListViewModel)

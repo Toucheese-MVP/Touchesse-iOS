@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReservationDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
+//    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
 //    @StateObject var viewModel: ReservationDetailViewModel
     @StateObject var tempViewModel: TempReservationDetailViewModel
     
@@ -31,10 +31,10 @@ struct ReservationDetailView: View {
                     ReservationInfoView(
                         studioName: tempReservation.studioName,
                         studioAddress: tempReservationDetail.studioAddress,
-                        reservationStatus: ReservationStatus(rawValue: tempReservation.reservationStatus) ?? .waiting,
+                        reservationStatus: ReservationStatus(rawValue: tempReservation.status) ?? .waiting,
                         userName: tempReservationDetail.memberName,
-                        reservationDateString: tempReservation.reservationDate.toReservationDateType,
-                        reservationTimeString: tempReservation.reservationTimeString
+                        reservationDateString: tempReservation.createDate.toReservationDateType,
+                        reservationTimeString: tempReservation.createTime
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
@@ -126,9 +126,9 @@ struct ReservationDetailView: View {
                     isShowingReservationCancelCompleteAlert.toggle()
                     
                     Task {
-                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
-                        await reservationListViewModel.fetchReservations()
-                        await reservationListViewModel.fetchPastReservations()
+//                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
+//                        await reservationListViewModel.fetchReservations()
+//                        await reservationListViewModel.fetchPastReservations()
                     }
                 }
             }

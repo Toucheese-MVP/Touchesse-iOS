@@ -17,7 +17,7 @@ struct ReservationEntity: Decodable {
     let size: Int
 }
 
-struct TempReservation: Decodable {
+struct TempReservation: Decodable, Hashable {
     let reservationId: Int
     let studioId: Int
     let studioName: String

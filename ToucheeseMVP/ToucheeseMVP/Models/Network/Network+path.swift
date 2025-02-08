@@ -14,7 +14,7 @@ extension Network {
             return ""
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .kakaoLoginType, .appleLoginType, .reissueToken, .getReservationType:
+        case .studioConceptType, .kakaoLoginType, .appleLoginType, .reissueToken:
             return ""
         case .conceptedStudioListType(let conceptedStudioRequest):
             if conceptedStudioRequest.location == [] && conceptedStudioRequest.price == nil && conceptedStudioRequest.rating == nil {
@@ -30,6 +30,8 @@ extension Network {
             return "/\(productId)"
         case .reservationInstantType:
             return "/instant"
+        case .getReservationType:
+            return "?page=0"
         }
     }
 }

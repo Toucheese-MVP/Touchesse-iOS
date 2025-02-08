@@ -12,11 +12,11 @@ final class TempReservationDetailViewModel: ObservableObject {
     let networkManager = NetworkManager.shared
     let authManager = AuthenticationManager.shared
     
-    @Published private(set) var reservation: Reservation
+    @Published private(set) var reservation: TempReservation
     @Published private(set) var reservationDetail: ReservationDetail = ReservationDetail.sample
     @Published private(set) var reservedStudio: TempStudio = TempStudio.sample
     
-    init(reservation: Reservation) {
+    init(reservation: TempReservation) {
         self.reservation = reservation
         
         Task {
@@ -26,7 +26,7 @@ final class TempReservationDetailViewModel: ObservableObject {
     }
     
     func isShowingReservationCancelButton() -> Bool {
-        switch reservation.reservationStatus {
+        switch reservation.status {
         case ReservationStatus.complete.rawValue, ReservationStatus.cancel.rawValue:
             false
         case ReservationStatus.waiting.rawValue, ReservationStatus.confirm.rawValue:

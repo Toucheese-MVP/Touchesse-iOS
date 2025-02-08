@@ -51,6 +51,7 @@ final class NetworkManager {
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
         print("\(url)")
+        print("token: \(AuthenticationManager.shared.accessToken)")
         
         let request = AF.request(
             url,
@@ -64,6 +65,7 @@ final class NetworkManager {
             .serializingData()
             .response
         
+        print("statusCode: \(response.response?.statusCode)")
         guard let statusCode = response.response?.statusCode else {
             throw NetworkError.unknown
         }
@@ -156,7 +158,7 @@ final class NetworkManager {
         return result
     }
     
-    func getReservationList() async throws -> ReservationEntity {
+    func getReservations() async throws -> ReservationEntity {
         let request = Network.getReservationType
         let result = try await performRequest(request, decodingType: ReservationEntity.self)
         
