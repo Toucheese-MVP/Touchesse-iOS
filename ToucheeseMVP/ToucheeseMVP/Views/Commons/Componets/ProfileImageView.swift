@@ -9,24 +9,19 @@ import SwiftUI
 import Kingfisher
 
 struct ProfileImageView: View {
-    let imageURL: URL
+    let imageString: String
     let size: CGFloat
     
     var body: some View {
-        KFImage(imageURL)
-            .placeholder { ProgressView() }
-            .resizable()
-            .downsampling(size: CGSize(width: 150, height: 150))
-            .fade(duration: 0.25)
-            .aspectRatio(contentMode: .fill)
-            .frame(width: size, height: size)
-            .clipShape(.circle)
+        if let url = URL(string: imageString) {
+            KFImage(url)
+                .placeholder { ProgressView() }
+                .resizable()
+                .downsampling(size: CGSize(width: 150, height: 150))
+                .fade(duration: 0.25)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: size, height: size)
+                .clipShape(.circle)
+        }
     }
-}
-
-#Preview {
-    ProfileImageView(
-        imageURL: URL(string: "https://i.imgur.com/aXwN6fF.jpeg")!,
-        size: 40
-    )
 }

@@ -9,34 +9,20 @@ import SwiftUI
 import Kingfisher
 
 struct ReservationConfirmView: View {
-    // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
     private let authenticationManager = AuthenticationManager.shared
-    
-//    @EnvironmentObject var reservationListViewModel: ReservationListViewModel
-    @StateObject var reservationViewModel: ReservationViewModel
     @StateObject var tempReservationViewModel: TempReservationViewModel
     
     var body: some View {
         let studioName = tempReservationViewModel.studio.name
         let address = tempReservationViewModel.studioDetail.address
-    
-        let userName = authenticationManager.memberNickname
-        
         let tempProductOptions = tempReservationViewModel.productOptions
-        
         let productName = tempReservationViewModel.product.name
-        
         let productPriceString = tempReservationViewModel.product.price.moneyStringFormat
         let totalPriceString = tempReservationViewModel.totalPrice.moneyStringFormat
-        
         let reservationDateString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoDay)
-        
         let reservationTimeString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoTime)
-        
         let addPeopleCount = tempReservationViewModel.addPeopleCount
-        let addPeoplePrice = reservationViewModel.xProductDetail.addPeoplePrice
-        let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -70,15 +56,16 @@ struct ReservationConfirmView: View {
                 // 주문자 정보 입력 뷰
                 DividerView(color: .tcGray01, height: 8)
                 
+                //TODO: 수정하기
                 // 결제 정보 뷰
                 PayInfoView(
                     productName: productName,
                     productPrice: productPriceString,
                     productOptions: tempProductOptions,
                     addPeopleCount: addPeopleCount,
-                    addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원",
+                    addPeoplePriceString: /*addPeoplePrice?.moneyStringFormat ??*/ "0원",
                     totalPriceString: totalPriceString,
-                    addPeopleTotalPriceString: addpeopleTotalPriceString
+                    addPeopleTotalPriceString: /*addpeopleTotalPriceString*/ ""
                 )
                 .padding(.bottom, 31)
                 
@@ -184,24 +171,6 @@ struct ReservationProductView: View {
                                 .frame(height: 18)
                                 .foregroundStyle(.tcGray05)
                             }
-                            
-//                            if addPeopleCount > 0 {
-//                                HStack {
-//                                    Text("ㄴ")
-//                                        .font(.pretendardRegular14)
-//                                        .padding(.trailing, 2)
-//                                    
-//                                    Text("추가 인원")
-//                                        .font(.pretendardRegular14)
-//                                    
-//                                    Spacer()
-//                                    
-//                                    Text("\(addPeopleCount)인")
-//                                        .font(.pretendardMedium12)
-//                                }
-//                                .frame(height: 18)
-//                                .foregroundStyle(.tcGray05)
-//                            }
                         }
                     }
                 }
@@ -374,10 +343,3 @@ struct PayInfoView: View {
         .background(.white)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
-//            .environmentObject(NavigationManager())
-//    }
-//}

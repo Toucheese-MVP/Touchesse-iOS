@@ -14,9 +14,11 @@ final class StudioDetailViewModel: ObservableObject {
 //    @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
     
     let networkManager = NetworkManager.shared
+    let studioId: Int?
     
-    init(studio: TempStudio) {
-        self.studio = studio
+    init(studio: TempStudio?, studioId: Int?) {
+        self.studio = studio ?? TempStudio.sample
+        self.studioId = studioId
     }
      
     // MARK: - Logic
@@ -35,7 +37,7 @@ final class StudioDetailViewModel: ObservableObject {
     @MainActor
     func fetchStudioDetail() async {
         do {
-            studioDetailEntity = try await networkManager.getStudioDetail(studioID: studio.id)
+            studioDetailEntity = try await networkManager.getStudioDetail(studioID: studioId ?? studio.id)
         } catch {
             print("Fetch StudioDetail Error: \(error.localizedDescription)")
         }

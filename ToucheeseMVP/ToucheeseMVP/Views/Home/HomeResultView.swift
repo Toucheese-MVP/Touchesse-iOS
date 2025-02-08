@@ -72,7 +72,7 @@ struct HomeResultView: View {
                                             viewType: .studioDetailView,
                                             viewMaterial: StudioDetailViewMaterial(
                                                 viewModel: StudioDetailViewModel(
-                                                    studio: studio
+                                                    studio: studio, studioId: studio.id
                                                 )
                                             )
                                         )

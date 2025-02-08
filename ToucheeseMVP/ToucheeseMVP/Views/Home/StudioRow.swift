@@ -15,7 +15,6 @@ struct StudioRow: View {
     
     private let authManager = AuthenticationManager.shared
     
-    // let studio: Studio
     let tempStudio: TempStudio
     private var portfolioImageURLs: [URL] {
         tempStudio.profileImageUrls
@@ -27,7 +26,7 @@ struct StudioRow: View {
         VStack(spacing: 12) {
             HStack(spacing: 8) {
                 ProfileImageView(
-                    imageURL: tempStudio.profileImageUrl,
+                    imageString: tempStudio.profileImage,
                     size: 50
                 )
                 

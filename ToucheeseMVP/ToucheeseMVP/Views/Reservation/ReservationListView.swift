@@ -39,23 +39,23 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
         .padding(.horizontal)
         .fullScreenCover(isPresented: $isShowingLogInView) {
             LoginView(TviewModel: LogInViewModel(),
-                          isPresented: $isShowingLogInView)
+                      isPresented: $isShowingLogInView)
         }
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
         }
-//        .onChange(of: isShowingLogInView) { _ in
-//            Task {
-//                await viewModel.getReservationList()
-//            }
-//        }
+        //        .onChange(of: isShowingLogInView) { _ in
+        //            Task {
+        //                await viewModel.getReservationList()
+        //            }
+        //        }
     }
     
     struct FilteredReservationListView<Content>: View where Content: View {
         @EnvironmentObject private var navigationManager: NavigationManager
         @ObservedObject var viewModel: ViewModel
-
+        
         @ViewBuilder let emptyView: Content
         let refreshAction: () -> Void
         
@@ -72,7 +72,8 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                             Button {
                                 navigationManager.appendPath(
                                     viewType: .reservationDetailView,
-                                    viewMaterial: ReservationDetailViewMaterial(viewModel: TempReservationDetailViewModel(reservation: reservation))
+                                    viewMaterial: ReservationDetailViewMaterial(
+                                        viewModel: TempReservationDetailViewModel(reservation: reservation), reservation: reservation)
                                 )
                             } label: {
                                 ReservationRow(reservation: reservation)
@@ -90,7 +91,7 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
             }
         }
     }
-
+    
 }
 
 // 혹시 몰라서 남겨두는 레거시 코드

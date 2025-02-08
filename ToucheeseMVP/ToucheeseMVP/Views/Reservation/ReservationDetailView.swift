@@ -16,6 +16,8 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
     @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
     
+    let reservation: TempReservation
+    
     var body: some View {
         
         ZStack {
@@ -23,22 +25,21 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                 VStack(alignment: .leading) {
                     // 예약 정보
                     ReservationInfoView(
-                        studioName: viewModel.reservation.studioName,
+                        studioName: reservation.studioName,
                         studioAddress: nil,
-                        reservationStatus: ReservationStatus(rawValue: viewModel.reservation.status) ?? .waiting,
-                        reservationDateString: viewModel.reservation.createDate.toReservationDateType,
-                        reservationTimeString: viewModel.reservation.createTime
+                        reservationStatus: ReservationStatus(rawValue: reservation.status) ?? .waiting,
+                        reservationDateString: reservation.createDate.toReservationDateType,
+                        reservationTimeString: reservation.createTime
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
+                    //TODO: 예약 return 값으로 option, price, personnel 받기
                     // 주문 상품
                     ReservationProductView(
-                        studioName: viewModel.reservation.studioName,
-                        productName: viewModel.reservation.productName,
-                        //TODO: detail viewmodel 고치기
+                        studioName: reservation.studioName,
+                        productName: reservation.productName,
                         productPriceString: "",
-                        //TODO: detail viewmodel 고치기
                         productOptions: [],
                         peopleCount: nil
                     )
@@ -56,7 +57,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                     
                     // 결제 정보
 //                    PayInfoView(
-//                        productName: reservationDetail.productName,
+//                        productName: reservation.productName,
 //                        productPrice: reservationDetail.productPrice.moneyStringFormat,
 //                        //TODO: 고치기
 //                        productOptions: [],
@@ -72,11 +73,16 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                             title: "스튜디오 홈",
                             height: 48
                         ) {
-//                            navigationManager.appendPath(
-//                                viewType: .studioDetailView,
-//                                // TODO: 임시 스튜디오 정보 유저가 선택한 스튜디오 정보로 변경해야 함
-//                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio, tempStudioData: TempStudio.sample))
-//                            )
+                            
+                            navigationManager.appendPath(
+                                viewType: .studioDetailView,
+                                viewMaterial: StudioDetailViewMaterial(
+                                    viewModel: StudioDetailViewModel(
+                                        studio: nil,
+                                        studioId: reservation.studioId
+                                    )
+                                )
+                            )
                         }
                         
 //                        if tempViewModel.isShowingReservationCancelButton() {
@@ -109,29 +115,30 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                 }
             })
             
-            if isShowingReservationCancelAlert {
-                CustomAlertView(
-                    isPresented: $isShowingReservationCancelAlert,
-                    alertType: .reservationCancel
-                ) {
-                    isShowingReservationCancelCompleteAlert.toggle()
-                    
-                    Task {
-//                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
-//                        await reservationListViewModel.fetchReservations()
-//                        await reservationListViewModel.fetchPastReservations()
-                    }
-                }
-            }
-            
-            if isShowingReservationCancelCompleteAlert {
-                CustomAlertView(
-                    isPresented: $isShowingReservationCancelCompleteAlert,
-                    alertType: .reservationCancelComplete
-                ) {
-                    navigationManager.pop(1)
-                }
-            }
+            //TODO: 예약 취소 관련 view
+//            if isShowingReservationCancelAlert {
+//                CustomAlertView(
+//                    isPresented: $isShowingReservationCancelAlert,
+//                    alertType: .reservationCancel
+//                ) {
+//                    isShowingReservationCancelCompleteAlert.toggle()
+//                    
+//                    Task {
+////                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
+////                        await reservationListViewModel.fetchReservations()
+////                        await reservationListViewModel.fetchPastReservations()
+//                    }
+//                }
+//            }
+//            
+//            if isShowingReservationCancelCompleteAlert {
+//                CustomAlertView(
+//                    isPresented: $isShowingReservationCancelCompleteAlert,
+//                    alertType: .reservationCancelComplete
+//                ) {
+//                    navigationManager.pop(1)
+//                }
+//            }
         }
         .ignoresSafeArea(edges: .bottom)
     }
@@ -208,14 +215,3 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
         .background(.white)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        ReservationDetailView(
-//            viewModel: ReservationDetailViewModel(
-//                reservation: Reservation.sample
-//            )
-//        )
-//        .environmentObject(NavigationManager())
-//    }
-//}

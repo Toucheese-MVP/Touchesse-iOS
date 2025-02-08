@@ -160,11 +160,11 @@ extension StudioDetailView {
     private var studioNameView: some View {
         HStack(spacing: 9) {
             ProfileImageView(
-                imageURL: viewModel.studio.profileImageUrl,
+                imageString: viewModel.studioDetailEntity.profileImage,
                 size: 36
             )
             
-            Text(viewModel.studio.name)
+            Text(viewModel.studioDetailEntity.name)
                 .foregroundStyle(.tcGray10)
                 .font(.pretendardSemiBold18)
         }
@@ -178,8 +178,7 @@ extension StudioDetailView {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 18, height: 18)
-                
-                Text(viewModel.studio.formattedRating)
+                Text(String(format: "%.1f", viewModel.studioDetailEntity.rating))
                     .foregroundStyle(.tcGray10)
                     .font(.pretendardSemiBold16)
             }

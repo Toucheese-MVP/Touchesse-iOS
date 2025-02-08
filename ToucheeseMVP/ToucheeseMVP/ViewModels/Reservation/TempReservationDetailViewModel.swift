@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ReservationDetailViewModelProtocol: ObservableObject {
-    var reservation: TempReservation { get }
+    
 }
 
 final class TempReservationDetailViewModel: ReservationDetailViewModelProtocol {
@@ -16,16 +16,12 @@ final class TempReservationDetailViewModel: ReservationDetailViewModelProtocol {
     let authManager = AuthenticationManager.shared
     
     @Published private(set) var reservation: TempReservation
-    @Published private(set) var reservedStudio: TempStudio = TempStudio.sample
     
     init(reservation: TempReservation) {
         self.reservation = reservation
-        
-        Task {
-//            await fetchReservationDetail(reservationID: reservation.id)
-//            await fetchReservedStudio()
-        }
     }
+    
+    //MARK: - Network
     
     func isShowingReservationCancelButton() -> Bool {
         switch reservation.status {
@@ -70,17 +66,6 @@ final class TempReservationDetailViewModel: ReservationDetailViewModelProtocol {
 ////            authManager.logout()
 //        } catch {
 //            print("Cancel Reservation Error: \(error.localizedDescription)")
-//        }
-    }
-    
-    @MainActor
-    private func fetchReservedStudio() async {
-//        do {
-//            reservedStudio = try await networkManager.getStudioData(
-//                studioID: reservationDetail.studioId
-//            )
-//        } catch {
-//            print("Reserved Studio Fetch Error: \(error.localizedDescription)")
 //        }
     }
 }
