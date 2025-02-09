@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReservationRow: View {
-    let reservation: TempReservation
+    let reservation: Reservation
 
     private var status: ReservationStatus {
         ReservationStatus(title: reservation.status)

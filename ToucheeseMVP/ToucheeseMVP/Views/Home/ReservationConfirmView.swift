@@ -11,18 +11,18 @@ import Kingfisher
 struct ReservationConfirmView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     private let authenticationManager = AuthenticationManager.shared
-    @StateObject var tempReservationViewModel: TempReservationViewModel
+    @StateObject var viewModel: ReservationViewModel
     
     var body: some View {
-        let studioName = tempReservationViewModel.studio.name
-        let address = tempReservationViewModel.studioDetail.address
-        let tempProductOptions = tempReservationViewModel.productOptions
-        let productName = tempReservationViewModel.product.name
-        let productPriceString = tempReservationViewModel.product.price.moneyStringFormat
-        let totalPriceString = tempReservationViewModel.totalPrice.moneyStringFormat
-        let reservationDateString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoDay)
-        let reservationTimeString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoTime)
-        let addPeopleCount = tempReservationViewModel.addPeopleCount
+        let studioName = viewModel.studio.name
+        let address = viewModel.studioDetail.address
+        let productOptions = viewModel.productOptions
+        let productName = viewModel.product.name
+        let productPriceString = viewModel.product.price.moneyStringFormat
+        let totalPriceString = viewModel.totalPrice.moneyStringFormat
+        let reservationDateString = viewModel.reservationDate.toString(format: .reservationInfoDay)
+        let reservationTimeString = viewModel.reservationDate.toString(format: .reservationInfoTime)
+        let addPeopleCount = viewModel.addPeopleCount
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -41,7 +41,7 @@ struct ReservationConfirmView: View {
                     studioName: studioName,
                     productName: productName,
                     productPriceString: productPriceString,
-                    productOptions: tempProductOptions,
+                    productOptions: productOptions,
                     peopleCount: addPeopleCount
                 )
                 
@@ -49,8 +49,8 @@ struct ReservationConfirmView: View {
                 
                 // 주문자 정보 입력 뷰
                 UserInfoInputView(
-                    userPhone: $tempReservationViewModel.userPhone,
-                    isPhoneLength: tempReservationViewModel.isPhoneLength
+                    userPhone: $viewModel.userPhone,
+                    isPhoneLength: viewModel.isPhoneLength
                 )
                 
                 // 주문자 정보 입력 뷰
@@ -61,7 +61,7 @@ struct ReservationConfirmView: View {
                 PayInfoView(
                     productName: productName,
                     productPrice: productPriceString,
-                    productOptions: tempProductOptions,
+                    productOptions: productOptions,
                     addPeopleCount: addPeopleCount,
                     addPeoplePriceString: /*addPeoplePrice?.moneyStringFormat ??*/ "0원",
                     totalPriceString: totalPriceString,
@@ -69,12 +69,12 @@ struct ReservationConfirmView: View {
                 )
                 .padding(.bottom, 31)
                 
-                FillBottomButton(isSelectable: tempReservationViewModel.isBottomButtonSelectable, title: "예약하기") {
-                    if !tempReservationViewModel.isReserving {
-                        tempReservationViewModel.setIsReserving()
+                FillBottomButton(isSelectable: viewModel.isBottomButtonSelectable, title: "예약하기") {
+                    if !viewModel.isReserving {
+                        viewModel.setIsReserving()
                         
                         Task {
-                            let result = await tempReservationViewModel.postInstantReservation()
+                            let result = await viewModel.postInstantReservation()
 //
 //                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
 //                            if reservationViewModel.reservationResponseData?.statusCode == 200 {

@@ -1,5 +1,5 @@
 //
-//  TempReservationViewModel.swift
+//  ReservationViewModel.swift
 //  ToucheeseMVP
 //
 //  Created by 최주리 on 2/4/25.
@@ -12,11 +12,11 @@ protocol ReservationViewModelProtocol {
     func postInstantReservation() async -> Bool
 }
 
-final class TempReservationViewModel: ObservableObject, ReservationViewModelProtocol {
+final class ReservationViewModel: ObservableObject, ReservationViewModelProtocol {
     private let networkmanager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
     
-    let studio: TempStudio
+    let studio: Studio
     let studioDetail: StudioDetailEntity
     let product: ProductEntity
     let productDetail: ProductDetailEntity
@@ -28,7 +28,7 @@ final class TempReservationViewModel: ObservableObject, ReservationViewModelProt
     private(set) var isReserving: Bool = false
 
     @Published var userPhone: String = ""
-    @Published private(set) var reservationList: [TempReservation] = []
+    @Published private(set) var reservationList: [Reservation] = []
     
     var isPhoneLength: Bool {
         userPhone.isPhoneLength
@@ -43,7 +43,7 @@ final class TempReservationViewModel: ObservableObject, ReservationViewModelProt
     }
     
     init(
-        studio: TempStudio,
+        studio: Studio,
         studioDetail: StudioDetailEntity,
         product: ProductEntity,
         productDetail: ProductDetailEntity,

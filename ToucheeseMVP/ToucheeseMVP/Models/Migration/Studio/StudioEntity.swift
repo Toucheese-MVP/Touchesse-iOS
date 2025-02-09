@@ -8,7 +8,7 @@
 import Foundation
 
 struct StudioEntity: Codable {
-    let studio: [TempStudio]
+    let studio: [Studio]
     let pageable: Pageable
     let totalPages: Int
     let totalElements: Int
@@ -25,7 +25,7 @@ struct StudioEntity: Codable {
     }
 }
 
-struct TempStudio: Codable, Identifiable, Hashable {
+struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profileImage: String
@@ -34,7 +34,7 @@ struct TempStudio: Codable, Identifiable, Hashable {
     let imageUrls: [String]
 }
 
-extension TempStudio {
+extension Studio {
     var profileImageUrl: URL {
         URL(string: profileImage ) ?? .defaultImageURL
     }
@@ -51,8 +51,8 @@ extension TempStudio {
 }
 
 // 샘플
-extension TempStudio {
-    static let sample = TempStudio(
+extension Studio {
+    static let sample = Studio(
         id: 1,
         name: "마루 스튜디오",
         profileImage: "https://imgur.com/YJaYOeA.png",

@@ -16,7 +16,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
     @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
     
-    let reservation: TempReservation
+    let reservation: Reservation
     
     var body: some View {
         

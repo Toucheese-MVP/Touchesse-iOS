@@ -9,15 +9,15 @@ import Foundation
 
 final class StudioDetailViewModel: ObservableObject {
     // MARK: - Data
-    @Published private(set) var studio: TempStudio = TempStudio.sample
+    @Published private(set) var studio: Studio = Studio.sample
     @Published private(set) var studioDetailEntity: StudioDetailEntity = StudioDetailEntity.sample
 //    @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
     
     let networkManager = NetworkManager.shared
     let studioId: Int?
     
-    init(studio: TempStudio?, studioId: Int?) {
-        self.studio = studio ?? TempStudio.sample
+    init(studio: Studio?, studioId: Int?) {
+        self.studio = studio ?? Studio.sample
         self.studioId = studioId
     }
      

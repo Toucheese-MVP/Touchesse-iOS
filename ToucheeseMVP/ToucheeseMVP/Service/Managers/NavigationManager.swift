@@ -76,7 +76,7 @@ final class NavigationManager: ObservableObject {
         case .productDetailView:
             ProductDetailView(productDetailViewModel: self.productDetailViewMaterial!.viewModel)
         case .reservationConfirmView:
-            ReservationConfirmView(tempReservationViewModel: self.reservationConfirmViewMaterial!.tempViewModel)
+            ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
         case .reservationCompleteView:
             ReservationCompleteView()
             

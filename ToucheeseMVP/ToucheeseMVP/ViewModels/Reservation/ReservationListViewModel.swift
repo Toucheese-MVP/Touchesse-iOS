@@ -1,5 +1,5 @@
 //
-//  TempReservationListViewModel.swift
+//  ReservationListViewModel.swift
 //  ToucheeseMVP
 //
 //  Created by 최주리 on 2/8/25.
@@ -8,17 +8,17 @@
 import Foundation
 
 protocol ReservationTabViewModelProtocol: ObservableObject {
-    var reservationList: [TempReservation] { get }
+    var reservationList: [Reservation] { get }
     
     /// 예약 리스트 불러오기
     func getReservationList() async
   
 }
 
-final class TempReservationListViewModel: ReservationTabViewModelProtocol {
+final class ReservationListViewModel: ReservationTabViewModelProtocol {
     private let network = NetworkManager.shared
     
-    @Published private(set) var reservationList: [TempReservation] = []
+    @Published private(set) var reservationList: [Reservation] = []
     
     //MARK: - Network
     

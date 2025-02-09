@@ -300,7 +300,7 @@ fileprivate struct CustomSegmentedControl: View {
 fileprivate struct ProductListView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     let studioDetail: StudioDetailEntity
-    let studio: TempStudio
+    let studio: Studio
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {

@@ -63,7 +63,7 @@ struct HomeResultView: View {
                                 
                                 ForEach(studioListViewModel.studioDatas) { studio in
                                     StudioRow(
-                                        tempStudio: studio,
+                                        studio: studio,
                                         isShowingLoginAlert: $isShowingLoginAlert
                                     )
                                     .contentShape(.rect)

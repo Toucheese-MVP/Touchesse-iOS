@@ -73,7 +73,7 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                                 navigationManager.appendPath(
                                     viewType: .reservationDetailView,
                                     viewMaterial: ReservationDetailViewMaterial(
-                                        viewModel: TempReservationDetailViewModel(reservation: reservation), reservation: reservation)
+                                        viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
                                 )
                             } label: {
                                 ReservationRow(reservation: reservation)

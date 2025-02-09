@@ -22,12 +22,12 @@ struct ProductDetailViewMaterial: ViewMaterial {
 }
 
 struct ReservationConfirmViewMaterial: ViewMaterial {
-    var tempViewModel: TempReservationViewModel
+    var viewModel: ReservationViewModel
 }
 
 //TODO: 추상화 적용하기
 struct ReservationDetailViewMaterial: ViewMaterial {
 //    var viewModel: any ReservationDetailViewModelProtocol
-    var viewModel: TempReservationDetailViewModel
-    var reservation: TempReservation
+    var viewModel: ReservationDetailViewModel
+    var reservation: Reservation
 }

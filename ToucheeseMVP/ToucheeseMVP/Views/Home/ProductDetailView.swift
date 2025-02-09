@@ -45,11 +45,11 @@ struct ProductDetailView: View {
                             .appendPath(
                                 viewType: .reservationConfirmView,
                                 viewMaterial: ReservationConfirmViewMaterial(
-                                    tempViewModel: TempReservationViewModel(
+                                    viewModel: ReservationViewModel(
                                         studio: productDetailViewModel.studio,
                                         studioDetail: productDetailViewModel.studioDetail,
                                         product: productDetailViewModel.product,
-                                        productDetail: productDetailViewModel.tempProductDetail,
+                                        productDetail: productDetailViewModel.productDetail,
                                         productOptions: productDetailViewModel.selectedProductOptionArray,
                                         reservationDate: productDetailViewModel.reservationDate ?? Date(),
                                         totalPrice: productDetailViewModel.totalPrice,
@@ -206,7 +206,7 @@ extension ProductDetailView {
     }
     
     private var optionView: some View {
-        let productOptions = productDetailViewModel.tempProductDetail.addOptions
+        let productOptions = productDetailViewModel.productDetail.addOptions
         
         return VStack {
             if !productOptions.isEmpty {

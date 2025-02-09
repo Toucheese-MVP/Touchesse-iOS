@@ -7,7 +7,7 @@
 
 //TODO: 페이지네이션 적용
 struct ReservationEntity: Decodable {
-    let content: [TempReservation]
+    let content: [Reservation]
     /// pagenation을 위한 변수들
     let last: Bool
     let first: Bool
@@ -17,7 +17,7 @@ struct ReservationEntity: Decodable {
     let size: Int
 }
 
-struct TempReservation: Decodable, Hashable {
+struct Reservation: Decodable, Hashable {
     let reservationId: Int
     let studioId: Int
     let studioName: String

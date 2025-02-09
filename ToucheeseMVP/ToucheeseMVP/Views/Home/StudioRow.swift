@@ -15,9 +15,9 @@ struct StudioRow: View {
     
     private let authManager = AuthenticationManager.shared
     
-    let tempStudio: TempStudio
+    let studio: Studio
     private var portfolioImageURLs: [URL] {
-        tempStudio.profileImageUrls
+        studio.profileImageUrls
     }
     
     @Binding var isShowingLoginAlert: Bool
@@ -26,12 +26,12 @@ struct StudioRow: View {
         VStack(spacing: 12) {
             HStack(spacing: 8) {
                 ProfileImageView(
-                    imageString: tempStudio.profileImage,
+                    imageString: studio.profileImage,
                     size: 50
                 )
                 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(tempStudio.name)")
+                    Text("\(studio.name)")
                         .foregroundStyle(.tcGray10)
                         .font(.pretendardMedium(17))
                     
@@ -42,7 +42,7 @@ struct StudioRow: View {
                             .frame(width: 14, height: 14)
                             .padding(.trailing, 3)
                         
-                        Text(tempStudio.formattedRating)
+                        Text(studio.formattedRating)
                             .foregroundStyle(.tcGray10)
                             .font(.pretendardSemiBold14)
                         
@@ -114,5 +114,5 @@ struct StudioRow: View {
 }
 
 #Preview {
-    StudioRow(tempStudio: TempStudio.sample, isShowingLoginAlert: .constant(false))
+    StudioRow(studio: Studio.sample, isShowingLoginAlert: .constant(false))
 }
