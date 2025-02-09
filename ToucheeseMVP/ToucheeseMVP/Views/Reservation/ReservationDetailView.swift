@@ -27,7 +27,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                     ReservationInfoView(
                         studioName: reservation.studioName,
                         studioAddress: nil,
-                        reservationStatus: ReservationStatus(rawValue: reservation.status) ?? .waiting,
+                        reservationStatus: ReservationStatus(title: reservation.status),
                         reservationDateString: reservation.createDate.toReservationDateType,
                         reservationTimeString: reservation.createTime
                     )
@@ -150,7 +150,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                 .font(.pretendardSemiBold16)
             
             VStack(alignment: .leading, spacing: 20) {
-                ForEach(ReservationStatus.allCases, id: \.rawValue) { status in
+                ForEach(ReservationStatus.allCases, id: \.self) { status in
                     VStack(alignment: .leading, spacing: 10) {
                         ReservationStatusView(status)
                         

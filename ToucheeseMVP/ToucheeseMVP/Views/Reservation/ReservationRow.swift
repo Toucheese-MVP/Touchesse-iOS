@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ReservationRow: View {
     let reservation: TempReservation
-    //TODO: status 명세 맞추기
-//    private var status: ReservationStatus {
-//        ReservationStatus(rawValue: reservation.status)!
-//    }
+
+    private var status: ReservationStatus {
+        ReservationStatus(title: reservation.status)
+    }
     
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -31,7 +31,7 @@ struct ReservationRow: View {
                     
                     Spacer()
                     
-//                    ReservationStatusView(status)
+                    ReservationStatusView(status)
                 }
                 
                 Spacer()
