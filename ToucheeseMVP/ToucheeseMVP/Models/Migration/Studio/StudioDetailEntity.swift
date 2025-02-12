@@ -37,25 +37,25 @@ struct OperatingHour: Decodable, Hashable {
 }
 
 extension StudioDetailEntity {
-    //TODO: 고치기
     var isOpen: Bool {
         let currentWeekDay = Date().dayWeek
 
         guard let currentHour = Calendar.current.dateComponents([.hour], from: Date()).hour else { return false }
-          
+
         for hour in operatingHours {
+            print("\(hour.dayOfWeek) -> \(currentWeekDay)")
             if hour.dayOfWeek == currentWeekDay {
                 guard let openTime = Int(hour.openTime.split(separator: ":").first!),
                 let closeTime = Int(hour.closeTime.split(separator: ":").first!) else { return false }
-
+                
+                print("open: \(openTime), close: \(closeTime)")
                 if currentHour >= openTime && currentHour <= closeTime {
                     return true
                 }
             } else {
-                return false
+                continue
             }
         }
-        
         return false
     }
     
