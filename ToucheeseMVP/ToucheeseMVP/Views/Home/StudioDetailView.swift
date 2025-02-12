@@ -95,33 +95,34 @@ struct StudioDetailView: View {
                 },
                 leftView: {
                     BackbButtonView()
-                },
-                rightView: {
-                    Button {
-                        //                        if authManager.authStatus == .notAuthenticated {
-                        //                            isShowingLoginAlert.toggle()
-                        //                        }
-                        //                        Task {
-                        //                            if authManager.memberLikedStudios.contains(studio) {
-                        //                                await studioListViewModel.cancelLikeStudio(
-                        //                                    studioId: studio.id
-                        //                                )
-                        //                            } else {
-                        //                                await studioListViewModel.likeStudio(
-                        //                                    studioId: studio.id
-                        //                                )
-                        //                            }
-                        //
-                        //                            await studioLikeListViewModel.fetchLikedStudios()
-                        //                        }
-                    } label: {
-                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.plain)
                 }
+//                ,
+//                rightView: {
+//                    Button {
+//                        //                        if authManager.authStatus == .notAuthenticated {
+//                        //                            isShowingLoginAlert.toggle()
+//                        //                        }
+//                        //                        Task {
+//                        //                            if authManager.memberLikedStudios.contains(studio) {
+//                        //                                await studioListViewModel.cancelLikeStudio(
+//                        //                                    studioId: studio.id
+//                        //                                )
+//                        //                            } else {
+//                        //                                await studioListViewModel.likeStudio(
+//                        //                                    studioId: studio.id
+//                        //                                )
+//                        //                            }
+//                        //
+//                        //                            await studioLikeListViewModel.fetchLikedStudios()
+//                        //                        }
+//                    } label: {
+//                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 30, height: 30)
+//                    }
+//                    .buttonStyle(.plain)
+//                }
             )
             
             if isShowingLoginAlert {
@@ -196,9 +197,9 @@ extension StudioDetailView {
                 selectedSegmentedControlIndex = 1
             }
             
-            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
-                .foregroundStyle(.tcGray10)
-                .font(.pretendardRegular16)
+//            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
+//                .foregroundStyle(.tcGray10)
+//                .font(.pretendardRegular16)
         }
         .padding(.bottom, 4)
     }
@@ -354,17 +355,17 @@ fileprivate struct ProductListView: View {
                         .multilineTextAlignment(.leading)
                         .frame(alignment: .leading)
                     
-                    HStack(spacing: 2) {
-                        Image(.tcReview)
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                        
-                        Text("리뷰 \(product.reviewCount)개 >")
-                            .foregroundStyle(.tcGray08)
-                            .font(.pretendardMedium12)
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 8)
+//                    HStack(spacing: 2) {
+//                        Image(.tcReview)
+//                            .resizable()
+//                            .frame(width: 16, height: 16)
+//                        
+//                        Text("리뷰 \(product.reviewCount)개 >")
+//                            .foregroundStyle(.tcGray08)
+//                            .font(.pretendardMedium12)
+//                    }
+//                    .padding(.vertical, 4)
+//                    .padding(.horizontal, 8)
                     
                     Spacer()
                     

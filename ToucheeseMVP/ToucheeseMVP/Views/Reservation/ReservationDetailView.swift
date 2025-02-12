@@ -196,17 +196,19 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                         .font(.pretendardSemiBold14)
                         .foregroundStyle(.tcGray09)
                 }
-                
-                HStack {
-                    Text("휴대폰")
-                        .font(.pretendardRegular14)
-                        .foregroundStyle(.tcGray06)
+                if !userPhoneNumber.isEmpty {
                     
-                    Spacer()
-                    
-                    Text(userPhoneNumber)
-                        .font(.pretendardSemiBold14)
-                        .foregroundStyle(.tcGray09)
+                    HStack {
+                        Text("휴대폰")
+                            .font(.pretendardRegular14)
+                            .foregroundStyle(.tcGray06)
+                        
+                        Spacer()
+                        
+                        Text(userPhoneNumber)
+                            .font(.pretendardSemiBold14)
+                            .foregroundStyle(.tcGray09)
+                    }
                 }
             }
         }

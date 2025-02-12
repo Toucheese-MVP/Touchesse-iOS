@@ -54,36 +54,36 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-                Button {
-                    if authManager.authStatus == .notAuthenticated {
-                        isShowingLoginAlert.toggle()
-                        navigationManager.isShowingAlert = true
-                    } else {
-//                        Task {
-//                            if authManager.memberLikedStudios.contains(tempStudio) {
-//                                await studioListViewModel.cancelLikeStudio(
-//                                    studioId: tempStudio.id
-//                                )
-//                            } else {
-//                                await studioListViewModel.likeStudio(
-//                                    studioId: tempStudio.id
-//                                )
-//                            }
-//                            
-//                            await studioLikeListViewModel.fetchLikedStudios()
-//                        }
-                    }
-                } label: {
-                    Image(.tcBookmark)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-//                    Image(authManager.memberLikedStudios.contains(tempStudio) ? .tcBookmarkFill : .tcBookmark)
+//                Button {
+//                    if authManager.authStatus == .notAuthenticated {
+//                        isShowingLoginAlert.toggle()
+//                        navigationManager.isShowingAlert = true
+//                    } else {
+////                        Task {
+////                            if authManager.memberLikedStudios.contains(tempStudio) {
+////                                await studioListViewModel.cancelLikeStudio(
+////                                    studioId: tempStudio.id
+////                                )
+////                            } else {
+////                                await studioListViewModel.likeStudio(
+////                                    studioId: tempStudio.id
+////                                )
+////                            }
+////                            
+////                            await studioLikeListViewModel.fetchLikedStudios()
+////                        }
+//                    }
+//                } label: {
+//                    Image(.tcBookmark)
 //                        .resizable()
 //                        .scaledToFit()
 //                        .frame(width: 30, height: 30)
-                }
-                .buttonStyle(.plain)
+////                    Image(authManager.memberLikedStudios.contains(tempStudio) ? .tcBookmarkFill : .tcBookmark)
+////                        .resizable()
+////                        .scaledToFit()
+////                        .frame(width: 30, height: 30)
+//                }
+//                .buttonStyle(.plain)
             }
             .padding(.horizontal)
             
