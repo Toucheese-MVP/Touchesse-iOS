@@ -24,7 +24,7 @@ enum Network {
     
     /// 예약
     case reservationInstantType(ReservationInstantRequest)
-    case getReservationType
+    case getReservationType(Int)
     
     
     /// 카카오 로그인

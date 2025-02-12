@@ -5,7 +5,6 @@
 //  Created by 최주리 on 2/8/25.
 //
 
-//TODO: 페이지네이션 적용
 struct ReservationEntity: Decodable {
     let content: [Reservation]
     /// pagenation을 위한 변수들

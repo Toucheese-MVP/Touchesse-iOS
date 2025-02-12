@@ -158,8 +158,8 @@ final class NetworkManager {
         return result
     }
     
-    func getReservations() async throws -> ReservationEntity {
-        let request = Network.getReservationType
+    func getReservations(page: Int) async throws -> ReservationEntity {
+        let request = Network.getReservationType(page)
         let result = try await performRequest(request, decodingType: ReservationEntity.self)
         
         return result

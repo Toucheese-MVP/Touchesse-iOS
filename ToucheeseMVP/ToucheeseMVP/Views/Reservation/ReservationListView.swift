@@ -16,53 +16,8 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     private let authManager = AuthenticationManager.shared
     
     var body: some View {
-        VStack {
-            if authManager.authStatus == .notAuthenticated {
-                CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
-                    isShowingLogInView.toggle()
-                })
-            } else {
-                FilteredReservationListView(
-                    viewModel: viewModel
-                ) {
-                    CustomEmptyView(viewType: .reservation)
-                } refreshAction: {
-                    Task {
-                        await viewModel.getReservationList()
-                    }
-                }
-                .task {
-                    await viewModel.getReservationList()
-                }
-            }
-        }
-        .padding(.horizontal)
-        .fullScreenCover(isPresented: $isShowingLogInView) {
-            LoginView(TviewModel: LogInViewModel(),
-                      isPresented: $isShowingLogInView)
-        }
-        .customNavigationBar {
-            Text("예약 내역")
-                .modifier(NavigationTitleModifier())
-        }
-        //        .onChange(of: isShowingLogInView) { _ in
-        //            Task {
-        //                await viewModel.getReservationList()
-        //            }
-        //        }
-    }
-    
-    struct FilteredReservationListView<Content>: View where Content: View {
-        @EnvironmentObject private var navigationManager: NavigationManager
-        @ObservedObject var viewModel: ViewModel
-        
-        @ViewBuilder let emptyView: Content
-        let refreshAction: () -> Void
-        
-        var body: some View {
-            if viewModel.reservationList.isEmpty {
-                emptyView
-            } else {
+        ZStack {
+            VStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     Color.clear
                         .frame(height: 20)
@@ -78,17 +33,46 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                             } label: {
                                 ReservationRow(reservation: reservation)
                             }
+                            .onAppear {
+                                if reservation == viewModel.reservationList.last {
+                                    Task {
+                                        await viewModel.getReservationList()
+                                    }
+                                }
+                            }
                         }
                     }
-                    
-                    Color.clear
-                        .frame(height: 25)
+
                 }
                 .refreshable {
-                    refreshAction()
+                    Task {
+                        await viewModel.refreshAction()
+                    }
                 }
                 .animation(.easeInOut, value: viewModel.reservationList)
             }
+            .padding(.horizontal)
+            
+            if viewModel.reservationList.isEmpty {
+                CustomEmptyView(viewType: .reservation)
+            }
+            
+            if authManager.authStatus == .notAuthenticated {
+                CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
+                    isShowingLogInView.toggle()
+                })
+            }
+        }
+        .task {
+            await viewModel.getReservationList()
+        }
+        .fullScreenCover(isPresented: $isShowingLogInView) {
+            LoginView(TviewModel: LogInViewModel(),
+                      isPresented: $isShowingLogInView)
+        }
+        .customNavigationBar {
+            Text("예약 내역")
+                .modifier(NavigationTitleModifier())
         }
     }
     
