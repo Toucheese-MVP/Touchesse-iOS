@@ -35,7 +35,7 @@ struct ToucheeseTabView: View {
 //                        }
 //                }
             case .myPage:
-                MyPageView()
+                MyPageView(myPageViewModel: TempMyPageViewModel())
             }
             
             if !navigationManager.isTabBarHidden, !navigationManager.isShowingNicknameView {
