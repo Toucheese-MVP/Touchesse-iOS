@@ -64,6 +64,12 @@ final class AuthenticationManager: ObservableObject {
     
     /// 앱 시작 시 토큰과 로그인 상태를 확인하는 함수
     func initialCheckAuthStatus() async -> AuthStatus {
+        /// 로그인된 플랫폼을 가져오거나 저장된 유저 디폴트 값이 없을 때 로그아웃 상태 리턴
+        guard self.loginedPlatform != nil else {
+            await failedAuthentication()
+            return authStatus
+        }
+        
         /// 저장된 토큰을 가져오거나 저장된 토큰이 없을 경우 로그아웃 상태 리턴
         guard let tokens = getTokensFromKeychain() else {
             await failedAuthentication()
