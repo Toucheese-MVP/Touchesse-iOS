@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AuthenticationServices
 
 enum AuthStatus {
     case notAuthenticated
@@ -33,6 +34,10 @@ final class AuthenticationManager: ObservableObject {
     }
     var deviceID: String? {
         return KeychainManager.shared.read(forAccount: .deviceId)
+    }
+    
+    var loginedPlatform: SocialType? {
+        return (UserDefaultsManager.get(UserDefaultsKey.loginedPlatform) as String?)?.toSocialType()
     }
     
     // MARK: 코드 에러를 막기 위해 임시로 넣은 변수, 리팩토링을 통해 찜한 스튜디오 데이터를 어디서 관리할 것인지 고민해야 함
@@ -79,8 +84,7 @@ final class AuthenticationManager: ObservableObject {
         /// 토큰 재발행 요청, 실패 시 로그아웃 상태 리턴
         guard let reissueTokenResponse = await reissueToken(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
             // Refresh 토큰이 만료된 경우 - 기존 데이터 삭제(로그아웃 처리)
-            deleteAllAuthDatas()
-            await failedAuthentication()
+            await resetAllAuthDatas()
             return authStatus
         }
         
@@ -98,6 +102,22 @@ final class AuthenticationManager: ObservableObject {
         await successfulAuthentication()
         
         return authStatus
+    }
+    
+    /// 모든 계정 정보 초기화
+    @MainActor
+    func resetAllAuthDatas() {
+        memberNickname = nil
+        memberEmail = nil
+        memberId = nil
+    
+        keychainManager.delete(forAccount: .accessToken)
+        keychainManager.delete(forAccount: .refreshToken)
+        keychainManager.delete(forAccount: .deviceId)
+        
+        UserDefaultsManager.remove(.loginedPlatform)
+        
+        failedAuthentication()
     }
     
     /// 키체인에 저장된 토큰을 가져오는 함수
@@ -126,15 +146,57 @@ final class AuthenticationManager: ObservableObject {
         saveMemberInfo(memberNickname: reissueTokenResponse.name, memberEmail: reissueTokenResponse.email, memberId: reissueTokenResponse.memberId)
         updateOrCreateTokens(accessToken: accessToken, refreshToken: reissueTokenResponse.refreshToken, deviceId: reissueTokenResponse.deviceId)
     }
-    
-    /// 모든 계정 정보 삭제
-    private func deleteAllAuthDatas() {
-        memberNickname = nil
-        memberEmail = nil
-        memberId = nil
-    
-        keychainManager.delete(forAccount: .accessToken)
-        keychainManager.delete(forAccount: .refreshToken)
-        keychainManager.delete(forAccount: .deviceId)
-    }
 }
+
+
+
+//    /// 애플 회원탈퇴를 위한 authorizationCode를 가져오는 함수
+//    /// - 기기가 로그아웃 상태일 시 nil 리턴
+//    private func getAuthorizationCode(
+//        controller: ASAuthorizationController,
+//        didCompleteWithAuthorization authorization: ASAuthorization
+//    ) -> String? {
+//        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else { return nil }
+//        guard let authorizationCodeData = appleIDCredential.authorizationCode else { return nil }
+//        guard let authorizationCodeString = String(data: authorizationCodeData, encoding: .utf8) else { return nil }
+//
+//        return authorizationCodeString
+//    }
+
+//class LoginModel: NSObject {
+//    func loginApple() {
+//        // 애플 로그인 요청시 사용되는 객체
+//        let request = ASAuthorizationAppleIDProvider().createRequest()
+//        request.requestedScopes = [.fullName, .email]
+//        
+//        let controller = ASAuthorizationController(authorizationRequests: [request])
+//        controller.delegate = self
+//        controller.presentationContextProvider = self
+//        controller.performRequests()
+//    }
+//}
+//
+//extension LoginModel: ASAuthorizationControllerDelegate {
+//    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+//        
+//    }
+//    
+//    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
+//        
+//    }
+//}
+//
+//extension LoginModel: ASAuthorizationControllerPresentationContextProviding {
+//    /// 로그인 화면을 띄울 창을 설정
+//    // UIApplication.shared.connectedScenes = 현재 앱에서 활성화된 모든 UIScene
+//    // .first(where: )로 첫번째 UIScene을 가져옴
+//    // 화면을 띄울 수 있는 UIWindowScene으로 타입 캐스팅
+//    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+//        guard let windowScene = UIApplication.shared.connectedScenes.first(where: {$0 is UIWindowScene }) as? UIWindowScene,
+//              let window = windowScene.windows.first else {
+//            fatalError("No valid window found")
+//        }
+//        
+//        return window
+//    }
+//}
