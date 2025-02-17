@@ -27,8 +27,17 @@ enum Network {
     case getReservationType(Int)
     
     
-    /// 카카오 로그인
+    // 소셜 로그인
     case kakaoLoginType(KakaoLoginRequest)
     case appleLoginType(AppleLoginRequest)
+    
+    // 소셜 로그아웃
+    case logoutType(deviceId: String)
+    
+    // 회원 탈퇴
+    case appleWithdrawType(authorizationCode: String)
+    case kakaoWithdrawType(code: String)
+    
+    // 토큰 재발급
     case reissueToken(ReissueTokenRequest)
 }

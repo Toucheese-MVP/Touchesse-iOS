@@ -84,6 +84,19 @@ extension Network {
             print("\(params)")
             
             return params
+        case .logoutType(let deviceId):
+            var params: Parameters = [:]
+            print("params DeviceId: \(deviceId)")
+            params["deviceId"] = deviceId
+            return params
+        case .appleWithdrawType(let authorizationCode):
+            var params: Parameters = [:]
+            params["authorizationCode"] = authorizationCode
+            return params
+        case .kakaoWithdrawType(let code):
+            var params: Parameters = [:]
+            params["code"] = code
+            return params
         }
     }
 }

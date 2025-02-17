@@ -30,6 +30,12 @@ extension Network {
             return "\(server_url)/v1/auth/apple"
         case .reissueToken:
             return "\(server_url)/v1/tokens/reissue"
+        case .logoutType:
+            return "\(server_url)/v1/tokens/logout?"
+        case .appleWithdrawType:
+            return "\(server_url)/v1/auth/apple/withdraw"
+        case .kakaoWithdrawType:
+            return "\(server_url)/v1/auth/kakao/withdraw"
         }
     }
 }

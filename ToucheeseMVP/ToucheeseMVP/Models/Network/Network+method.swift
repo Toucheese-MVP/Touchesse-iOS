@@ -19,6 +19,8 @@ extension Network {
             return .get
         case .kakaoLoginType, .appleLoginType, .reissueToken, .reservationInstantType:
             return .post
+        case .logoutType, .appleWithdrawType, .kakaoWithdrawType:
+            return .delete
         }
     }
 }

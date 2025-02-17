@@ -50,7 +50,8 @@ final class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-        print("\(url)")
+        
+        print("\(url)\(fetchRequest.parameters?.queryParameters ?? "")")
         print("token: \(AuthenticationManager.shared.accessToken)")
         
         let request = AF.request(
@@ -69,12 +70,21 @@ final class NetworkManager {
         guard let statusCode = response.response?.statusCode else {
             throw NetworkError.unknown
         }
+        
+        print("statusCode: \(statusCode)")
                 
         switch statusCode {
         case 200...299:
             switch response.result {
             case .success(let data):
                 print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+                
+                // JSON이 아니라 문자열로 디코딩해야하는 경우
+                if decodingType == String.self,
+                   let stringResponse = String(data: data, encoding: .utf8) {
+                    return stringResponse as! T
+                }
+                
                 let decoder = JSONDecoder()
                 
                 do {
@@ -231,6 +241,36 @@ final class NetworkManager {
         let response = try await performRequest(fetchRequest,
                                                 decodingType: ReissueTokenResponse.self)
 
+        return response
+    }
+    
+    /// 소셜 로그아웃
+    func postSocialLogout(_ deviceId: String) async throws -> String {
+        print("Logout deviceId: \(deviceId)")
+        let fetchReqeust = Network.logoutType(deviceId: deviceId)
+        let response = try await performRequest(fetchReqeust,
+                                                decodingType: String.self)
+        
+        return response
+    }
+    
+    /// 카카오 회원탈퇴
+    func postKakaoWithdraw(_ code: String) async throws -> String {
+//        let fetchRequest = Network.kakaoWithdrawType(code: code)
+//        let response = try await performRequest(fetchRequest,
+//                                                decodingType: String.self)
+        
+        let response = "카카오 회원 탈퇴가 완료되었습니다."
+        return response
+    }
+    
+    /// 애플 회원탈퇴
+    func postAppleWithdraw(_ authorizationCode : String) async throws -> String {
+//        let fetchRequest = Network.appleWithdrawType(authorizationCode: authorizationCode)
+//        let response = try await performRequest(fetchRequest,
+//                                                decodingType: String.self)
+        
+        let response = "애플 회원 탈퇴가 완료되었습니다."
         return response
     }
 }

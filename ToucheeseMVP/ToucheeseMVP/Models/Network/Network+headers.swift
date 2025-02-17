@@ -28,13 +28,25 @@ extension Network {
             
             return headers
             
-        case .reservationInstantType, .getReservationType:
+        case .reservationInstantType, .getReservationType, .appleWithdrawType, .kakaoWithdrawType:
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             guard let token = AuthenticationManager.shared.accessToken else { return headers }
 
             headers["Authorization"] =
             "Bearer \(token)"
+            
+            return headers
+        case .logoutType:
+            var headers: HTTPHeaders = ["accept": "application/json"]
+            
+            guard let token = AuthenticationManager.shared.accessToken else { return headers }
+
+            print("accessToken: \(token)")
+            
+            headers["Authorization"] =
+            "Bearer \(token)"
+            
             
             return headers
         }

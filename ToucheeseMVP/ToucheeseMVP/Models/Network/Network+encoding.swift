@@ -15,9 +15,9 @@ extension Network {
             return JSONEncoding.default
             
         // MARK: - SERVER Migration WORK
-        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType, .getReservationType:
+        case .studioConceptType, .conceptedStudioListType, .studioCalendarType, .studioDetailType, .productDetailType, .getReservationType, .logoutType:
             return URLEncoding.default
-        case .kakaoLoginType, .appleLoginType, .reissueToken, .reservationInstantType:
+        case .kakaoLoginType, .appleLoginType, .reissueToken, .reservationInstantType, .appleWithdrawType, .kakaoWithdrawType:
             return JSONEncoding.default
         }
     }
