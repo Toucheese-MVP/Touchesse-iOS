@@ -11,11 +11,11 @@ final class ProductDetailViewModel: ObservableObject {
     // MARK: - Data
     let networkManager = NetworkManager.shared
     
-    @Published private(set) var studio: TempStudio
+    @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetailEntity
     @Published private(set) var product: ProductEntity
     
-    @Published private(set) var tempProductDetail: ProductDetailEntity = ProductDetailEntity.sample1
+    @Published private(set) var productDetail: ProductDetailEntity = ProductDetailEntity.sample1
     
     // 예약한 날짜
     @Published private(set) var reservationDate: Date?
@@ -64,13 +64,13 @@ final class ProductDetailViewModel: ObservableObject {
     
     // 선택된 옵션 배열
     var selectedProductOptionArray: [OptionEntity] {
-        tempProductDetail.addOptions.filter {
+        productDetail.addOptions.filter {
             selectedOptionIDArray.contains($0.id)
         }
     }
     
     // MARK: - Init
-    init(studio: TempStudio, studioDetails: StudioDetailEntity, product: ProductEntity) {
+    init(studio: Studio, studioDetails: StudioDetailEntity, product: ProductEntity) {
         self.studio = studio
         self.studioDetail = studioDetails
         self.product = product
@@ -106,7 +106,7 @@ final class ProductDetailViewModel: ObservableObject {
     /// ProductDetail 정보를 네트워크 통신을 통해 가져오는 함수
     private func fetchProductDetail() async {
         do {
-            tempProductDetail = try await networkManager.getProductDetail(productId: product.id)
+            productDetail = try await networkManager.getProductDetail(productId: product.id)
         } catch {
             print("Fetch ProductDetail Error: \(error.localizedDescription)")
         }
@@ -124,13 +124,13 @@ final class ProductDetailViewModel: ObservableObject {
     
     /// 상품의 총 가격을 계산하는 함수
     private func calTotalPrice() {
-        var totalPrice: Int = tempProductDetail.price
+        var totalPrice: Int = productDetail.price
         
         // 인원별 가격 추가
-        totalPrice += tempProductDetail.price * (addPeopleCount - 1)
+        totalPrice += productDetail.price * (addPeopleCount - 1)
         
         // 옵션 별 상품 가격 추가
-        for option in tempProductDetail.addOptions {
+        for option in productDetail.addOptions {
             if selectedOptionIDArray.contains(option.id) {
                 totalPrice += option.price
             }

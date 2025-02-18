@@ -28,7 +28,7 @@ extension Network {
             
             return headers
             
-        case .reservationInstantType:
+        case .reservationInstantType, .getReservationType:
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             guard let token = AuthenticationManager.shared.accessToken else { return headers }

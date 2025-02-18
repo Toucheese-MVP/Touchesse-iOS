@@ -22,18 +22,18 @@ struct ToucheeseTabView: View {
                 }
             case .reservation:
                 NavigationStack(path: $navigationManager.reservationPath) {
-                    ReservationListView()
+                    ReservationListView(viewModel: ReservationListViewModel())
                         .navigationDestination(for: ViewType.self) { viewType in
                             navigationManager.buildView(viewType: viewType)
                         }
                 }
-            case .likedStudios:
-                NavigationStack(path: $navigationManager.studioLikePath) {
-                    StudioLikeListView()
-                        .navigationDestination(for: ViewType.self) { viewType in
-                            navigationManager.buildView(viewType: viewType)
-                        }
-                }
+//            case .likedStudios:
+//                NavigationStack(path: $navigationManager.studioLikePath) {
+//                    StudioLikeListView()
+//                        .navigationDestination(for: ViewType.self) { viewType in
+//                            navigationManager.buildView(viewType: viewType)
+//                        }
+//                }
             case .myPage:
                 MyPageView()
             }

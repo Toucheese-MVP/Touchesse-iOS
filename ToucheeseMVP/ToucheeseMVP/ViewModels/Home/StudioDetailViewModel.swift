@@ -9,14 +9,16 @@ import Foundation
 
 final class StudioDetailViewModel: ObservableObject {
     // MARK: - Data
-    @Published private(set) var studio: TempStudio = TempStudio.sample
+    @Published private(set) var studio: Studio = Studio.sample
     @Published private(set) var studioDetailEntity: StudioDetailEntity = StudioDetailEntity.sample
 //    @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
     
     let networkManager = NetworkManager.shared
+    let studioId: Int?
     
-    init(studio: TempStudio) {
-        self.studio = studio
+    init(studio: Studio?, studioId: Int?) {
+        self.studio = studio ?? Studio.sample
+        self.studioId = studioId
     }
      
     // MARK: - Logic
@@ -35,7 +37,7 @@ final class StudioDetailViewModel: ObservableObject {
     @MainActor
     func fetchStudioDetail() async {
         do {
-            studioDetailEntity = try await networkManager.getStudioDetail(studioID: studio.id)
+            studioDetailEntity = try await networkManager.getStudioDetail(studioID: studioId ?? studio.id)
         } catch {
             print("Fetch StudioDetail Error: \(error.localizedDescription)")
         }

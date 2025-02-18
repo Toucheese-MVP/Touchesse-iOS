@@ -7,115 +7,78 @@
 
 import SwiftUI
 
-struct ReservationListView: View {
+struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject private var viewModel: ReservationListViewModel
-    
-    @Namespace private var namespace
-    
-    @State private var selectedIndex = 0
-    @State private var activeTab: SegmentedTab = .reservation
+    @ObservedObject var viewModel: ViewModel
     
     @State private var isShowingLogInView = false
     
     private let authManager = AuthenticationManager.shared
     
     var body: some View {
-        VStack {
+        ZStack {
+            VStack {
+                ScrollView(.vertical, showsIndicators: false) {
+                    Color.clear
+                        .frame(height: 20)
+                    
+                    LazyVStack(spacing: 8) {
+                        ForEach(viewModel.reservationList, id:\.self) { reservation in
+                            Button {
+                                navigationManager.appendPath(
+                                    viewType: .reservationDetailView,
+                                    viewMaterial: ReservationDetailViewMaterial(
+                                        viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
+                                )
+                            } label: {
+                                ReservationRow(reservation: reservation)
+                            }
+                            .onAppear {
+                                if reservation == viewModel.reservationList.last {
+                                    Task {
+                                        await viewModel.getReservationList()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+                .refreshable {
+                    Task {
+                        await viewModel.refreshAction()
+                    }
+                }
+                .animation(.easeInOut, value: viewModel.reservationList)
+            }
+            .padding(.horizontal)
+            
+            if viewModel.reservationList.isEmpty {
+                CustomEmptyView(viewType: .reservation)
+            }
+            
             if authManager.authStatus == .notAuthenticated {
                 CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
                     isShowingLogInView.toggle()
                 })
-            } else {
-                ReservationCustomSegmentedControl(
-                    tabs: SegmentedTab.allCases,
-                    activeTab: $activeTab,
-                    namespace: namespace
-                )
-                .padding(.top, 11)
-                
-                switch activeTab {
-                case .reservation:
-                    FilteredReservationListView(
-                        reservations: viewModel.reservations
-                    ) {
-                        CustomEmptyView(viewType: .reservation)
-                    } refreshAction: {
-                        Task {
-                            await viewModel.fetchReservations()
-                        }
-                    }
-                case .history:
-                    FilteredReservationListView(
-                        reservations: viewModel.pastReservations
-                    ) {
-                        CustomEmptyView(viewType: .pastReservation)
-                    } refreshAction: {
-                        Task {
-                            await viewModel.fetchPastReservations()
-                        }
-                    }
-                }
             }
         }
-        .padding(.horizontal)
+        .task {
+            await viewModel.getReservationList()
+        }
         .fullScreenCover(isPresented: $isShowingLogInView) {
             LoginView(TviewModel: LogInViewModel(),
-                          isPresented: $isShowingLogInView)
+                      isPresented: $isShowingLogInView)
         }
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
         }
-        .onChange(of: isShowingLogInView) { _ in
-            Task {
-                await viewModel.fetchReservations()
-                await viewModel.fetchPastReservations()
-            }
-        }
     }
+    
 }
 
-
-fileprivate struct FilteredReservationListView<Content>: View where Content: View {
-    @EnvironmentObject private var navigationManager: NavigationManager
-    
-    var reservations: [Reservation]
-    @ViewBuilder let emptyView: Content
-    let refreshAction: () -> Void
-    
-    var body: some View {
-        if reservations.isEmpty {
-            emptyView
-        } else {
-            ScrollView(.vertical, showsIndicators: false) {
-                Color.clear
-                    .frame(height: 20)
-                
-                LazyVStack(spacing: 8) {
-                    ForEach(reservations) { reservation in
-                        Button {
-                            navigationManager.appendPath(
-                                viewType: .reservationDetailView,
-                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation), tempViewModel: TempReservationDetailViewModel(reservation: reservation))
-                            )
-                        } label: {
-                            ReservationRow(reservation: reservation)
-                        }
-                    }
-                }
-                
-                Color.clear
-                    .frame(height: 25)
-            }
-            .refreshable {
-                refreshAction()
-            }
-            .animation(.easeInOut, value: reservations)
-        }
-    }
-}
-
+// 혹시 몰라서 남겨두는 레거시 코드
 
 fileprivate struct ReservationCustomSegmentedControl: View {
     var tabs: [SegmentedTab]
@@ -159,10 +122,4 @@ fileprivate struct ReservationCustomSegmentedControl: View {
 fileprivate enum SegmentedTab: String, CaseIterable {
     case reservation = "예약 일정"
     case history = "이전 내역"
-}
-
-
-#Preview {
-    ReservationListView()
-        .environmentObject(ReservationListViewModel())
 }

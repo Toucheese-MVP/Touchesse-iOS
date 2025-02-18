@@ -1,5 +1,5 @@
 //
-//  TempReservationDetailViewModel.swift
+//  ReservationDetailViewModel.swift
 //  ToucheeseMVP
 //
 //  Created by 최주리 on 2/4/25.
@@ -7,45 +7,31 @@
 
 import Foundation
 
-final class TempReservationDetailViewModel: ObservableObject {
+protocol ReservationDetailViewModelProtocol: ObservableObject {
     
+}
+
+final class ReservationDetailViewModel: ReservationDetailViewModelProtocol {
     let networkManager = NetworkManager.shared
     let authManager = AuthenticationManager.shared
     
     @Published private(set) var reservation: Reservation
-    @Published private(set) var reservationDetail: ReservationDetail = ReservationDetail.sample
-    @Published private(set) var reservedStudio: TempStudio = TempStudio.sample
     
     init(reservation: Reservation) {
         self.reservation = reservation
-        
-        Task {
-//            await fetchReservationDetail(reservationID: reservation.id)
-//            await fetchReservedStudio()
-        }
     }
     
+    //MARK: - Network
+    
     func isShowingReservationCancelButton() -> Bool {
-        switch reservation.reservationStatus {
-        case ReservationStatus.complete.rawValue, ReservationStatus.cancel.rawValue:
+        switch reservation.status {
+        case ReservationStatus.complete.title, ReservationStatus.cancel.title:
             false
-        case ReservationStatus.waiting.rawValue, ReservationStatus.confirm.rawValue:
+        case ReservationStatus.waiting.title, ReservationStatus.confirm.title:
             true
         default:
             false
         }
-    }
-    
-    @MainActor
-    func fetchReservationDetail(reservationID: Int) async {
-        // TODO: 예약 상세를 불러오는 로직을 적용해야 함
-//        do {
-//            reservationDetail = try await networkManager.getReservationDetailData(
-//                reservationID: reservationID
-//            )
-//        } catch {
-//            print("ReservationDetail Fetch Error: \(error.localizedDescription)")
-//        }
     }
     
     @MainActor
@@ -80,17 +66,6 @@ final class TempReservationDetailViewModel: ObservableObject {
 ////            authManager.logout()
 //        } catch {
 //            print("Cancel Reservation Error: \(error.localizedDescription)")
-//        }
-    }
-    
-    @MainActor
-    private func fetchReservedStudio() async {
-//        do {
-//            reservedStudio = try await networkManager.getStudioData(
-//                studioID: reservationDetail.studioId
-//            )
-//        } catch {
-//            print("Reserved Studio Fetch Error: \(error.localizedDescription)")
 //        }
     }
 }

@@ -49,17 +49,7 @@ struct ProductDetailView: View {
                                         studio: productDetailViewModel.studio,
                                         studioDetail: productDetailViewModel.studioDetail,
                                         product: productDetailViewModel.product,
-                                        productDetail: productDetailViewModel.tempProductDetail,
-                                        productOptions: productDetailViewModel.selectedProductOptionArray,
-                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                        totalPrice: productDetailViewModel.totalPrice,
-                                        addPeopleCount: productDetailViewModel.addPeopleCount
-                                    ),
-                                    tempViewModel: TempReservationViewModel(
-                                        studio: productDetailViewModel.studio,
-                                        studioDetail: productDetailViewModel.studioDetail,
-                                        product: productDetailViewModel.product,
-                                        productDetail: productDetailViewModel.tempProductDetail,
+                                        productDetail: productDetailViewModel.productDetail,
                                         productOptions: productDetailViewModel.selectedProductOptionArray,
                                         reservationDate: productDetailViewModel.reservationDate ?? Date(),
                                         totalPrice: productDetailViewModel.totalPrice,
@@ -216,7 +206,7 @@ extension ProductDetailView {
     }
     
     private var optionView: some View {
-        let productOptions = productDetailViewModel.tempProductDetail.addOptions
+        let productOptions = productDetailViewModel.productDetail.addOptions
         
         return VStack {
             if !productOptions.isEmpty {

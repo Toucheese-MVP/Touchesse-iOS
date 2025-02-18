@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUICore
 
-enum ReservationStatus: String, CaseIterable {
+enum ReservationStatus: Decodable, CaseIterable {
     case waiting
     case confirm
     case cancel
@@ -16,10 +16,10 @@ enum ReservationStatus: String, CaseIterable {
     
     var title: String {
         switch self {
-        case .waiting: "예약 대기"
-        case .confirm: "예약 확정"
-        case .cancel: "예약 취소"
-        case .complete: "촬영 완료"
+        case .waiting: "예약접수"
+        case .confirm: "예약확정"
+        case .cancel: "예약취소"
+        case .complete: "촬영완료"
         }
     }
     
@@ -39,6 +39,15 @@ enum ReservationStatus: String, CaseIterable {
         case .confirm: (.tcPrimary07, .clear, .tcPrimary07)
         case .cancel: (.tcError, .clear, .tcError)
         case .complete: (.tcGray09, .tcPrimary05, .tcPrimary05)
+        }
+    }
+    
+    /// title을 통해서 enum case 찾기
+    init(title: String) {
+        if let status = ReservationStatus.allCases.first(where: { $0.title == title }) {
+            self = status
+        } else {
+            self = .waiting
         }
     }
 }

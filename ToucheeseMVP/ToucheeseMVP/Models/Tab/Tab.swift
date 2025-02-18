@@ -10,7 +10,7 @@ import SwiftUI
 enum Tab: CaseIterable {
     case home
     case reservation
-    case likedStudios
+//    case likedStudios
     case myPage
 }
 
@@ -19,7 +19,7 @@ extension Tab {
         switch self {
         case .home: return "홈"
         case .reservation: return "예약일정"
-        case .likedStudios: return "찜"
+//        case .likedStudios: return "찜"
         case .myPage: return "내정보"
         }
     }
@@ -30,8 +30,8 @@ extension Tab {
             (ImageResource.tcHomeFill, ImageResource.tcHome)
         case .reservation:
             (ImageResource.tcCalendarFill, ImageResource.tcCalendar)
-        case .likedStudios:
-            (ImageResource.tcBookmarkFill, ImageResource.tcBookmarkGray)
+//        case .likedStudios:
+//            (ImageResource.tcBookmarkFill, ImageResource.tcBookmarkGray)
         case .myPage:
             (ImageResource.tcProfileFill, ImageResource.tcProfile)
         }
@@ -39,7 +39,7 @@ extension Tab {
     
     var fontColor: (selected: Color, unselected: Color) {
         switch self {
-        case .home, .reservation, .likedStudios, .myPage:
+        case .home, .reservation,/* .likedStudios, */ .myPage:
             (Color.tcGray10, Color.tcGray04)
         }
     }

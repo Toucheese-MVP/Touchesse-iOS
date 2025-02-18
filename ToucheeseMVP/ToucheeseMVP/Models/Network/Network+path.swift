@@ -30,6 +30,8 @@ extension Network {
             return "/\(productId)"
         case .reservationInstantType:
             return "/instant"
+        case .getReservationType(let page):
+            return "?page=\(page)"
         }
     }
 }

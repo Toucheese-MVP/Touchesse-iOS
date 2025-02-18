@@ -7,65 +7,57 @@
 
 import SwiftUI
 
-struct ReservationDetailView: View {
+struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: View {
+    private let authManager = AuthenticationManager.shared
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
-//    @StateObject var viewModel: ReservationDetailViewModel
-    @StateObject var tempViewModel: TempReservationDetailViewModel
+    @ObservedObject var viewModel: ViewModel
     
     @State private var isShowingReservationCancelAlert = false
     @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
     
+    let reservation: Reservation
+    
     var body: some View {
-//        let reservation = viewModel.reservation
-//        let reservationDetail = viewModel.reservationDetail
-        
-        let tempReservation = tempViewModel.reservation
-        let tempReservationDetail = tempViewModel.reservationDetail
         
         ZStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
                     // 예약 정보
                     ReservationInfoView(
-                        studioName: tempReservation.studioName,
-                        studioAddress: tempReservationDetail.studioAddress,
-                        reservationStatus: ReservationStatus(rawValue: tempReservation.reservationStatus) ?? .waiting,
-                        userName: tempReservationDetail.memberName,
-                        reservationDateString: tempReservation.reservationDate.toReservationDateType,
-                        reservationTimeString: tempReservation.reservationTimeString
+                        studioName: reservation.studioName,
+                        studioAddress: nil,
+                        reservationStatus: ReservationStatus(title: reservation.status),
+                        reservationDateString: reservation.createDate.toReservationDateType,
+                        reservationTimeString: reservation.createTime
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
+                    //TODO: 예약 return 값으로 option, price, personnel 받기
                     // 주문 상품
                     ReservationProductView(
-                        studioName: tempReservation.studioName,
-                        productName: tempReservationDetail.productName,
-//                        productImageURL: reservationDetail.productImageURL,
-                        //TODO: detail viewmodel 고치기
+                        studioName: reservation.studioName,
+                        productName: reservation.productName,
                         productPriceString: "",
-                        //TODO: detail viewmodel 고치기
                         productOptions: [],
-                        peopleCount: 1
-//                        addPeopleCount: reservationDetail.addPeopleCnt,
-//                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat
+                        peopleCount: nil
                     )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
+                    //TODO: 예약자 정보에 phone 받을지 상의하기
                     // 예약자 정보
-//                    userInfoView(
-//                        userEmail: reservationDetail.memberEmail,
-//                        userPhoneNumber: reservationDetail.phoneNumber
-//                    )
+                    userInfoView(
+                        userEmail: authManager.memberEmail ?? "",
+                        userPhoneNumber: ""
+                    )
                     
                     DividerView(color: .tcGray01, height: 8)
                     
                     // 결제 정보
 //                    PayInfoView(
-//                        productName: reservationDetail.productName,
+//                        productName: reservation.productName,
 //                        productPrice: reservationDetail.productPrice.moneyStringFormat,
 //                        //TODO: 고치기
 //                        productOptions: [],
@@ -81,20 +73,25 @@ struct ReservationDetailView: View {
                             title: "스튜디오 홈",
                             height: 48
                         ) {
-//                            navigationManager.appendPath(
-//                                viewType: .studioDetailView,
-//                                // TODO: 임시 스튜디오 정보 유저가 선택한 스튜디오 정보로 변경해야 함
-//                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio, tempStudioData: TempStudio.sample))
-//                            )
+                            
+                            navigationManager.appendPath(
+                                viewType: .studioDetailView,
+                                viewMaterial: StudioDetailViewMaterial(
+                                    viewModel: StudioDetailViewModel(
+                                        studio: nil,
+                                        studioId: reservation.studioId
+                                    )
+                                )
+                            )
                         }
                         
-                        if tempViewModel.isShowingReservationCancelButton() {
-                            StrokeBottomButton(title: "예약 취소하기") {
-                                withAnimation(.easeOut(duration: 0.15)) {
-                                    isShowingReservationCancelAlert.toggle()
-                                }
-                            }
-                        }
+//                        if tempViewModel.isShowingReservationCancelButton() {
+//                            StrokeBottomButton(title: "예약 취소하기") {
+//                                withAnimation(.easeOut(duration: 0.15)) {
+//                                    isShowingReservationCancelAlert.toggle()
+//                                }
+//                            }
+//                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 21)
@@ -118,29 +115,30 @@ struct ReservationDetailView: View {
                 }
             })
             
-            if isShowingReservationCancelAlert {
-                CustomAlertView(
-                    isPresented: $isShowingReservationCancelAlert,
-                    alertType: .reservationCancel
-                ) {
-                    isShowingReservationCancelCompleteAlert.toggle()
-                    
-                    Task {
-                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
-                        await reservationListViewModel.fetchReservations()
-                        await reservationListViewModel.fetchPastReservations()
-                    }
-                }
-            }
-            
-            if isShowingReservationCancelCompleteAlert {
-                CustomAlertView(
-                    isPresented: $isShowingReservationCancelCompleteAlert,
-                    alertType: .reservationCancelComplete
-                ) {
-                    navigationManager.pop(1)
-                }
-            }
+            //TODO: 예약 취소 관련 view
+//            if isShowingReservationCancelAlert {
+//                CustomAlertView(
+//                    isPresented: $isShowingReservationCancelAlert,
+//                    alertType: .reservationCancel
+//                ) {
+//                    isShowingReservationCancelCompleteAlert.toggle()
+//                    
+//                    Task {
+////                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
+////                        await reservationListViewModel.fetchReservations()
+////                        await reservationListViewModel.fetchPastReservations()
+//                    }
+//                }
+//            }
+//            
+//            if isShowingReservationCancelCompleteAlert {
+//                CustomAlertView(
+//                    isPresented: $isShowingReservationCancelCompleteAlert,
+//                    alertType: .reservationCancelComplete
+//                ) {
+//                    navigationManager.pop(1)
+//                }
+//            }
         }
         .ignoresSafeArea(edges: .bottom)
     }
@@ -152,7 +150,7 @@ struct ReservationDetailView: View {
                 .font(.pretendardSemiBold16)
             
             VStack(alignment: .leading, spacing: 20) {
-                ForEach(ReservationStatus.allCases, id: \.rawValue) { status in
+                ForEach(ReservationStatus.allCases, id: \.self) { status in
                     VStack(alignment: .leading, spacing: 10) {
                         ReservationStatusView(status)
                         
@@ -198,17 +196,19 @@ struct ReservationDetailView: View {
                         .font(.pretendardSemiBold14)
                         .foregroundStyle(.tcGray09)
                 }
-                
-                HStack {
-                    Text("휴대폰")
-                        .font(.pretendardRegular14)
-                        .foregroundStyle(.tcGray06)
+                if !userPhoneNumber.isEmpty {
                     
-                    Spacer()
-                    
-                    Text(userPhoneNumber)
-                        .font(.pretendardSemiBold14)
-                        .foregroundStyle(.tcGray09)
+                    HStack {
+                        Text("휴대폰")
+                            .font(.pretendardRegular14)
+                            .foregroundStyle(.tcGray06)
+                        
+                        Spacer()
+                        
+                        Text(userPhoneNumber)
+                            .font(.pretendardSemiBold14)
+                            .foregroundStyle(.tcGray09)
+                    }
                 }
             }
         }
@@ -217,14 +217,3 @@ struct ReservationDetailView: View {
         .background(.white)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        ReservationDetailView(
-//            viewModel: ReservationDetailViewModel(
-//                reservation: Reservation.sample
-//            )
-//        )
-//        .environmentObject(NavigationManager())
-//    }
-//}

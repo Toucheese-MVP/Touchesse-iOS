@@ -95,33 +95,34 @@ struct StudioDetailView: View {
                 },
                 leftView: {
                     BackbButtonView()
-                },
-                rightView: {
-                    Button {
-                        //                        if authManager.authStatus == .notAuthenticated {
-                        //                            isShowingLoginAlert.toggle()
-                        //                        }
-                        //                        Task {
-                        //                            if authManager.memberLikedStudios.contains(studio) {
-                        //                                await studioListViewModel.cancelLikeStudio(
-                        //                                    studioId: studio.id
-                        //                                )
-                        //                            } else {
-                        //                                await studioListViewModel.likeStudio(
-                        //                                    studioId: studio.id
-                        //                                )
-                        //                            }
-                        //
-                        //                            await studioLikeListViewModel.fetchLikedStudios()
-                        //                        }
-                    } label: {
-                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.plain)
                 }
+//                ,
+//                rightView: {
+//                    Button {
+//                        //                        if authManager.authStatus == .notAuthenticated {
+//                        //                            isShowingLoginAlert.toggle()
+//                        //                        }
+//                        //                        Task {
+//                        //                            if authManager.memberLikedStudios.contains(studio) {
+//                        //                                await studioListViewModel.cancelLikeStudio(
+//                        //                                    studioId: studio.id
+//                        //                                )
+//                        //                            } else {
+//                        //                                await studioListViewModel.likeStudio(
+//                        //                                    studioId: studio.id
+//                        //                                )
+//                        //                            }
+//                        //
+//                        //                            await studioLikeListViewModel.fetchLikedStudios()
+//                        //                        }
+//                    } label: {
+//                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 30, height: 30)
+//                    }
+//                    .buttonStyle(.plain)
+//                }
             )
             
             if isShowingLoginAlert {
@@ -160,11 +161,11 @@ extension StudioDetailView {
     private var studioNameView: some View {
         HStack(spacing: 9) {
             ProfileImageView(
-                imageURL: viewModel.studio.profileImageUrl,
+                imageString: viewModel.studioDetailEntity.profileImage,
                 size: 36
             )
             
-            Text(viewModel.studio.name)
+            Text(viewModel.studioDetailEntity.name)
                 .foregroundStyle(.tcGray10)
                 .font(.pretendardSemiBold18)
         }
@@ -178,8 +179,7 @@ extension StudioDetailView {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 18, height: 18)
-                
-                Text(viewModel.studio.formattedRating)
+                Text(String(format: "%.1f", viewModel.studioDetailEntity.rating))
                     .foregroundStyle(.tcGray10)
                     .font(.pretendardSemiBold16)
             }
@@ -197,9 +197,9 @@ extension StudioDetailView {
                 selectedSegmentedControlIndex = 1
             }
             
-            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
-                .foregroundStyle(.tcGray10)
-                .font(.pretendardRegular16)
+//            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
+//                .foregroundStyle(.tcGray10)
+//                .font(.pretendardRegular16)
         }
         .padding(.bottom, 4)
     }
@@ -224,7 +224,6 @@ extension StudioDetailView {
                 .resizable()
                 .frame(width: 18, height: 18)
             HStack {
-                //TODO: 고치기
                 Text(viewModel.studioDetailEntity.isOpen ? "영업 중" : "영업 마감")
                     .foregroundStyle(.tcGray08)
                     .font(.pretendardRegular16)
@@ -301,7 +300,7 @@ fileprivate struct CustomSegmentedControl: View {
 fileprivate struct ProductListView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     let studioDetail: StudioDetailEntity
-    let studio: TempStudio
+    let studio: Studio
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -356,17 +355,17 @@ fileprivate struct ProductListView: View {
                         .multilineTextAlignment(.leading)
                         .frame(alignment: .leading)
                     
-                    HStack(spacing: 2) {
-                        Image(.tcReview)
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                        
-                        Text("리뷰 \(product.reviewCount)개 >")
-                            .foregroundStyle(.tcGray08)
-                            .font(.pretendardMedium12)
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 8)
+//                    HStack(spacing: 2) {
+//                        Image(.tcReview)
+//                            .resizable()
+//                            .frame(width: 16, height: 16)
+//                        
+//                        Text("리뷰 \(product.reviewCount)개 >")
+//                            .foregroundStyle(.tcGray08)
+//                            .font(.pretendardMedium12)
+//                    }
+//                    .padding(.vertical, 4)
+//                    .padding(.horizontal, 8)
                     
                     Spacer()
                     

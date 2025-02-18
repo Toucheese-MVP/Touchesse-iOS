@@ -32,7 +32,7 @@ final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data: Studio
     // 메모리에 있는 스튜디오 데이터
-    @Published private(set) var studioDatas: [TempStudio] = []
+    @Published private(set) var studioDatas: [Studio] = []
     
     // 메모리에 있는 스튜디오 데이터의 수
     @Published private(set) var studioCount: Int = 0

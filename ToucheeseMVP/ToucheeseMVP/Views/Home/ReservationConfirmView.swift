@@ -9,34 +9,20 @@ import SwiftUI
 import Kingfisher
 
 struct ReservationConfirmView: View {
-    // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
     private let authenticationManager = AuthenticationManager.shared
-    
-    @EnvironmentObject var reservationListViewModel: ReservationListViewModel
-    @StateObject var reservationViewModel: ReservationViewModel
-    @StateObject var tempReservationViewModel: TempReservationViewModel
+    @StateObject var viewModel: ReservationViewModel
     
     var body: some View {
-        let studioName = tempReservationViewModel.studio.name
-        let address = tempReservationViewModel.studioDetail.address
-    
-        let userName = authenticationManager.memberNickname
-        
-        let tempProductOptions = tempReservationViewModel.productOptions
-        
-        let productName = tempReservationViewModel.product.name
-        
-        let productPriceString = tempReservationViewModel.product.price.moneyStringFormat
-        let totalPriceString = tempReservationViewModel.totalPrice.moneyStringFormat
-        
-        let reservationDateString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoDay)
-        
-        let reservationTimeString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoTime)
-        
-        let addPeopleCount = tempReservationViewModel.addPeopleCount
-        let addPeoplePrice = reservationViewModel.xProductDetail.addPeoplePrice
-        let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
+        let studioName = viewModel.studio.name
+        let address = viewModel.studioDetail.address
+        let productOptions = viewModel.productOptions
+        let productName = viewModel.product.name
+        let productPriceString = viewModel.product.price.moneyStringFormat
+        let totalPriceString = viewModel.totalPrice.moneyStringFormat
+        let reservationDateString = viewModel.reservationDate.toString(format: .reservationInfoDay)
+        let reservationTimeString = viewModel.reservationDate.toString(format: .reservationInfoTime)
+        let addPeopleCount = viewModel.addPeopleCount
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -45,7 +31,6 @@ struct ReservationConfirmView: View {
                     studioName: studioName,
                     studioAddress: address,
                     reservationStatus: .waiting,
-                    userName: userName ?? "",
                     reservationDateString: reservationDateString,
                     reservationTimeString: reservationTimeString
                 )
@@ -56,7 +41,7 @@ struct ReservationConfirmView: View {
                     studioName: studioName,
                     productName: productName,
                     productPriceString: productPriceString,
-                    productOptions: tempProductOptions,
+                    productOptions: productOptions,
                     peopleCount: addPeopleCount
                 )
                 
@@ -64,31 +49,32 @@ struct ReservationConfirmView: View {
                 
                 // 주문자 정보 입력 뷰
                 UserInfoInputView(
-                    userPhone: $tempReservationViewModel.userPhone,
-                    isPhoneLength: tempReservationViewModel.isPhoneLength
+                    userPhone: $viewModel.userPhone,
+                    isPhoneLength: viewModel.isPhoneLength
                 )
                 
                 // 주문자 정보 입력 뷰
                 DividerView(color: .tcGray01, height: 8)
                 
+                //TODO: 수정하기
                 // 결제 정보 뷰
                 PayInfoView(
                     productName: productName,
                     productPrice: productPriceString,
-                    productOptions: tempProductOptions,
+                    productOptions: productOptions,
                     addPeopleCount: addPeopleCount,
-                    addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원",
+                    addPeoplePriceString: /*addPeoplePrice?.moneyStringFormat ??*/ "0원",
                     totalPriceString: totalPriceString,
-                    addPeopleTotalPriceString: addpeopleTotalPriceString
+                    addPeopleTotalPriceString: /*addpeopleTotalPriceString*/ ""
                 )
                 .padding(.bottom, 31)
                 
-                FillBottomButton(isSelectable: tempReservationViewModel.isBottomButtonSelectable, title: "예약하기") {
-                    if !tempReservationViewModel.isReserving {
-                        tempReservationViewModel.setIsReserving()
+                FillBottomButton(isSelectable: viewModel.isBottomButtonSelectable, title: "예약하기") {
+                    if !viewModel.isReserving {
+                        viewModel.setIsReserving()
                         
                         Task {
-                            let result = await tempReservationViewModel.requestStudioReservation()
+                            let result = await viewModel.postInstantReservation()
 //
 //                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
 //                            if reservationViewModel.reservationResponseData?.statusCode == 200 {
@@ -133,7 +119,7 @@ struct ReservationProductView: View {
     let productName: String
     let productPriceString: String
     let productOptions: [OptionEntity]
-    let peopleCount: Int
+    let peopleCount: Int?
     
     var body: some View {
         VStack {
@@ -156,14 +142,16 @@ struct ReservationProductView: View {
                         }
                         .padding(.bottom, 4)
                         
-                        HStack {
-                            Text("예약인원")
-                                .font(.pretendardRegular14)
-                            Spacer()
-                            Text("\(peopleCount)명")
-                                .font(.pretendardRegular14)
+                        if let peopleCount {
+                            HStack {
+                                Text("예약인원")
+                                    .font(.pretendardRegular14)
+                                Spacer()
+                                Text("\(peopleCount)명")
+                                    .font(.pretendardRegular14)
+                            }
+                            .foregroundStyle(.tcGray08)
                         }
-                        .foregroundStyle(.tcGray08)
                         
                         VStack(spacing: 0) {
                             ForEach(productOptions.indices, id: \.self) { index in
@@ -183,24 +171,6 @@ struct ReservationProductView: View {
                                 .frame(height: 18)
                                 .foregroundStyle(.tcGray05)
                             }
-                            
-//                            if addPeopleCount > 0 {
-//                                HStack {
-//                                    Text("ㄴ")
-//                                        .font(.pretendardRegular14)
-//                                        .padding(.trailing, 2)
-//                                    
-//                                    Text("추가 인원")
-//                                        .font(.pretendardRegular14)
-//                                    
-//                                    Spacer()
-//                                    
-//                                    Text("\(addPeopleCount)인")
-//                                        .font(.pretendardMedium12)
-//                                }
-//                                .frame(height: 18)
-//                                .foregroundStyle(.tcGray05)
-//                            }
                         }
                     }
                 }
@@ -373,10 +343,3 @@ struct PayInfoView: View {
         .background(.white)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
-//            .environmentObject(NavigationManager())
-//    }
-//}
