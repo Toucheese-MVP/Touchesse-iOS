@@ -8,16 +8,17 @@
 import Foundation
 import Alamofire
 
-enum ReservationAPI {
+enum MemberAPI {
     /// 즉시 예약
     case reservationInstant(ReservationInstantRequest)
     /// 예약 내역 불러오기
     case getReservation(Int)
+    case cleanup
 }
 
-extension ReservationAPI: TargetType {
+extension MemberAPI: TargetType {
     
-    static var apiType: APIType = .reservation
+    static var apiType: APIType = .member
     
     var baseURL: String {
         Self.apiType.baseURL
@@ -26,9 +27,11 @@ extension ReservationAPI: TargetType {
     var path: String {
         switch self {
         case .reservationInstant:
-            return "/instant"
+            return "/reservations/instant"
         case .getReservation(let page):
-            return "?page=\(page)"
+            return "/reservations?page=\(page)"
+        case .cleanup:
+            return "/cleanup"
         }
     }
     
@@ -38,12 +41,14 @@ extension ReservationAPI: TargetType {
             return .post
         case .getReservation:
             return .get
+        case .cleanup:
+            return .delete
         }
     }
     
     var headers: Alamofire.HTTPHeaders? {
         switch self {
-        case .reservationInstant, .getReservation:
+        case .reservationInstant, .getReservation, .cleanup:
             HeaderType.jsonWithAccessToken.value
         }
     }
@@ -54,6 +59,8 @@ extension ReservationAPI: TargetType {
             EncodingType.post.value
         case .getReservation:
             EncodingType.get.value
+        case .cleanup:
+            EncodingType.delete.value
         }
     }
     
@@ -75,7 +82,7 @@ extension ReservationAPI: TargetType {
             print("\(params)")
             
             return params
-        case .getReservation:
+        case .getReservation, .cleanup:
             return [:]
         }
     }

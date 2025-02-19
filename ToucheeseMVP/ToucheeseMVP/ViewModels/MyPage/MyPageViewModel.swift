@@ -45,6 +45,7 @@ protocol PrivateMyPageViewModelProtocol {
 
 final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProtocol {
     let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
+    let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     let authManager = AuthenticationManager.shared
     
     @Published private(set) var imageCacheUse: String = ""
@@ -154,11 +155,11 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
     
     /// 애플 회원탈퇴 처리
     func handleAppleWithdraw() async {
-//        do {
-//            let result = try await tokenService.postAppleWithdraw("")
-//        } catch {
-//            print("postAppleWithdraw ERROR: \(error.localizedDescription)")
-//        }
+        do {
+            try await memberService.cleanupUser()
+        } catch {
+            print("postAppleWithdraw ERROR: \(error.localizedDescription)")
+        }
         
         // 회원 정보 삭제
         await authManager.resetAllAuthDatas()
@@ -166,11 +167,11 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
     
     /// 카카오 회원탈퇴 처리
     func handleKakaoWithdraw() async {
-//        do {
-//            let result = try await tokenService.postKakaoWithdraw("")
-//        } catch {
-//            print("postAppleWithdraw ERROR: \(error.localizedDescription)")
-//        }
+        do {
+            try await memberService.cleanupUser()
+        } catch {
+            print("postAppleWithdraw ERROR: \(error.localizedDescription)")
+        }
         
         // 회원 정보 삭제
         await authManager.resetAllAuthDatas()

@@ -23,7 +23,7 @@ enum APIType {
     case concept
     case studio
     case product
-    case reservation
+    case member
 }
 
 extension APIType {
@@ -41,8 +41,8 @@ extension APIType {
             return "\(server_url)/v1/studios"
         case .product:
             return "\(server_url)/v1/products"
-        case .reservation:
-            return "\(server_url)/v1/members/reservations"
+        case .member:
+            return "\(server_url)/v1/members"
         }
     }
 }

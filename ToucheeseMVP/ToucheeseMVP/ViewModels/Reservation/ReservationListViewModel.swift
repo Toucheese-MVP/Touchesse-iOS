@@ -18,7 +18,7 @@ protocol ReservationTabViewModelProtocol: ObservableObject {
 }
 
 final class ReservationListViewModel: ReservationTabViewModelProtocol {
-    private let reservationService = DefaultReservationService(session: SessionManager.shared.authSession)
+    private let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     
     @Published private(set) var reservationList: [Reservation] = []
     
@@ -33,7 +33,7 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
             do {
                 print("\(nextPage)")
                 print("\(isLastPage)")
-                let result = try await reservationService.getReservations(page: nextPage)
+                let result = try await memberService.getReservations(page: nextPage)
                 reservationList += result.content
                 nextPage += 1
                 isLastPage = result.last

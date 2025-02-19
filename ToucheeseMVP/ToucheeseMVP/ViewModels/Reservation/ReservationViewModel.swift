@@ -13,7 +13,7 @@ protocol ReservationViewModelProtocol {
 }
 
 final class ReservationViewModel: ObservableObject, ReservationViewModelProtocol {
-    private let reservationService = DefaultReservationService(session: SessionManager.shared.authSession)
+    private let reservationService = DefaultMemberService(session: SessionManager.shared.authSession)
     private let authManager = AuthenticationManager.shared
     
     let studio: Studio
