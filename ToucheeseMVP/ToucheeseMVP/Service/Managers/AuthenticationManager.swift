@@ -15,8 +15,8 @@ enum AuthStatus {
 
 final class AuthenticationManager: ObservableObject {
     static let shared = AuthenticationManager()
-    private let networkManager = NetworkManager.shared
     private let keychainManager = KeychainManager.shared
+    private let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
     
     private init() {}
     
@@ -82,7 +82,7 @@ final class AuthenticationManager: ObservableObject {
         }
         
         /// 토큰 재발행 요청, 실패 시 로그아웃 상태 리턴
-        guard let reissueTokenResponse = await reissueToken(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
+        guard let reissueTokenResponse = await requestReissueTokenToServer(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
             // Refresh 토큰이 만료된 경우 - 기존 데이터 삭제(로그아웃 처리)
             await resetAllAuthDatas()
             return authStatus
@@ -120,6 +120,29 @@ final class AuthenticationManager: ObservableObject {
         failedAuthentication()
     }
     
+    /// 토큰 갱신
+    @MainActor
+    func reissueToken() async {
+        /// 저장된 토큰을 가져오거나 저장된 토큰이 없을 경우 리턴
+        guard let tokens = getTokensFromKeychain() else {
+            return
+        }
+        
+        /// 토큰 재발행 요청, 실패 시 리턴
+        guard let reissueTokenResponse = await requestReissueTokenToServer(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
+            return
+        }
+        
+        /// reissueTokenResponse 헤더의 accessToken 접근
+        guard let accessToken = reissueTokenResponse.headers?["Authorization"]?.removeBearer else {
+            return
+        }
+                
+        /// 계정 정보 업데이트
+        updateAuthenticationInfo(reissueTokenResponse, accessToken)
+    }
+    
+    
     /// 키체인에 저장된 토큰을 가져오는 함수
     private func getTokensFromKeychain() -> (refreshToken: String, deviceId: String)? {
         guard let refreshToken = keychainManager.read(forAccount: .refreshToken) else { return nil }
@@ -129,11 +152,12 @@ final class AuthenticationManager: ObservableObject {
     }
     
     /// 서버에 토큰 재발행을 요청하는 함수
-    private func reissueToken(refreshToken: String, deviceId: String) async -> ReissueTokenResponse? {
+    private func requestReissueTokenToServer(refreshToken: String, deviceId: String) async -> ReissueTokenResponse? {
         let request = ReissueTokenRequest(refreshToken: refreshToken, deviceId: deviceId)
-        
+            
         do {
-            let response = try await networkManager.reissueToken(request)
+            // let response = try await networkManager.reissueToken(request)
+            let response = try await tokenService.reissueToken(request)
             return response
         } catch {
             print("reissueToken error:\(error.localizedDescription)")

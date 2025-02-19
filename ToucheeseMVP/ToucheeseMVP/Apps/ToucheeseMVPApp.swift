@@ -98,7 +98,6 @@ struct ToucheeseMVPApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     private let keychainManager = KeychainManager.shared
-    private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
     
     init() {

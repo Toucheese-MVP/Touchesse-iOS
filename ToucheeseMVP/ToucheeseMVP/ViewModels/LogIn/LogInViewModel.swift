@@ -20,9 +20,9 @@ protocol LoginViewModelProtocol: ObservableObject {
 
 final class LogInViewModel: LoginViewModelProtocol {
     // MARK: - Datas
-    private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
     private let keychainManager = KeychainManager.shared
+    private let authService = DefualtAuthService(session: SessionManager.shared.authSession)
 
     // MARK: - Logics
     /// 카카오 로그인 처리
@@ -53,7 +53,7 @@ final class LogInViewModel: LoginViewModelProtocol {
     /// 카카오 로그인
     private func loginwithKakaoTalk() async -> OAuthToken? {
         do {
-            let result = try await networkManager.loginWithKakaoTalk()
+            let result = try await authService.loginWithKakaoTalk()
             return result
         } catch {
             print("카카오 로그인 에러 \(error)")
@@ -64,7 +64,7 @@ final class LogInViewModel: LoginViewModelProtocol {
     /// 카카오 유저 정보 가져오기
     private func getKakaoUserInfo() async -> User? {
         do {
-            let userInfo = try await networkManager.fetchKakaoUserInfo()
+            let userInfo = try await authService.fetchKakaoUserInfo()
             return userInfo
         } catch {
             print("유저 정보 가져오기 실패 \(error.localizedDescription)")
@@ -78,7 +78,7 @@ final class LogInViewModel: LoginViewModelProtocol {
             do {
                 guard let idToken = kakaoUserInfo.idToken else { return nil }
             
-                let response = try await networkManager
+                let response = try await authService
                     .postKakaoUserInfoToServer(
                         KakaoLoginRequest(
                             idToken: idToken,
@@ -103,7 +103,7 @@ final class LogInViewModel: LoginViewModelProtocol {
                 return nil
             }
                         
-            let response = try await networkManager
+            let response = try await authService
                 .postAppleUserInfoToServer(
                     AppleLoginRequest(idToken: idTokenString,
                                       platform: SocialType.APPLE.rawValue,
