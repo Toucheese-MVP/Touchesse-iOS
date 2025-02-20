@@ -45,8 +45,7 @@ protocol PrivateCalendarViewModelProtocolLogic {
 
 final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarViewModelProtocolLogic {
     // MARK: - Datas
-    /// 네트워크 매니저
-    private let networkManager = NetworkManager.shared
+    private let studioService = DefaultStudioService(session: SessionManager.shared.baseSession)
     
     /// 스튜디오 ID
     private let studioID: Int
@@ -212,7 +211,7 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
         let dateString = date.toString(format: .studioCalendarRequest)
         
         do {
-            studioCalendarEntities = try await networkManager.getStudioCalendar(studioId: studioID, yearMonth: dateString)
+            studioCalendarEntities = try await studioService.getStudioCalendar(studioId: studioID, yearMonth: dateString)
         } catch {
             print("fetchStudioCalendar ERROR \(error.localizedDescription)")
         }

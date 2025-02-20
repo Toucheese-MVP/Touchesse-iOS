@@ -9,7 +9,8 @@ import Foundation
 
 final class ProductDetailViewModel: ObservableObject {
     // MARK: - Data
-    let networkManager = NetworkManager.shared
+    private let productService = DefaultProductService(session: SessionManager.shared.baseSession)
+    
     
     @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetailEntity
@@ -106,7 +107,7 @@ final class ProductDetailViewModel: ObservableObject {
     /// ProductDetail 정보를 네트워크 통신을 통해 가져오는 함수
     private func fetchProductDetail() async {
         do {
-            productDetail = try await networkManager.getProductDetail(productId: product.id)
+            productDetail = try await productService.getProductDetail(productId: product.id)
         } catch {
             print("Fetch ProductDetail Error: \(error.localizedDescription)")
         }

@@ -91,7 +91,6 @@ extension AppDelegate: MessagingDelegate {
 @main
 struct ToucheeseMVPApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
-    @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
     @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
     @StateObject private var studioConceptViewModel = StudioConceptViewModel()
@@ -99,7 +98,6 @@ struct ToucheeseMVPApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     private let keychainManager = KeychainManager.shared
-    private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
     
     init() {
@@ -111,7 +109,6 @@ struct ToucheeseMVPApp: App {
         WindowGroup {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
-                .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
                 .environmentObject(studioLikeListViewModel)
                 .environmentObject(studioConceptViewModel)

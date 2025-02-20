@@ -13,7 +13,7 @@ protocol ReservationViewModelProtocol {
 }
 
 final class ReservationViewModel: ObservableObject, ReservationViewModelProtocol {
-    private let networkmanager = NetworkManager.shared
+    private let reservationService = DefaultMemberService(session: SessionManager.shared.authSession)
     private let authManager = AuthenticationManager.shared
     
     let studio: Studio
@@ -93,7 +93,7 @@ final class ReservationViewModel: ObservableObject, ReservationViewModelProtocol
         )
         
         do {
-            let result = try await networkmanager.postReservationInstant(reservation: reservationRequestType).status
+            let result = try await reservationService.postReservationInstant(reservation: reservationRequestType).status
             return result
            
         } catch {

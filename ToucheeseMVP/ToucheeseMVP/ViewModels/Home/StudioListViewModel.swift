@@ -10,8 +10,7 @@ import SwiftUI
 
 final class StudioListViewModel: ObservableObject {
     // MARK: - Data
-    // 네트워크 매니저
-    private let networkManager = NetworkManager.shared
+    private let conceptService = DefaultConceptService(session: SessionManager.shared.baseSession)
     
     // 계정 및 권한 매니저
     private let authManager = AuthenticationManager.shared
@@ -188,7 +187,7 @@ final class StudioListViewModel: ObservableObject {
             )
             
             do {
-                let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
+                let studioEntity = try await conceptService.getConceptedStudioList(conceptedStudioRequest: request)
                 
                 studioDatas += studioEntity.studio
                 currentPage = studioEntity.pageable.pageNumber
@@ -222,7 +221,7 @@ final class StudioListViewModel: ObservableObject {
         )
         
         do {
-            let studioEntity = try await networkManager.getConceptedStudioList(conceptedStudioRequest: request)
+            let studioEntity = try await conceptService.getConceptedStudioList(conceptedStudioRequest: request)
             
             studioDatas = studioEntity.studio
             currentPage = studioEntity.pageable.pageNumber

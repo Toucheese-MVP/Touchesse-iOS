@@ -69,3 +69,11 @@ extension String {
         }
     }
 }
+
+// MARK: UserDefaults에서 가져온 String 값을 SocialType으로 변환하는 확장자
+extension String {
+    func toSocialType() -> SocialType? {
+        return SocialType(rawValue: self)
+    }
+}
+

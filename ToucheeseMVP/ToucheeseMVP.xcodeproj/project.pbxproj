@@ -297,7 +297,7 @@
 				CODE_SIGN_ENTITLEMENTS = ToucheeseMVP/Resources/ToucheeseMVP.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ToucheeseMVP/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ToucheeseMVP/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = XUZ4CWYRGJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -335,7 +335,7 @@
 				CODE_SIGN_ENTITLEMENTS = ToucheeseMVP/Resources/ToucheeseMVP.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ToucheeseMVP/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ToucheeseMVP/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = XUZ4CWYRGJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
