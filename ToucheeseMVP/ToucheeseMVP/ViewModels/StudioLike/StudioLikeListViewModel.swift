@@ -16,7 +16,6 @@ final class StudioLikeListViewModel: ObservableObject {
     }
     
     private let authManager = AuthenticationManager.shared
-    private let networkManager = NetworkManager.shared
     
     @MainActor
     func fetchLikedStudios() async {

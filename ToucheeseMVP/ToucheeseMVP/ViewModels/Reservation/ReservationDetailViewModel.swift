@@ -12,7 +12,6 @@ protocol ReservationDetailViewModelProtocol: ObservableObject {
 }
 
 final class ReservationDetailViewModel: ReservationDetailViewModelProtocol {
-    let networkManager = NetworkManager.shared
     let authManager = AuthenticationManager.shared
     
     @Published private(set) var reservation: Reservation

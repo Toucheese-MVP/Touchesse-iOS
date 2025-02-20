@@ -20,12 +20,13 @@ protocol LoginViewModelProtocol: ObservableObject {
 
 final class LogInViewModel: LoginViewModelProtocol {
     // MARK: - Datas
-    private let networkManager = NetworkManager.shared
     private let authManager = AuthenticationManager.shared
     private let keychainManager = KeychainManager.shared
+    private let authService = DefualtAuthService(session: SessionManager.shared.authSession)
 
     // MARK: - Logics
     /// 카카오 로그인 처리
+    // MARK: TODO: handleKakaoTalkLogin과 handleAppleLogin 파라미터로 소셜 로그인 타입을 받아서 하나로 합칠 수 있을듯
     func handleKakaoTalkLogin() async {
         // 카카오 로그인, 리턴 값으로 유저 정보 받아오기
         guard let kakaoUserInfo = await loginwithKakaoTalk() else { return }
@@ -34,7 +35,7 @@ final class LogInViewModel: LoginViewModelProtocol {
         guard let response = await postKakaoUserInfoToServer(kakaoUserInfo: kakaoUserInfo) else { return }
         
         // 소셜 로그인 응답값 처리
-        await handleSocialLogigResponse(response)
+        await handleSocialLogigResponse(response, SocialType.KAKAO)
     }
     
     /// 애플 로그인 처리
@@ -46,13 +47,13 @@ final class LogInViewModel: LoginViewModelProtocol {
         guard let response = await postAppleUserInfoToServer(appleUserInfo: appleIDCredential) else { return }
         
         // 소셜 로그인 응답값 처리
-        await handleSocialLogigResponse(response)
+        await handleSocialLogigResponse(response, SocialType.APPLE)
     }
     
     /// 카카오 로그인
     private func loginwithKakaoTalk() async -> OAuthToken? {
         do {
-            let result = try await networkManager.loginWithKakaoTalk()
+            let result = try await authService.loginWithKakaoTalk()
             return result
         } catch {
             print("카카오 로그인 에러 \(error)")
@@ -63,7 +64,7 @@ final class LogInViewModel: LoginViewModelProtocol {
     /// 카카오 유저 정보 가져오기
     private func getKakaoUserInfo() async -> User? {
         do {
-            let userInfo = try await networkManager.fetchKakaoUserInfo()
+            let userInfo = try await authService.fetchKakaoUserInfo()
             return userInfo
         } catch {
             print("유저 정보 가져오기 실패 \(error.localizedDescription)")
@@ -77,7 +78,7 @@ final class LogInViewModel: LoginViewModelProtocol {
             do {
                 guard let idToken = kakaoUserInfo.idToken else { return nil }
             
-                let response = try await networkManager
+                let response = try await authService
                     .postKakaoUserInfoToServer(
                         KakaoLoginRequest(
                             idToken: idToken,
@@ -102,7 +103,7 @@ final class LogInViewModel: LoginViewModelProtocol {
                 return nil
             }
                         
-            let response = try await networkManager
+            let response = try await authService
                 .postAppleUserInfoToServer(
                     AppleLoginRequest(idToken: idTokenString,
                                       platform: SocialType.APPLE.rawValue,
@@ -118,8 +119,9 @@ final class LogInViewModel: LoginViewModelProtocol {
     /// 소셜 로그인 응답값 처리
     ///  1. 키체인에 토큰 저장
     ///  2. 유저 정보 갱신
-    ///  3. 로그인 상태 갱신
-    private func handleSocialLogigResponse(_ socialLoginRespons: SocialLoginResponse) async {
+    ///  3. 로그인 플랫폼 갱신
+    ///  4. 로그인 상태 갱신
+    private func handleSocialLogigResponse(_ socialLoginRespons: SocialLoginResponse, _ socialType: SocialType) async {
         // 응답값의 헤더의 accessToken에 접근
         guard let accessToken = socialLoginRespons.headers?["Authorization"]?.removeBearer else { return }
         
@@ -134,6 +136,9 @@ final class LogInViewModel: LoginViewModelProtocol {
         authManager.saveMemberInfo(memberNickname: socialLoginRespons.nickname,
                                    memberEmail: socialLoginRespons.email,
                                    memberId: socialLoginRespons.memberId)
+        
+        // 로그인 플랫폼 갱신
+        UserDefaultsManager.set(socialType.rawValue, for: UserDefaultsKey.loginedPlatform)
                 
         // 로그인 상태 갱신
         await authManager.successfulAuthentication()

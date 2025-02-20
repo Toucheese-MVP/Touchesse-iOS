@@ -9,7 +9,7 @@ import Foundation
 
 final class StudioConceptViewModel: ObservableObject {
     // MARK: - Data
-    let networkManager = NetworkManager.shared
+    let coceptService = DefaultConceptService(session: SessionManager.shared.baseSession)
     
     @Published var concepts: [StudioConceptEntity] = []
     
@@ -22,7 +22,7 @@ final class StudioConceptViewModel: ObservableObject {
     @MainActor
     private func fetchConcepts() async {
         do {
-            concepts = try await networkManager.getStudioConcept()
+            concepts = try await coceptService.getStudioConcept()
             print("\(concepts)")
         } catch {
             print("fetchConcepts Error: \(error.localizedDescription)")
