@@ -52,15 +52,13 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                 .animation(.easeInOut, value: viewModel.reservationList)
             }
             .padding(.horizontal)
-            
-            if viewModel.reservationList.isEmpty {
-                CustomEmptyView(viewType: .reservation)
-            }
-            
+
             if authManager.authStatus == .notAuthenticated {
                 CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
                     isShowingLogInView.toggle()
                 })
+            } else if viewModel.reservationList.isEmpty {
+                CustomEmptyView(viewType: .reservation)
             }
         }
         .task {
