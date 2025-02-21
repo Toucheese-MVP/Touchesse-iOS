@@ -42,7 +42,7 @@ final class LogInViewModel: LoginViewModelProtocol {
     func handleAppleLogin(_ authResults: ASAuthorization) async {
         // 애플 ID 정보
         guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential else { return }
-    
+        
         // 서버로 유저 정보 전송
         guard let response = await postAppleUserInfoToServer(appleUserInfo: appleIDCredential) else { return }
         
@@ -133,7 +133,7 @@ final class LogInViewModel: LoginViewModelProtocol {
         )
         
         // 유저 정보 갱신
-        authManager.saveMemberInfo(memberNickname: socialLoginRespons.nickname,
+        await authManager.saveMemberInfo(memberNickname: socialLoginRespons.nickname,
                                    memberEmail: socialLoginRespons.email,
                                    memberId: socialLoginRespons.memberId)
         
