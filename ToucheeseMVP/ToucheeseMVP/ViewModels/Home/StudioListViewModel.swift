@@ -226,6 +226,7 @@ final class StudioListViewModel: ObservableObject {
             studioDatas = studioEntity.studio
             currentPage = studioEntity.pageable.pageNumber
             isLastPage = studioEntity.last
+            studioCount = studioEntity.totalElements
             
             isStudioLoading = false
         } catch {
