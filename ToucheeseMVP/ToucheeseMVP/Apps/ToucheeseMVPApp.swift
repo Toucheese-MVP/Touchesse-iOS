@@ -94,6 +94,7 @@ struct ToucheeseMVPApp: App {
     @StateObject private var navigationManager = NavigationManager()
     @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
     @StateObject private var studioConceptViewModel = StudioConceptViewModel()
+    @StateObject private var reservationViewModel = ReservationListViewModel()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -112,6 +113,7 @@ struct ToucheeseMVPApp: App {
                 .environmentObject(navigationManager)
                 .environmentObject(studioLikeListViewModel)
                 .environmentObject(studioConceptViewModel)
+                .environmentObject(reservationViewModel)
                 .preferredColorScheme(.light)
                 .onOpenURL(perform: { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
