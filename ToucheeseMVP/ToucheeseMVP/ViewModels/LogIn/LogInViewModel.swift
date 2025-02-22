@@ -102,11 +102,15 @@ final class LogInViewModel: LoginViewModelProtocol {
                 print("Error: identityToken Error(nil or String conversion failed)")
                 return nil
             }
-                        
+            
+            // 이름 데이터 가져오기
+            let fullName = (appleUserInfo.fullName?.familyName ?? "") + (appleUserInfo.fullName?.givenName ?? "")
+            
             let response = try await authService
                 .postAppleUserInfoToServer(
                     AppleLoginRequest(idToken: idTokenString,
                                       platform: SocialType.APPLE.rawValue,
+                                      username: fullName,
                                       deviceId: keychainManager.read(forAccount: .deviceId)))
             
             return response
