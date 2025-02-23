@@ -61,6 +61,7 @@ final class AuthenticationManager: ObservableObject {
     }
     
     /// 로그인 후 멤버 정보 저장
+    @MainActor
     func saveMemberInfo(memberNickname: String, memberEmail: String, memberId: Int) {
         self.memberNickname = memberNickname
         self.memberEmail = memberEmail
@@ -96,7 +97,7 @@ final class AuthenticationManager: ObservableObject {
                 
         // MARK: 로그인 상태
         /// 계정 정보 업데이트
-        updateAuthenticationInfo(reissueTokenResponse, accessToken)
+        await updateAuthenticationInfo(reissueTokenResponse, accessToken)
         
         /// 로그인 상태로 변경
         await successfulAuthentication()
@@ -166,6 +167,7 @@ final class AuthenticationManager: ObservableObject {
     }
     
     /// 토큰 재발행 성공 후 계정 정보 업데이트
+    @MainActor
     private func updateAuthenticationInfo(_ reissueTokenResponse: ReissueTokenResponse, _ accessToken: String) {
         saveMemberInfo(memberNickname: reissueTokenResponse.name, memberEmail: reissueTokenResponse.email, memberId: reissueTokenResponse.memberId)
         updateOrCreateTokens(accessToken: accessToken, refreshToken: reissueTokenResponse.refreshToken, deviceId: reissueTokenResponse.deviceId)

@@ -42,7 +42,7 @@ final class LogInViewModel: LoginViewModelProtocol {
     func handleAppleLogin(_ authResults: ASAuthorization) async {
         // 애플 ID 정보
         guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential else { return }
-    
+        
         // 서버로 유저 정보 전송
         guard let response = await postAppleUserInfoToServer(appleUserInfo: appleIDCredential) else { return }
         
@@ -102,11 +102,15 @@ final class LogInViewModel: LoginViewModelProtocol {
                 print("Error: identityToken Error(nil or String conversion failed)")
                 return nil
             }
-                        
+            
+            // 이름 데이터 가져오기
+            let fullName = (appleUserInfo.fullName?.familyName ?? "") + (appleUserInfo.fullName?.givenName ?? "")
+            
             let response = try await authService
                 .postAppleUserInfoToServer(
                     AppleLoginRequest(idToken: idTokenString,
                                       platform: SocialType.APPLE.rawValue,
+                                      username: fullName,
                                       deviceId: keychainManager.read(forAccount: .deviceId)))
             
             return response
@@ -133,7 +137,7 @@ final class LogInViewModel: LoginViewModelProtocol {
         )
         
         // 유저 정보 갱신
-        authManager.saveMemberInfo(memberNickname: socialLoginRespons.nickname,
+        await authManager.saveMemberInfo(memberNickname: socialLoginRespons.nickname,
                                    memberEmail: socialLoginRespons.email,
                                    memberId: socialLoginRespons.memberId)
         

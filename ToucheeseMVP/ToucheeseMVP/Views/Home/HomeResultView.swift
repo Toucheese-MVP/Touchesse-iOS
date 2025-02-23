@@ -49,7 +49,7 @@ struct HomeResultView: View {
                                     Text("총")
                                         .padding(.trailing, 3)
                                     
-                                    Text("\(studioListViewModel.studioDatas.count)")
+                                    Text("\(studioListViewModel.studioCount)")
                                         .foregroundStyle(.tcPrimary06)
                                         .font(.pretendardMedium14)
                                     

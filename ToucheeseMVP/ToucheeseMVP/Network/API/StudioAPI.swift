@@ -55,7 +55,13 @@ extension StudioAPI: TargetType {
     
     var parameters: Alamofire.Parameters? {
         switch self {
-        case .studioCalendar, .studioDetail:
+        case .studioCalendar(_, let yearMonth):
+            var params: Parameters = [:]
+            
+            params["yearMonth"] = yearMonth
+            
+            return params
+        case .studioDetail:
             return [:]
         }
     }

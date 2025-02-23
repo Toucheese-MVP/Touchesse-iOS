@@ -69,6 +69,7 @@ extension AuthAPI: TargetType {
             
             params["idToken"] = appleLoginRequest.idToken
             params["platform"] = appleLoginRequest.platform
+            params["username"] = appleLoginRequest.username
             params["deviceId"] = appleLoginRequest.deviceId
             
             return params
