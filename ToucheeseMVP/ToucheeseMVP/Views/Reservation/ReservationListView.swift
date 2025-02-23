@@ -17,54 +17,58 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    Color.clear
-                        .frame(height: 20)
-                    
-                    LazyVStack(spacing: 8) {
-                        ForEach(viewModel.reservationList, id:\.self) { reservation in
-                            Button {
-                                navigationManager.appendPath(
-                                    viewType: .reservationDetailView,
-                                    viewMaterial: ReservationDetailViewMaterial(
-                                        viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
-                                )
-                            } label: {
-                                ReservationRow(reservation: reservation)
-                            }
-                            .onAppear {
-                                if reservation == viewModel.reservationList.last {
-                                    Task {
-                                        await viewModel.getReservationList()
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-                .refreshable {
-                    Task {
-                        await viewModel.refreshAction()
-                    }
-                }
-                .animation(.easeInOut, value: viewModel.reservationList)
-            }
-            .padding(.horizontal)
-
             if authManager.authStatus == .notAuthenticated {
                 CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
                     isShowingLogInView.toggle()
                 })
             } else if viewModel.reservationList.isEmpty {
                 CustomEmptyView(viewType: .reservation)
+            } else {
+                VStack {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        Color.clear
+                            .frame(height: 20)
+                        
+                        LazyVStack(spacing: 8) {
+                            ForEach(viewModel.reservationList, id:\.self) { reservation in
+                                Button {
+                                    navigationManager.appendPath(
+                                        viewType: .reservationDetailView,
+                                        viewMaterial: ReservationDetailViewMaterial(
+                                            viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
+                                    )
+                                } label: {
+                                    ReservationRow(reservation: reservation)
+                                }
+                                .onAppear {
+                                    if reservation == viewModel.reservationList.last {
+                                        Task {
+                                            await viewModel.getReservationList()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    .refreshable {
+                        Task {
+                            await viewModel.refreshAction()
+                        }
+                    }
+                    .animation(.easeInOut, value: viewModel.reservationList)
+                }
+                .padding(.horizontal)
             }
         }
         .task {
             await viewModel.getReservationList()
         }
-        .fullScreenCover(isPresented: $isShowingLogInView) {
+        .fullScreenCover(isPresented: $isShowingLogInView, onDismiss: {
+            Task {
+                await viewModel.refreshAction()
+            }
+        }) {
             LoginView(TviewModel: LogInViewModel(),
                       isPresented: $isShowingLogInView)
         }

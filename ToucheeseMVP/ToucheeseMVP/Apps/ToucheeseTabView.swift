@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ToucheeseTabView: View {
-    @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject private var navigationManager: NavigationManager
+    @StateObject private var reservationListViewModel = ReservationListViewModel()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -22,7 +23,7 @@ struct ToucheeseTabView: View {
                 }
             case .reservation:
                 NavigationStack(path: $navigationManager.reservationPath) {
-                    ReservationListView(viewModel: ReservationListViewModel())
+                    ReservationListView(viewModel: reservationListViewModel)
                         .navigationDestination(for: ViewType.self) { viewType in
                             navigationManager.buildView(viewType: viewType)
                         }
