@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ReservationListView: View {
+struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject var viewModel: ReservationListViewModel
+    @ObservedObject var viewModel: ViewModel
     
     @State private var isShowingLogInView = false
     
