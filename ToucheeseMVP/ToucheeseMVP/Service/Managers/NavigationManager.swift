@@ -37,6 +37,18 @@ final class NavigationManager: ObservableObject {
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
+    
+    func resetNavigationPath(tab: Tab) {
+        switch tab {
+        case .home:
+            homePath.removeAll()
+        case .reservation:
+            reservationPath.removeAll()
+        case .myPage:
+            break
+        }
+    }
+    
     func goFirstView() {
         switch tabItem {
         case .home:

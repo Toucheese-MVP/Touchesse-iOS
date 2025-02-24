@@ -40,22 +40,34 @@ protocol PrivateMyPageViewModelProtocol {
     func handleAppleWithdraw() async
     /// 카카오 로그아웃 처리
     func handleKakaoWithdraw() async
+    /// 회원 탈퇴 처리
+    func handleWithdraw(_ loginedPlatform: SocialType) async
+    /// 첫번째 탭의 View Depth 초기화
+    func resetFirstTabViewDepth()
 }
 
 
 final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProtocol {
+    // MARK: Services
     let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
     let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
-    let authManager = AuthenticationManager.shared
     
+    // MARK: Managers
+    let authManager = AuthenticationManager.shared
+    let navigationManager: NavigationManager
+    
+    // MARK: Datas
     @Published private(set) var imageCacheUse: String = ""
     @Published private(set) var appVersionString: String = ""
     var contactEmailString: String = "toucheese.official@gmail.com"
     
-    init() {
+    // MARK: Init
+    init(navigationManager: NavigationManager) {
+        self.navigationManager = navigationManager
         setAppVersionString()
     }
     
+    // MARK: Functions
     /// 로그아웃 처리
     /// 모든 상태에서 강제 로그아웃 처리중(서버와 통신에 실패해도 로그아웃 처리 가능)
     func logout() async {
@@ -81,6 +93,9 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
             await authManager.resetAllAuthDatas()
             print("로그아웃 서버 전송 에러: \(error.localizedDescription)\n 강제 로그아웃 처리")
         }
+        
+        // 첫번째 탭의 View Depth 초기화
+        resetFirstTabViewDepth()
     }
     
     func withdrawl() async {
@@ -144,13 +159,16 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
     }
     
     /// 회원탈퇴 처리
-    private func handleWithdraw(_ loginedPlatform: SocialType) async {
+    func handleWithdraw(_ loginedPlatform: SocialType) async {
         switch loginedPlatform {
         case .KAKAO:
             await handleKakaoWithdraw()
         case .APPLE:
             await handleAppleWithdraw()
         }
+        
+        // 첫번째 탭의 View Depth 초기화
+        resetFirstTabViewDepth()
     }
     
     /// 애플 회원탈퇴 처리
@@ -175,5 +193,10 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
         
         // 회원 정보 삭제
         await authManager.resetAllAuthDatas()
+    }
+    
+    /// 첫번째 탭의 View Depth 초기화
+    func resetFirstTabViewDepth() {
+        navigationManager.resetNavigationPath(tab: .home)
     }
 }
