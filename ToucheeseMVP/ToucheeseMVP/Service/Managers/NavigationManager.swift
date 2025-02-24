@@ -37,7 +37,7 @@ final class NavigationManager: ObservableObject {
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
-    
+    @MainActor
     func resetNavigationPath(tab: Tab) {
         switch tab {
         case .home:

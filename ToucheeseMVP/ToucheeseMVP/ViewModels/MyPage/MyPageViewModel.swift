@@ -43,7 +43,7 @@ protocol PrivateMyPageViewModelProtocol {
     /// 회원 탈퇴 처리
     func handleWithdraw(_ loginedPlatform: SocialType) async
     /// 첫번째 탭의 View Depth 초기화
-    func resetFirstTabViewDepth()
+    func resetFirstTabViewDepth() async
 }
 
 
@@ -95,7 +95,7 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
         }
         
         // 첫번째 탭의 View Depth 초기화
-        resetFirstTabViewDepth()
+        await resetFirstTabViewDepth()
     }
     
     func withdrawl() async {
@@ -168,7 +168,7 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
         }
         
         // 첫번째 탭의 View Depth 초기화
-        resetFirstTabViewDepth()
+        await resetFirstTabViewDepth()
     }
     
     /// 애플 회원탈퇴 처리
@@ -196,7 +196,7 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
     }
     
     /// 첫번째 탭의 View Depth 초기화
-    func resetFirstTabViewDepth() {
-        navigationManager.resetNavigationPath(tab: .home)
+    func resetFirstTabViewDepth() async {
+        await navigationManager.resetNavigationPath(tab: .home)
     }
 }
