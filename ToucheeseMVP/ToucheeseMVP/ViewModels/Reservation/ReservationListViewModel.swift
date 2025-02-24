@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol ReservationTabViewModelProtocol: ObservableObject {
     var reservationList: [Reservation] { get }
@@ -22,8 +23,14 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
     
     @Published private(set) var reservationList: [Reservation] = []
     
+    private var cancellables = Set<AnyCancellable>()
     private var nextPage = 0
     private var isLastPage = false
+    
+    init() {
+        subscribeRefreshReservation()
+    }
+    
     
     //MARK: - Network
     
@@ -51,5 +58,16 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
         nextPage = 0
         isLastPage = false
         await getReservationList()
+    }
+    
+    private func subscribeRefreshReservation() {
+        NotificationManager.shared.refreshReservationPublisher
+            .sink { [weak self] _ in
+                Task {
+                    await self?.refreshAction()
+                    print("예약 내역이 갱신")
+                }
+            }
+            .store(in: &cancellables)
     }
 }
