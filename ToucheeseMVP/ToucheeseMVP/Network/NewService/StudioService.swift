@@ -14,6 +14,8 @@ protocol StudioService {
     func getStudioDetail(studioID: Int) async throws -> StudioDetailEntity
     /// 스튜디오 리뷰 목록 조회
     func getStudioReviewList(studioId: Int) async throws -> StudioReviewEntity
+    /// 특정 리뷰 상세 조회
+    func getReviewDetail(studioId: Int, reviewId: Int) async throws -> ReviewDetailEntity
 }
 
 final class DefaultStudioService: BaseService { }
@@ -40,8 +42,15 @@ extension DefaultStudioService: StudioService {
     }
     
     func getStudioReviewList(studioId: Int) async throws -> StudioReviewEntity {
-        let request = StudioAPI.getStudioReviewList(studioID: studioId)
+        let request = StudioAPI.studioReviewList(studioID: studioId)
         let result = try await performRequest(request, decodingType: StudioReviewEntity.self)
+        
+        return result
+    }
+    
+    func getReviewDetail(studioId: Int, reviewId: Int) async throws -> ReviewDetailEntity {
+        let request = StudioAPI.reviewDetail(studioID: studioId, reviewID: reviewId)
+        let result = try await performRequest(request, decodingType: ReviewDetailEntity.self)
         
         return result
     }

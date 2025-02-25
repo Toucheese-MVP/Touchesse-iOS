@@ -11,3 +11,10 @@ struct StudioReviewEntity: Decodable {
     let id: Int
     let firstImage: String
 }
+
+struct ReviewDetailEntity: Decodable {
+    let id: Int
+    let content: String
+    let rating: Int
+    let reviewImages: [String]
+}
