@@ -18,6 +18,11 @@ protocol ReservationTabViewModelProtocol: ObservableObject {
   
 }
 
+protocol PrivateReservationTabViewModelProtocolLogic {
+    /// 예약 내역 갱신 이벤트를 구독
+    func subscribeRefreshReservation()
+}
+
 final class ReservationListViewModel: ReservationTabViewModelProtocol {
     private let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     
@@ -60,7 +65,8 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
         await getReservationList()
     }
     
-    private func subscribeRefreshReservation() {
+    /// 예약 내역 갱신 이벤트를 구독
+    func subscribeRefreshReservation() {
         NotificationManager.shared.refreshReservationPublisher
             .sink { [weak self] _ in
                 Task {
