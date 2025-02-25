@@ -12,6 +12,8 @@ protocol StudioService {
     func getStudioCalendar(studioId: Int, yearMonth: String?) async throws -> [StudioCalendarEntity]
     /// 스튜디오 상세 데이터 요청
     func getStudioDetail(studioID: Int) async throws -> StudioDetailEntity
+    /// 스튜디오 리뷰 목록 조회
+    func getStudioReviewList(studioId: Int) async throws -> StudioReviewEntity
 }
 
 final class DefaultStudioService: BaseService { }
@@ -35,5 +37,12 @@ extension DefaultStudioService: StudioService {
         )
     
         return studioDetailEntity
+    }
+    
+    func getStudioReviewList(studioId: Int) async throws -> StudioReviewEntity {
+        let request = StudioAPI.getStudioReviewList(studioID: studioId)
+        let result = try await performRequest(request, decodingType: StudioReviewEntity.self)
+        
+        return result
     }
 }

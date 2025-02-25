@@ -13,6 +13,8 @@ enum StudioAPI {
     case studioCalendar(studioID: Int, yearMonth: String?)
     /// 스튜디오 상세 데이터 요청
     case studioDetail(studioID: Int)
+    /// 스튜디오 리뷰 목록 조회
+    case getStudioReviewList(studioID: Int)
 }
 
 extension StudioAPI: TargetType {
@@ -29,26 +31,28 @@ extension StudioAPI: TargetType {
             return "/\(studioId)/calendars"
         case .studioDetail(let studioId):
             return "/\(studioId)"
+        case .getStudioReviewList(let studioId):
+            return "\(studioId)/reviews"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .studioCalendar, .studioDetail:
+        case .studioCalendar, .studioDetail, .getStudioReviewList:
             return .get
         }
     }
     
     var headers: Alamofire.HTTPHeaders? {
         switch self {
-        case .studioCalendar, .studioDetail:
+        case .studioCalendar, .studioDetail, .getStudioReviewList:
             HeaderType.json.value
         }
     }
     
     var encoding: ParameterEncoding {
         switch self {
-        case .studioCalendar, .studioDetail:
+        case .studioCalendar, .studioDetail, .getStudioReviewList:
             EncodingType.get.value
         }
     }
@@ -61,7 +65,7 @@ extension StudioAPI: TargetType {
             params["yearMonth"] = yearMonth
             
             return params
-        case .studioDetail:
+        case .studioDetail, .getStudioReviewList:
             return [:]
         }
     }
