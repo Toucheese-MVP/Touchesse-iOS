@@ -246,5 +246,5 @@ fileprivate struct MyPageHorizontalView<RightView: View>: View {
 }
 
 #Preview {
-    MyPageView(myPageViewModel: TempMyPageViewModel())
+    MyPageView(myPageViewModel: TempMyPageViewModel(navigationManager: NavigationManager()))
 }

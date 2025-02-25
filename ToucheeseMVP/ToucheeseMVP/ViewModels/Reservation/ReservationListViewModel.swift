@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol ReservationTabViewModelProtocol: ObservableObject {
     var reservationList: [Reservation] { get }
@@ -17,13 +18,24 @@ protocol ReservationTabViewModelProtocol: ObservableObject {
   
 }
 
+protocol PrivateReservationTabViewModelProtocolLogic {
+    /// 예약 내역 갱신 이벤트를 구독
+    func subscribeRefreshReservation()
+}
+
 final class ReservationListViewModel: ReservationTabViewModelProtocol {
     private let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     
     @Published private(set) var reservationList: [Reservation] = []
     
+    private var cancellables = Set<AnyCancellable>()
     private var nextPage = 0
     private var isLastPage = false
+    
+    init() {
+        subscribeRefreshReservation()
+    }
+    
     
     //MARK: - Network
     
@@ -51,5 +63,17 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
         nextPage = 0
         isLastPage = false
         await getReservationList()
+    }
+    
+    /// 예약 내역 갱신 이벤트를 구독
+    func subscribeRefreshReservation() {
+        NotificationManager.shared.refreshReservationPublisher
+            .sink { [weak self] _ in
+                Task {
+                    await self?.refreshAction()
+                    print("예약 내역이 갱신")
+                }
+            }
+            .store(in: &cancellables)
     }
 }
