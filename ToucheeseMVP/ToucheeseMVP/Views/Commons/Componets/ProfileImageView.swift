@@ -15,7 +15,17 @@ struct ProfileImageView: View {
     var body: some View {
         if let url = URL(string: imageString) {
             KFImage(url)
-                .placeholder { ProgressView() }
+                .placeholder {
+                    Circle()
+                        .strokeBorder(.tcGray03, lineWidth: 1)
+                        .frame(width: size, height: size)
+                        .background {
+                            Image(.toucheeseDefault)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(3)
+                        }
+                }
                 .resizable()
                 .downsampling(size: CGSize(width: 150, height: 150))
                 .fade(duration: 0.25)
