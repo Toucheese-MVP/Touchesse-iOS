@@ -14,6 +14,8 @@ enum MemberAPI {
     /// 예약 내역 불러오기
     case getReservation(Int)
     case cleanup
+    /// 예약 취소
+    case cancelReservation(CancelReservationRequest)
 }
 
 extension MemberAPI: TargetType {
@@ -32,6 +34,8 @@ extension MemberAPI: TargetType {
             return "/reservations?page=\(page)"
         case .cleanup:
             return "/cleanup"
+        case .cancelReservation(let request):
+            return "/reservations/\(request.reservationID)"
         }
     }
     
@@ -43,12 +47,14 @@ extension MemberAPI: TargetType {
             return .get
         case .cleanup:
             return .delete
+        case .cancelReservation:
+            return .put
         }
     }
     
     var headers: Alamofire.HTTPHeaders? {
         switch self {
-        case .reservationInstant, .getReservation, .cleanup:
+        case .reservationInstant, .getReservation, .cleanup, .cancelReservation:
             HeaderType.jsonWithAccessToken.value
         }
     }
@@ -61,6 +67,8 @@ extension MemberAPI: TargetType {
             EncodingType.get.value
         case .cleanup:
             EncodingType.delete.value
+        case .cancelReservation:
+            EncodingType.put.value
         }
     }
     
@@ -84,6 +92,12 @@ extension MemberAPI: TargetType {
             return params
         case .getReservation, .cleanup:
             return [:]
+        case .cancelReservation(let request):
+            var params: Parameters = [:]
+            params["createDate"] = request.createDate
+            params["createTime"] = request.createTime
+            params["status"] = request.status
+            return params
         }
     }
     

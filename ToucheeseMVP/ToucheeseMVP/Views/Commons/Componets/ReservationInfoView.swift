@@ -19,7 +19,7 @@ struct ReservationInfoView: View {
                 VStack {
                     LeadingTextView(text: "예약 정보")
                         .padding(.bottom, 15)
-                    
+                                      
                     RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(.tcGray03, lineWidth: 1)
                         .background(.white)
