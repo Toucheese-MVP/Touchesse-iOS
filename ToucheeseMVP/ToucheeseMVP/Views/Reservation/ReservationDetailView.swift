@@ -12,6 +12,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
     @EnvironmentObject private var navigationManager: NavigationManager
     @ObservedObject var viewModel: ViewModel
     
+
     @State private var isShowingReservationCancelAlert = false
     @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
@@ -85,13 +86,13 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                             )
                         }
                         
-//                        if tempViewModel.isShowingReservationCancelButton() {
-//                            StrokeBottomButton(title: "예약 취소하기") {
-//                                withAnimation(.easeOut(duration: 0.15)) {
-//                                    isShowingReservationCancelAlert.toggle()
-//                                }
-//                            }
-//                        }
+                        if viewModel.isShowingReservationCancelButton() {
+                            StrokeBottomButton(title: "예약 취소하기") {
+                                withAnimation(.easeOut(duration: 0.15)) {
+                                    isShowingReservationCancelAlert.toggle()
+                                }
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 21)
@@ -116,29 +117,21 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
             })
             
             //TODO: 예약 취소 관련 view
-//            if isShowingReservationCancelAlert {
-//                CustomAlertView(
-//                    isPresented: $isShowingReservationCancelAlert,
-//                    alertType: .reservationCancel
-//                ) {
-//                    isShowingReservationCancelCompleteAlert.toggle()
-//                    
-//                    Task {
-////                        await tempViewModel.cancelReservation(reservationID: tempReservation.id)
-////                        await reservationListViewModel.fetchReservations()
-////                        await reservationListViewModel.fetchPastReservations()
-//                    }
-//                }
-//            }
-//            
-//            if isShowingReservationCancelCompleteAlert {
-//                CustomAlertView(
-//                    isPresented: $isShowingReservationCancelCompleteAlert,
-//                    alertType: .reservationCancelComplete
-//                ) {
-//                    navigationManager.pop(1)
-//                }
-//            }
+            if isShowingReservationCancelAlert {
+                CustomAlertView(
+                    isPresented: $isShowingReservationCancelAlert,
+                    alertType: .reservationCancel
+                ) {
+                    isShowingReservationCancelCompleteAlert.toggle()
+                    
+                    Task {
+                        // 예약 취소
+                        await viewModel.cancelReservation()
+                        // 화면 이동
+                        navigationManager.goFirstView()
+                    }
+                }
+            }
         }
         .ignoresSafeArea(edges: .bottom)
     }

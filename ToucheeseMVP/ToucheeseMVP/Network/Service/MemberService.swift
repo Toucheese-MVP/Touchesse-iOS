@@ -14,6 +14,8 @@ protocol MemberService {
     func getReservations(page: Int) async throws -> ReservationEntity
     /// 사용자 회원탈퇴
     func cleanupUser() async throws
+    /// 예약 취소
+    func cancelReservation(_ cancelReservationRequest: CancelReservationRequest) async throws
 }
 
 final class DefaultMemberService: BaseService { }
@@ -35,6 +37,11 @@ extension DefaultMemberService: MemberService {
     
     func cleanupUser() async throws {
         let request = MemberAPI.cleanup
+        _ = try await performRequest(request, decodingType: String.self)
+    }
+    
+    func cancelReservation(_ cancelReservationRequest: CancelReservationRequest) async throws {
+        let request = MemberAPI.cancelReservation(cancelReservationRequest)
         _ = try await performRequest(request, decodingType: String.self)
     }
 }
