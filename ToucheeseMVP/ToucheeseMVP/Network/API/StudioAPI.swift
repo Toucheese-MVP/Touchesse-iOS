@@ -34,9 +34,9 @@ extension StudioAPI: TargetType {
         case .studioDetail(let studioId):
             return "/\(studioId)"
         case .studioReviewList(let studioId):
-            return "\(studioId)/reviews"
+            return "/\(studioId)/reviews"
         case let .reviewDetail(studioId, reviewId):
-            return "\(studioId)/reviews/\(reviewId)"
+            return "/\(studioId)/reviews/\(reviewId)"
         }
     }
     

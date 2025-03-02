@@ -8,12 +8,12 @@
 import SwiftUI
 import Kingfisher
 
-struct StudioDetailView: View {
+struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
-    @StateObject var viewModel: StudioDetailViewModel
-
+    @ObservedObject var viewModel: ViewModel
+    
     @Namespace private var namespace
     
     @State private var selectedSegmentedControlIndex = 0
@@ -49,7 +49,7 @@ struct StudioDetailView: View {
                         ratingReviewView
                         locationView
                         workingTimeToggleButton
-
+                        
                         if isShowingWorkingTime {
                             workingTimeView
                         }
@@ -79,13 +79,13 @@ struct StudioDetailView: View {
                         .environmentObject(viewModel)
                         .padding(.horizontal, 16)
                     } else {
-                        //                        ReviewImageGridView(
-                        //                            reviews: studioDetail.reviews.content,
-                        //                            reviewsCount: studioDetail.reviewCount,
-                        //                            isPushingDetailView: $isPushingReviewDetailView
-                        //                        )
-                        //                        .environmentObject(viewModel)
-                        //                        .padding(.horizontal, 16)
+                        ReviewImageGridView(
+                            viewModel: viewModel,
+                            reviews: viewModel.reviewList,
+                            isPushingDetailView: $isPushingReviewDetailView
+                        )
+                        .environmentObject(viewModel)
+                        .padding(.horizontal, 16)
                     }
                 }
             }
@@ -96,33 +96,33 @@ struct StudioDetailView: View {
                 leftView: {
                     BackbButtonView()
                 }
-//                ,
-//                rightView: {
-//                    Button {
-//                        //                        if authManager.authStatus == .notAuthenticated {
-//                        //                            isShowingLoginAlert.toggle()
-//                        //                        }
-//                        //                        Task {
-//                        //                            if authManager.memberLikedStudios.contains(studio) {
-//                        //                                await studioListViewModel.cancelLikeStudio(
-//                        //                                    studioId: studio.id
-//                        //                                )
-//                        //                            } else {
-//                        //                                await studioListViewModel.likeStudio(
-//                        //                                    studioId: studio.id
-//                        //                                )
-//                        //                            }
-//                        //
-//                        //                            await studioLikeListViewModel.fetchLikedStudios()
-//                        //                        }
-//                    } label: {
-//                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 30, height: 30)
-//                    }
-//                    .buttonStyle(.plain)
-//                }
+                //                ,
+                //                rightView: {
+                //                    Button {
+                //                        //                        if authManager.authStatus == .notAuthenticated {
+                //                        //                            isShowingLoginAlert.toggle()
+                //                        //                        }
+                //                        //                        Task {
+                //                        //                            if authManager.memberLikedStudios.contains(studio) {
+                //                        //                                await studioListViewModel.cancelLikeStudio(
+                //                        //                                    studioId: studio.id
+                //                        //                                )
+                //                        //                            } else {
+                //                        //                                await studioListViewModel.likeStudio(
+                //                        //                                    studioId: studio.id
+                //                        //                                )
+                //                        //                            }
+                //                        //
+                //                        //                            await studioLikeListViewModel.fetchLikedStudios()
+                //                        //                        }
+                //                    } label: {
+                //                        Image(/*authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill :*/ .tcBookmark)
+                //                            .resizable()
+                //                            .scaledToFit()
+                //                            .frame(width: 30, height: 30)
+                //                    }
+                //                    .buttonStyle(.plain)
+                //                }
             )
             
             if isShowingLoginAlert {
@@ -137,7 +137,7 @@ struct StudioDetailView: View {
         .animation(.easeInOut, value: isExpanded)
         .fullScreenCover(isPresented: $isShowingLoginView) {
             LoginView(TviewModel: LogInViewModel(),
-                          isPresented: $isShowingLoginView)
+                      isPresented: $isShowingLoginView)
         }
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
@@ -147,7 +147,11 @@ struct StudioDetailView: View {
             )
         }
         .task {
-            await viewModel.fetchStudioDetail()
+            async let detail: Void = viewModel.fetchStudioDetail()
+            async let review: Void = viewModel.fetchReviewList()
+            
+            await (detail, review)
+            
         }
         //        .navigationDestination(isPresented: $isPushingReviewDetailView) {
         //            ReviewDetailView()
@@ -197,9 +201,9 @@ extension StudioDetailView {
                 selectedSegmentedControlIndex = 1
             }
             
-//            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
-//                .foregroundStyle(.tcGray10)
-//                .font(.pretendardRegular16)
+            //            Text("리뷰 \(viewModel.studioDetailEntity.reviewCount)개 >")
+            //                .foregroundStyle(.tcGray10)
+            //                .font(.pretendardRegular16)
         }
         .padding(.bottom, 4)
     }
@@ -355,17 +359,17 @@ fileprivate struct ProductListView: View {
                         .multilineTextAlignment(.leading)
                         .frame(alignment: .leading)
                     
-//                    HStack(spacing: 2) {
-//                        Image(.tcReview)
-//                            .resizable()
-//                            .frame(width: 16, height: 16)
-//                        
-//                        Text("리뷰 \(product.reviewCount)개 >")
-//                            .foregroundStyle(.tcGray08)
-//                            .font(.pretendardMedium12)
-//                    }
-//                    .padding(.vertical, 4)
-//                    .padding(.horizontal, 8)
+                    //                    HStack(spacing: 2) {
+                    //                        Image(.tcReview)
+                    //                            .resizable()
+                    //                            .frame(width: 16, height: 16)
+                    //
+                    //                        Text("리뷰 \(product.reviewCount)개 >")
+                    //                            .foregroundStyle(.tcGray08)
+                    //                            .font(.pretendardMedium12)
+                    //                    }
+                    //                    .padding(.vertical, 4)
+                    //                    .padding(.horizontal, 8)
                     
                     Spacer()
                     

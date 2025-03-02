@@ -8,11 +8,10 @@
 import SwiftUI
 import Kingfisher
 
-struct ReviewImageGridView: View {
-    @EnvironmentObject var viewModel: StudioDetailViewModel
+struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
+    @ObservedObject var viewModel: ViewModel
     
-    let reviews: [Review]?
-    let reviewsCount: Int
+    let reviews: [StudioReviewEntity]?
     @Binding var isPushingDetailView: Bool
     
     private let columns = Array(
@@ -27,36 +26,38 @@ struct ReviewImageGridView: View {
     var body: some View {
         if let reviews {
             VStack(alignment: .leading, spacing: 16) {
-                HStack(spacing: 2) {
-                    Text("리뷰")
-                        .foregroundStyle(.tcGray07)
-                        .font(.pretendardMedium18)
-                    
-                    Text("\(reviewsCount)")
-                        .foregroundStyle(.tcPrimary06)
-                        .font(.pretendardSemiBold18)
-                }
+//                HStack(spacing: 2) {
+//                    Text("리뷰")
+//                        .foregroundStyle(.tcGray07)
+//                        .font(.pretendardMedium18)
+//                    
+//                    Text("\(reviewsCount)")
+//                        .foregroundStyle(.tcPrimary06)
+//                        .font(.pretendardSemiBold18)
+//                }
                 
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(reviews) { review in
-                        KFImage(review.imageURL)
-                            .placeholder { ProgressView() }
-                            .downsampling(size: CGSize(width: 200, height: 200))
-                            .cacheMemoryOnly()
-                            .cancelOnDisappear(true)
-                            .fade(duration: 0.25)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: gridSize, height: 144)
-                            .clipShape(.rect(cornerRadius: 6))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                isPushingDetailView.toggle()
-                                
-//                                Task {
-//                                    await viewModel.fetchReviewDetail(reviewID: review.id)
-//                                }
-                            }
+                    ForEach(reviews, id: \.self) { review in
+                        if let url = URL(string: review.firstImage) {
+                            KFImage(url)
+                                .placeholder { ProgressView() }
+                                .downsampling(size: CGSize(width: 200, height: 200))
+                                .cacheMemoryOnly()
+                                .cancelOnDisappear(true)
+                                .fade(duration: 0.25)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: gridSize, height: 144)
+                                .clipShape(.rect(cornerRadius: 6))
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    isPushingDetailView.toggle()
+                                    
+                                    //                                Task {
+                                    //                                    await viewModel.fetchReviewDetail(reviewID: review.id)
+                                    //                                }
+                                }
+                        }
                     }
                 }
                 
@@ -67,12 +68,4 @@ struct ReviewImageGridView: View {
             CustomEmptyView(viewType: .review)
         }
     }
-}
-
-#Preview {
-    ReviewImageGridView(
-        reviews: Review.samples,
-        reviewsCount: Review.samples.count,
-        isPushingDetailView: .constant(false)
-    )
 }

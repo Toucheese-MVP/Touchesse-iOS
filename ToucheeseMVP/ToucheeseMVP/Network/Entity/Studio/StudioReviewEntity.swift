@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StudioReviewEntity: Decodable {
+struct StudioReviewEntity: Decodable, Hashable {
     let id: Int
     let firstImage: String
 }
