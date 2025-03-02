@@ -15,6 +15,6 @@ struct StudioReviewEntity: Decodable, Hashable {
 struct ReviewDetailEntity: Decodable {
     let id: Int
     let content: String
-    let rating: Int
+    let rating: Float
     let reviewImages: [String]
 }

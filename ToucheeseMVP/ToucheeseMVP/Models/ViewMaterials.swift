@@ -15,6 +15,7 @@ struct HomeResultViewMaterial: ViewMaterial {
 
 struct StudioDetailViewMaterial: ViewMaterial {
     var viewModel: StudioDetailViewModel
+    var reviewId: Int?
 }
 
 struct ProductDetailViewMaterial: ViewMaterial {

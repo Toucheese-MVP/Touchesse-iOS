@@ -20,7 +20,6 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
     @State private var isExpanded = false
-    @State private var isPushingReviewDetailView = false
     @State private var isBookmarked = false
     
     @State private var isShowingLoginAlert: Bool = false
@@ -81,10 +80,8 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
                     } else {
                         ReviewImageGridView(
                             viewModel: viewModel,
-                            reviews: viewModel.reviewList,
-                            isPushingDetailView: $isPushingReviewDetailView
+                            reviews: viewModel.reviewList
                         )
-                        .environmentObject(viewModel)
                         .padding(.horizontal, 16)
                     }
                 }
@@ -151,12 +148,7 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
             async let review: Void = viewModel.fetchReviewList()
             
             await (detail, review)
-            
         }
-        //        .navigationDestination(isPresented: $isPushingReviewDetailView) {
-        //            ReviewDetailView()
-        //                .environmentObject(viewModel)
-        //        }
     }
     
 }

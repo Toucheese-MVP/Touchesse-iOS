@@ -10,9 +10,9 @@ import Kingfisher
 
 struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
+    @EnvironmentObject private var navigationManager: NavigationManager
     
     let reviews: [StudioReviewEntity]?
-    @Binding var isPushingDetailView: Bool
     
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 8),
@@ -26,16 +26,6 @@ struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
     var body: some View {
         if let reviews {
             VStack(alignment: .leading, spacing: 16) {
-//                HStack(spacing: 2) {
-//                    Text("리뷰")
-//                        .foregroundStyle(.tcGray07)
-//                        .font(.pretendardMedium18)
-//                    
-//                    Text("\(reviewsCount)")
-//                        .foregroundStyle(.tcPrimary06)
-//                        .font(.pretendardSemiBold18)
-//                }
-                
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach(reviews, id: \.self) { review in
                         if let url = URL(string: review.firstImage) {
@@ -51,11 +41,10 @@ struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
                                 .clipShape(.rect(cornerRadius: 6))
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    isPushingDetailView.toggle()
-                                    
-                                    //                                Task {
-                                    //                                    await viewModel.fetchReviewDetail(reviewID: review.id)
-                                    //                                }
+                                    navigationManager.appendPath(viewType: .reviewDetailView,
+                                                                 viewMaterial: StudioDetailViewMaterial(
+                                                                    viewModel: viewModel as! StudioDetailViewModel,
+                                                                    reviewId: review.id))
                                 }
                         }
                     }
