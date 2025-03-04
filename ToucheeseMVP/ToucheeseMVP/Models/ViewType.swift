@@ -14,6 +14,7 @@ enum ViewType: Hashable {
     case productDetailView
     case reservationConfirmView
     case reservationCompleteView
+    case reviewDetailView
     
     // reservation
     case reservationDetailView

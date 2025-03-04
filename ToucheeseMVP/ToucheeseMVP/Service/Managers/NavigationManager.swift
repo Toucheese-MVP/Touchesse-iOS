@@ -91,6 +91,9 @@ final class NavigationManager: ObservableObject {
             ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
         case .reservationCompleteView:
             ReservationCompleteView()
+        case .reviewDetailView:
+            ReviewDetailView(viewModel: self.studioDetailViewMaterial!.viewModel,
+                             reviewId: self.studioDetailViewMaterial!.reviewId ?? 1)
             
         case .reservationDetailView:
             ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
@@ -138,6 +141,13 @@ final class NavigationManager: ObservableObject {
         case .reservationDetailView:
             self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
             reservationPath.append(.reservationDetailView)
+        case .reviewDetailView:
+            self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+            switch tabItem {
+            case .home: homePath.append(.reviewDetailView)
+            case .reservation: reservationPath.append(.reviewDetailView)
+            default: break
+            }
         }
     }
     
