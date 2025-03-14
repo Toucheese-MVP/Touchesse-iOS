@@ -79,7 +79,7 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                                 viewType: .studioDetailView,
                                 viewMaterial: StudioDetailViewMaterial(
                                     viewModel: StudioDetailViewModel(
-                                        studio: nil,
+                                        studio: Studio(id: reservation.studioId, name: reservation.studioName, profileImage: "", rating: 0.0, price: 0, imageUrls: []),
                                         studioId: reservation.studioId
                                     )
                                 )
