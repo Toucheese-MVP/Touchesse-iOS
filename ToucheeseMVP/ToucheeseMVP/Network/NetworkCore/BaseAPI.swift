@@ -15,6 +15,11 @@ protocol TargetType {
     var headers: HTTPHeaders? { get }
     var encoding: ParameterEncoding { get }
     var parameters: Parameters? { get }
+    var imageRequest: RequestWithImageProtocol? { get }
+}
+
+extension TargetType {
+    var imageRequest: RequestWithImageProtocol? { nil }
 }
 
 enum APIType {
@@ -25,6 +30,7 @@ enum APIType {
     case product
     case member
     case fcm
+    case questions
 }
 
 extension APIType {
@@ -46,6 +52,8 @@ extension APIType {
             return "\(server_url)/v1/members"
         case .fcm:
             return "\(server_url)/v1/fcm"
+        case .questions:
+            return "\(server_url)/v1/questions"
         }
     }
 }
@@ -53,6 +61,7 @@ extension APIType {
 enum HeaderType {
     case json
     case jsonWithAccessToken
+    case multipartForm
     
     public var value: HTTPHeaders {
         switch self {
@@ -61,6 +70,11 @@ enum HeaderType {
         case .jsonWithAccessToken:
             return ["Content-Type": "application/json",
                     "Authorization": "Bearer \(AuthenticationManager.shared.accessToken ?? "none")"]
+        case .multipartForm:
+            return [
+                "Authorization": "Bearer \(AuthenticationManager.shared.accessToken ?? "none")",
+                "Content-Type": "multipart/form-data"
+            ]
         }
     }
 }
