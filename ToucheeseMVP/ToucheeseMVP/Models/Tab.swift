@@ -11,6 +11,7 @@ enum Tab: CaseIterable {
     case home
     case reservation
 //    case likedStudios
+    case question
     case myPage
 }
 
@@ -20,7 +21,9 @@ extension Tab {
         case .home: return "홈"
         case .reservation: return "예약일정"
 //        case .likedStudios: return "찜"
+        case .question: return "문의하기"
         case .myPage: return "내정보"
+
         }
     }
     
@@ -32,6 +35,8 @@ extension Tab {
             (ImageResource.tcCalendarFill, ImageResource.tcCalendar)
 //        case .likedStudios:
 //            (ImageResource.tcBookmarkFill, ImageResource.tcBookmarkGray)
+        case .question:
+            (ImageResource.tcProfileFill, ImageResource.tcProfile)
         case .myPage:
             (ImageResource.tcProfileFill, ImageResource.tcProfile)
         }
@@ -39,7 +44,7 @@ extension Tab {
     
     var fontColor: (selected: Color, unselected: Color) {
         switch self {
-        case .home, .reservation,/* .likedStudios, */ .myPage:
+        case .home, .reservation,/* .likedStudios, */ .question, .myPage:
             (Color.tcGray10, Color.tcGray04)
         }
     }
