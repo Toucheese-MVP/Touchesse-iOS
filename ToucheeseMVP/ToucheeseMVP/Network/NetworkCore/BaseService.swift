@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import UIKit
 
 class BaseService {
     private let session: Session
@@ -17,17 +18,38 @@ class BaseService {
     
     func performRequest<T: Decodable>(_ fetchRequest: TargetType, decodingType: T.Type) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
+        var response: DataResponse<Data, AFError>
         
-        let response = await session.request(
-                    url,
-                    method: fetchRequest.method,
-                    parameters: fetchRequest.parameters,
-                    encoding: fetchRequest.encoding,
-                    headers: fetchRequest.headers
-                )
-                .validate()
-                .serializingData()
-                .response
+        
+        // imageRequest 프로토콜을 포함하는 경우 multipartFormData 처리
+        if let requestWithImage = fetchRequest.imageRequest {
+            response = await session.upload(multipartFormData: { multipartFormData in
+                fetchRequest.parameters?.forEach { key, value in
+                    multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+                }
+                
+                for (index, image) in requestWithImage.imageArray.enumerated() {
+                    print("\(requestWithImage.imageRequestName)")
+                    print(image.count)
+                    multipartFormData.append(image, withName: "\(requestWithImage.imageRequestName)[]", fileName: "images\(index).png", mimeType: "image/png")
+                }
+            }, to: url, method: .post, headers: fetchRequest.headers)
+            .validate()
+            .serializingData()
+            .response
+        } else {
+            // basic request 처리
+            response = await session.request(
+                url,
+                method: fetchRequest.method,
+                parameters: fetchRequest.parameters,
+                encoding: fetchRequest.encoding,
+                headers: fetchRequest.headers
+            )
+            .validate()
+            .serializingData()
+            .response
+        }
         
         guard let statusCode = response.response?.statusCode else {
             throw NetworkError.unknown
