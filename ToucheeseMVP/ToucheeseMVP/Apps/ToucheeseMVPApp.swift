@@ -12,36 +12,33 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate { }
+
+extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     
+    //MARK: - FCM 등록
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         
-        // 파이어베이스 설정
         FirebaseApp.configure()
         
         // 앱 실행 시 사용자에게 알림 허용 권한을 받음
         UNUserNotificationCenter.current().delegate = self
         
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound] // 필요한 알림 권한을 설정
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(
             options: authOptions,
             completionHandler: { _, _ in }
         )
         
-        // UNUserNotificationCenterDelegate를 구현한 메서드를 실행시킴
         application.registerForRemoteNotifications()
-        
-        // 파이어베이스 Meesaging 설정
         Messaging.messaging().delegate = self
         
         return true
     }
-}
-
-extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
+    
     // 백그라운드에서 푸시 알림을 탭했을 때 실행
     func application(
         _ application: UIApplication,
@@ -51,7 +48,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
         Messaging.messaging().apnsToken = deviceToken
     }
     
-    // Foreground(앱 켜진 상태)에서도 알림 오는 설정
+    // Foreground에서 알림 오는 설정
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
@@ -59,11 +56,27 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     ) {
         completionHandler([.list, .banner])
     }
-    
-    // 파이어베이스 MessagingDelegate 설정
+
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("Firebase registration token: \(String(describing: fcmToken))")
+        // 현재 등록 토큰 가져오기
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                print("Error fetching FCM toekn")
+            } else if let token = token {
+                print("FCM registration token: \(token)")
+                // 서버에 토큰 전송
+                Task {
+                    do {
+                        try await DefaultFCMService(session: SessionManager.shared.authSession)
+                            .postFCMToken(token: token)
+                    } catch {
+                        print("Post FCM token Error: \(error)")
+                    }
+                }
+            }
+        }
         
+        // 토큰 갱신 모니터링
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(
             name: Notification.Name("FCMToken"),
@@ -84,6 +97,7 @@ struct ToucheeseMVPApp: App {
     
     private let keychainManager = KeychainManager.shared
     private let authManager = AuthenticationManager.shared
+    private let fcmService = DefaultFCMService(session: SessionManager.shared.authSession)
     
     init() {
         CacheManager.configureKingfisherCache()
@@ -109,42 +123,9 @@ struct ToucheeseMVPApp: App {
                         print("로그아웃 상태")
                     case .authenticated:
                         print("로그인 상태(토큰 갱신 성공)")
-                        //                        // 예약 정보 불러오기
-                        //                        await reservationListViewModel.fetchReservations()
-                        //                        // 이전 예약 정보 불러오기
-                        //                        await reservationListViewModel.fetchPastReservations()
-                        //                        // 좋아요 표시한 스튜디오 불러오기
-                        //                        AuthenticationManager.shared.failedAuthentication()
                     }
                 }
         }
     }
-}
 
-//    /// FCM 토큰을 백엔드 서버에 POST 하는 메서드
-//    private func postDeviceTokenRegistrationData() {
-//        Task {
-//            if let fcmToken = Messaging.messaging().fcmToken,
-//               let memberId = authManager.memberId {
-//                do {
-//                    try await networkManager.performWithTokenRetry(
-//                        accessToken: authManager.accessToken,
-//                        refreshToken: authManager.refreshToken
-//                    ) { token in
-//                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
-//                            memberId: memberId,
-//                            deviceToken: fcmToken
-//                        )
-//                        try await networkManager.postDeviceTokenRegistrationData(
-//                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
-//                            accessToken: token
-//                        )
-//                    }
-//                } catch {
-//                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
-//                    authManager.logout()
-//                }
-//            }
-//        }
-//    }
-//}
+}

@@ -24,6 +24,7 @@ enum APIType {
     case studio
     case product
     case member
+    case fcm
 }
 
 extension APIType {
@@ -43,6 +44,8 @@ extension APIType {
             return "\(server_url)/v1/products"
         case .member:
             return "\(server_url)/v1/members"
+        case .fcm:
+            return "\(server_url)/v1/fcm"
         }
     }
 }
