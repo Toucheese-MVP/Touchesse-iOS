@@ -19,6 +19,11 @@ final class NavigationManager: ObservableObject {
             updateTabBarVisibility()
         }
     }
+    @Published var questionPath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
     @Published var studioLikePath: [ViewType] = [] {
         didSet {
             updateTabBarVisibility()
@@ -44,6 +49,8 @@ final class NavigationManager: ObservableObject {
             homePath.removeAll()
         case .reservation:
             reservationPath.removeAll()
+        case .question:
+            questionPath.removeAll()
         case .myPage:
             break
         }
@@ -57,6 +64,8 @@ final class NavigationManager: ObservableObject {
             reservationPath.removeAll()
 //        case .likedStudios:
 //            studioLikePath.removeAll()
+        case .question:
+            questionPath.removeAll()
         case .myPage:
             break
         }
@@ -73,6 +82,9 @@ final class NavigationManager: ObservableObject {
 //        case .likedStudios:
 //            studioLikePath.removeAll()
 //            tabItem = .reservation
+        case .question:
+            reservationPath.removeAll()
+            tabItem = .reservation
         case .myPage:
             break
         }
@@ -159,6 +171,8 @@ final class NavigationManager: ObservableObject {
             isTabBarHidden = reservationPath.count >= 1
 //        case .likedStudios:
 //            isTabBarHidden = studioLikePath.count >= 1
+        case .question:
+            break
         case .myPage:
             break
         }
@@ -172,6 +186,8 @@ final class NavigationManager: ObservableObject {
             reservationPath.removeLast(depth)
 //        case .likedStudios:
 //            studioLikePath.removeLast(depth)
+        case .question:
+            questionPath.removeLast(depth)
         case .myPage:
             break
         }
