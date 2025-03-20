@@ -46,6 +46,9 @@ final class AuthenticationManager: ObservableObject {
     @MainActor
     func successfulAuthentication() {
         authStatus = .authenticated
+        Task {
+            try await postFCMToken()
+        }
     }
     
     @MainActor
@@ -171,6 +174,17 @@ final class AuthenticationManager: ObservableObject {
     private func updateAuthenticationInfo(_ reissueTokenResponse: ReissueTokenResponse, _ accessToken: String) {
         saveMemberInfo(memberNickname: reissueTokenResponse.name, memberEmail: reissueTokenResponse.email, memberId: reissueTokenResponse.memberId)
         updateOrCreateTokens(accessToken: accessToken, refreshToken: reissueTokenResponse.refreshToken, deviceId: reissueTokenResponse.deviceId)
+    }
+    
+    private func postFCMToken() async throws {
+        // fcm token 서버에 전송
+        guard let token = KeychainManager.shared.read(forAccount: .fcmToken) else { return }
+        do {
+            try await DefaultFCMService(session: SessionManager.shared.authSession)
+                .postFCMToken(token: token)
+        } catch {
+            print("Post FCM token Error: \(error)")
+        }
     }
 }
 
