@@ -130,4 +130,5 @@ enum AccountType: String {
     case accessToken
     case refreshToken
     case deviceId
+    case fcmToken
 }

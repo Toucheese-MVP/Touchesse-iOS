@@ -60,19 +60,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         // 현재 등록 토큰 가져오기
         Messaging.messaging().token { token, error in
-            if let error = error {
+            if error != nil {
                 print("Error fetching FCM toekn")
             } else if let token = token {
                 print("FCM registration token: \(token)")
-                // 서버에 토큰 전송
-                Task {
-                    do {
-                        try await DefaultFCMService(session: SessionManager.shared.authSession)
-                            .postFCMToken(token: token)
-                    } catch {
-                        print("Post FCM token Error: \(error)")
-                    }
-                }
+                KeychainManager.shared.create(token: token, forAccount: .fcmToken)
             }
         }
         
