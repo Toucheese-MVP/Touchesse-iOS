@@ -29,7 +29,7 @@ extension FCMAPI: TargetType {
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .postFCM(let string):
+        case .postFCM:
             return .post
         }
     }
@@ -43,7 +43,7 @@ extension FCMAPI: TargetType {
     
     var encoding: any Alamofire.ParameterEncoding {
         switch self {
-        case .postFCM(let string):
+        case .postFCM:
             EncodingType.post.value
         }
     }
