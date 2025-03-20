@@ -51,10 +51,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     // Foreground에서 알림 오는 설정
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.list, .banner])
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        return [.list, .banner]
     }
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
