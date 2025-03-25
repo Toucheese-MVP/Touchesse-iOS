@@ -10,6 +10,8 @@ import SwiftUI
 struct ReservationCompleteView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     
+    @State private var isShowAlert: Bool = false
+    
     var body: some View {
         let confirmMessage = "예약 신청이 완료되었습니다!"
         let description = "스튜디오와 최종 확인 후 예약이\n확정되거나 취소되면 알림을 받을 수 있습니다."
@@ -89,6 +91,27 @@ struct ReservationCompleteView: View {
             Text("예약 신청 완료")
                 .modifier(NavigationTitleModifier())
         })
+        .onAppear {
+            let notificationCenter = UNUserNotificationCenter.current()
+            
+            notificationCenter.getNotificationSettings { settings in
+                print("😀\(settings.authorizationStatus)")
+                if settings.authorizationStatus == .denied || settings.authorizationStatus == .notDetermined {
+                    isShowAlert = true
+                }
+            }
+        }
+        .alert("알림", isPresented: $isShowAlert) {
+            Button("알림설정하러가기", role: .none) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("알림 설정하고 예약 확정 알림 받기")
+        }
+        
     }
     
     private func attributedString(string: String, targetString: String) -> AttributedString {
