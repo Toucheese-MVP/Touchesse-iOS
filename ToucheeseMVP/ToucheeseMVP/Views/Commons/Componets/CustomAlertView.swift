@@ -13,6 +13,7 @@ enum AlertType {
     case login
     case logout
     case withdrawal
+    case notificationSetting
     
     var title: String {
         switch self {
@@ -28,6 +29,7 @@ enum AlertType {
         case .login: "로그인 하시겠습니까?"
         case .logout: "정말 로그아웃 하시겠습니까?"
         case .withdrawal: "정말 회원탈퇴 하시겠습니까?"
+        case .notificationSetting: "알림 설정하고 예약 안내 받기"
         }
     }
 }
@@ -60,11 +62,11 @@ struct CustomAlertView: View {
                 
                 switch alertType {
                     // 버튼의 액션이 필요한 경우
-                case .reservationCancel, .login, .logout, .withdrawal:
+                case .reservationCancel, .login, .logout, .withdrawal, .notificationSetting:
                     HStack(spacing: 12) {
                         FillBottomButton(
                             isSelectable: true,
-                            title: "확인",
+                            title: alertType == .notificationSetting ? "설정" :"확인",
                             height: 48
                         ) {
                             isPresented.toggle()

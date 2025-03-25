@@ -71,6 +71,17 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                         }
                 }
             }
+            
+            if isShowingSettingAlert {
+                CustomAlertView(
+                    isPresented: $isShowingSettingAlert,
+                    alertType: .notificationSetting
+                ) {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+            }
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
             LoginView(TviewModel: LogInViewModel(),
@@ -79,19 +90,10 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
         .onAppear {
             myPageViewModel.calImageCacheUse()
         }
-        .alert("알림 설정", isPresented: $isShowingSettingAlert) {
-            Button("설정으로 이동하기", role: .none) {
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-            }
-            Button("취소", role: .cancel) {}
-        } message: {
-            Text("기기의 알림 설정으로 이동합니다.")
-        }
     }
     
     struct InfoView: View {
+        @EnvironmentObject private var navigationManager: NavigationManager
         @ObservedObject var viewModel: ViewModel
         @Binding var isShowingSettingAlert: Bool
         
@@ -120,6 +122,7 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                     rightView: EmptyView(),
                     action: {
                         isShowingSettingAlert = true
+                        navigationManager.isShowingAlert = true
                     }
                 )
                 
