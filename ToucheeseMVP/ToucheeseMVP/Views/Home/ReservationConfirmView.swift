@@ -70,6 +70,8 @@ struct ReservationConfirmView: View {
                 .padding(.bottom, 31)
                 
                 FillBottomButton(isSelectable: viewModel.isBottomButtonSelectable, title: "예약하기") {
+                    UIApplication.shared.hideKeyboard()
+                    
                     if !viewModel.isReserving {
                         viewModel.setIsReserving()
                         
