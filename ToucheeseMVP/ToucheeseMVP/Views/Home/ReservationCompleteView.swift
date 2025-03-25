@@ -105,7 +105,6 @@ struct ReservationCompleteView: View {
             let notificationCenter = UNUserNotificationCenter.current()
             
             notificationCenter.getNotificationSettings { settings in
-                print("😀\(settings.authorizationStatus)")
                 if settings.authorizationStatus == .denied || settings.authorizationStatus == .notDetermined {
                     isShowingSettingAlert = true
                 }
