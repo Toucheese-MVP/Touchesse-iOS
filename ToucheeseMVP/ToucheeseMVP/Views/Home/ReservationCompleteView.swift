@@ -101,15 +101,15 @@ struct ReservationCompleteView: View {
                 }
             }
         }
-        .alert("알림", isPresented: $isShowAlert) {
-            Button("알림설정하러가기", role: .none) {
+        .alert("알림 설정", isPresented: $isShowAlert) {
+            Button("설정으로 이동하기", role: .none) {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("알림 설정하고 예약 확정 알림 받기")
+            Text("알림키고 예약 확정 알림 받기")
         }
         
     }
