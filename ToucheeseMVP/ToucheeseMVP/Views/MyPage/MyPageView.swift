@@ -15,6 +15,7 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
     @State private var isShowingLogoutAlert: Bool = false
     @State private var isShowingWithdrawalAlert: Bool = false
     @State private var isShowingLoginView: Bool = false
+    @State private var isShowingSettingAlert: Bool = false
     
     var body: some View {
         ZStack {
@@ -29,7 +30,10 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                     
                     DividerView(color: .tcGray01, height: 9)
                     
-                    InfoView(viewModel: myPageViewModel)
+                    InfoView(
+                        viewModel: myPageViewModel,
+                        isShowingSettingAlert: $isShowingSettingAlert
+                    )
                     
                     if authenticationManager.authStatus == .authenticated {
                         DividerView(color: .tcGray01, height: 9)
@@ -67,6 +71,17 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                         }
                 }
             }
+            
+            if isShowingSettingAlert {
+                CustomAlertView(
+                    isPresented: $isShowingSettingAlert,
+                    alertType: .notificationSetting
+                ) {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+            }
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
             LoginView(TviewModel: LogInViewModel(),
@@ -78,7 +93,9 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
     }
     
     struct InfoView: View {
+        @EnvironmentObject private var navigationManager: NavigationManager
         @ObservedObject var viewModel: ViewModel
+        @Binding var isShowingSettingAlert: Bool
         
         var body: some View {
             VStack(spacing: 0) {
@@ -97,6 +114,15 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                         .frame(width: 24, height: 24),
                     action: {
                         viewModel.openLicenseWebView()
+                    }
+                )
+                
+                MyPageHorizontalView(
+                    leftText: "알림 설정",
+                    rightView: EmptyView(),
+                    action: {
+                        isShowingSettingAlert = true
+                        navigationManager.isShowingAlert = true
                     }
                 )
                 
