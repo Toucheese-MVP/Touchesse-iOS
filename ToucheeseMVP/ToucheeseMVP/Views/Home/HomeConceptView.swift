@@ -12,9 +12,6 @@ struct HomeConceptView: View {
     @EnvironmentObject var studioConceptViewModel: StudioConceptViewModel
     private var authenticationManager = AuthenticationManager.shared
     
-    @State private var isShowingLoginView: Bool = false
-    
-    
     private let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -30,11 +27,7 @@ struct HomeConceptView: View {
             LazyVGrid(columns: columns, spacing:12) {
                 ForEach(studioConceptViewModel.concepts) { concept in
                     Button {
-                        if authenticationManager.authStatus == .authenticated {
-                            navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
-                        } else {
-                            isShowingLoginView.toggle()
-                        }
+                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
                     } label: {
                         conceptCardView(imageString: "concept\(concept.id)", concept: concept.shortedName)
                     }
@@ -50,12 +43,6 @@ struct HomeConceptView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 325)
-        }
-        .fullScreenCover(isPresented: $isShowingLoginView) {
-            LoginView(
-                TviewModel: LogInViewModel(),
-                isPresented: $isShowingLoginView
-            )
         }
     }
     

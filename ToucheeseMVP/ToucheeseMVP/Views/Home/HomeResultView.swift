@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeResultView: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
+    private let authManager = AuthenticationManager.shared
     
     @Environment(\.dismiss) private var dismiss
     
@@ -68,14 +69,18 @@ struct HomeResultView: View {
                                     )
                                     .contentShape(.rect)
                                     .onTapGesture {
-                                        navigationManager.appendPath(
-                                            viewType: .studioDetailView,
-                                            viewMaterial: StudioDetailViewMaterial(
-                                                viewModel: StudioDetailViewModel(
-                                                    studio: studio, studioId: studio.id
+                                        if authManager.authStatus == .notAuthenticated {
+                                            isShowingLoginView.toggle()
+                                        } else {
+                                            navigationManager.appendPath(
+                                                viewType: .studioDetailView,
+                                                viewMaterial: StudioDetailViewMaterial(
+                                                    viewModel: StudioDetailViewModel(
+                                                        studio: studio, studioId: studio.id
+                                                    )
                                                 )
                                             )
-                                        )
+                                        }
                                     }
                                 }
                                 
@@ -101,15 +106,6 @@ struct HomeResultView: View {
                     NavigationBackButtonView()
                 }
             })
-            
-            if isShowingLoginAlert {
-                CustomAlertView(
-                    isPresented: $isShowingLoginAlert,
-                    alertType: .login
-                ) {
-                    isShowingLoginView.toggle()
-                }
-            }
         }
         .sheet(isPresented: $isShowingPriceFilterOptionView) {
             filterOptionView(StudioFilter.price)
