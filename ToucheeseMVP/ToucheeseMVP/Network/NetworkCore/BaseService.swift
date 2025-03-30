@@ -29,9 +29,8 @@ class BaseService {
                 }
                 
                 for (index, image) in requestWithImage.imageArray.enumerated() {
-                    print("\(requestWithImage.imageRequestName)")
-                    print(image.count)
-                    multipartFormData.append(image, withName: "\(requestWithImage.imageRequestName)[]", fileName: "images\(index).png", mimeType: "image/png")
+                    multipartFormData.append(image, withName: "\(requestWithImage.imageRequestName)", fileName: "images\(index).jpeg", mimeType: "image/jpeg")
+                    print("📷 Added Image: \(requestWithImage.imageRequestName) (FileName: images\(index).jpeg) (Size: \(image.count) bytes)")
                 }
             }, to: url, method: .post, headers: fetchRequest.headers)
             .validate()

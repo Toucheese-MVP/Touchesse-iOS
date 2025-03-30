@@ -11,7 +11,10 @@ import Alamofire
 enum QuestionsAPI {
     /// 문의하기 글 생성
     case postQuestion(QuestionRequest)
+    /// 문의 내역 불러오기
     case fetchQuestions(page: Int)
+    /// 문의 답변 내역 불러오기
+    case fetchQuestionResponse(questionId: Int)
 }
 
 extension QuestionsAPI: TargetType {
@@ -27,6 +30,8 @@ extension QuestionsAPI: TargetType {
             return ""
         case .fetchQuestions:
             return ""
+        case .fetchQuestionResponse:
+            return ""
         }
     }
     
@@ -35,6 +40,8 @@ extension QuestionsAPI: TargetType {
         case .postQuestion:
             return .post
         case .fetchQuestions:
+            return .get
+        case .fetchQuestionResponse:
             return .get
         }
     }
@@ -45,6 +52,8 @@ extension QuestionsAPI: TargetType {
             return HeaderType.multipartForm.value
         case .fetchQuestions:
             return HeaderType.jsonWithAccessToken.value
+        case .fetchQuestionResponse:
+            return HeaderType.jsonWithAccessToken.value
         }
     }
     
@@ -53,6 +62,8 @@ extension QuestionsAPI: TargetType {
         case .postQuestion:
             EncodingType.post.value
         case .fetchQuestions:
+            EncodingType.get.value
+        case .fetchQuestionResponse:
             EncodingType.get.value
         }
     }
@@ -66,10 +77,16 @@ extension QuestionsAPI: TargetType {
             params["content"] = request.content
             
             return params
-        case .fetchQuestions(page: let page):
+        case .fetchQuestions(let page):
             var params: Parameters = [:]
             
             params["page"] = page
+            
+            return params
+        case .fetchQuestionResponse(let questionId):
+            var params: Parameters = [:]
+            
+            params["questionId"] = questionId
             
             return params
         }
@@ -80,6 +97,8 @@ extension QuestionsAPI: TargetType {
         case .postQuestion(let request):
             return request
         case .fetchQuestions:
+            return nil
+        case .fetchQuestionResponse:
             return nil
         }
     }

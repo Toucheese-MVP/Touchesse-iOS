@@ -13,6 +13,8 @@ protocol QuestionsService {
     func postQuestions(_ questionReqeust: QuestionRequest) async throws
     /// 문의목록 불러오기
     func fetchQuestions(page: Int) async throws -> QuestionEntity
+    /// 문의 답변 불러오기
+    func fetchQuestionResponse(questionId: Int) async throws -> QuestionResponseEntity
 }
 
 final class DefaultQuestionsService: BaseService { }
@@ -26,6 +28,12 @@ extension DefaultQuestionsService: QuestionsService {
     func fetchQuestions(page: Int) async throws -> QuestionEntity {
         let request = QuestionsAPI.fetchQuestions(page: page)
         let result = try await performRequest(request, decodingType: QuestionEntity.self)
+        return result
+    }
+    
+    func fetchQuestionResponse(questionId: Int) async throws -> QuestionResponseEntity {
+        let request = QuestionsAPI.fetchQuestionResponse(questionId: questionId)
+        let result = try await performRequest(request, decodingType: QuestionResponseEntity.self)
         return result
     }
 }
