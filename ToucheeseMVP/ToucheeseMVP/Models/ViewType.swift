@@ -18,4 +18,8 @@ enum ViewType: Hashable {
     
     // reservation
     case reservationDetailView
+    
+    // question
+    case qustionDetailView(qustion: Question)
+    case questionCreateView
 }
