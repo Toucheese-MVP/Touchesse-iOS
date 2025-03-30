@@ -14,15 +14,19 @@ struct TextFieldView: View {
     var keyboardType: UIKeyboardType = .default
     var submitAction: () -> Void = { }
     
+    var width: CGFloat = 253
+    var height: CGFloat = 42
+    var showClearButton = true
+    
     var body: some View {
         VStack(spacing: 0) {
             RoundedRectangle(cornerRadius: 8)
                 .strokeBorder(inputValue.isEmpty ? .tcGray04 : isError ?  .tcTempError : .tcGray07, lineWidth: 1)
-                .frame(width: 253, height: 42)
+                .frame(width: width, height: height)
                 .overlay {
                     HStack {
                         TextField("", text: $inputValue, prompt: Text(placeHolder).foregroundColor(.tcGray04))
-                            .font(.pretendardMedium14)
+                            .font(Font.pretendardMedium(14))
                             .foregroundStyle(.tcGray08)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)
@@ -32,10 +36,10 @@ struct TextFieldView: View {
                             }
                             .lineLimit(1)
                             .padding(.leading, 16.5)
-                            .padding(.trailing, inputValue.isEmpty ? 16.5 : 4)
+                            .padding(.trailing, inputValue.isEmpty && showClearButton ? 16.5 : 4)
                             .padding(.vertical, 5)
                         
-                        if !inputValue.isEmpty {
+                        if showClearButton && !inputValue.isEmpty {
                             Spacer()
                             
                             Button {
