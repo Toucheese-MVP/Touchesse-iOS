@@ -92,10 +92,6 @@ struct QuestionCreateView<ViewModel: QuestionCreateViewModelProtocol>: View {
         }
     }
     
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
     struct ImageSelectView: View {
         @ObservedObject var viewModel: ViewModel
         
