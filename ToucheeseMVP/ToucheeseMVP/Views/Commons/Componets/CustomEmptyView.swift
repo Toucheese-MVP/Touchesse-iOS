@@ -45,6 +45,12 @@ struct CustomEmptyView: View {
                     action: action
                 )
                 .frame(width: 282)
+            case .question(let text, let action):
+                FillBottomButton(
+                    isSelectable: true,
+                    title: text,
+                    action: action
+                )
             default:
                 EmptyView()
             }
@@ -61,6 +67,7 @@ struct CustomEmptyView: View {
         case pastReservation
         case requiredLogIn(buttonText: String, buttonAction: () -> Void)
         case studioLike
+        case question(buttonText: String, buttonAction: () -> Void)
         
         var description: String {
             switch self {
@@ -76,6 +83,8 @@ struct CustomEmptyView: View {
                 return "로그인이 필요한 서비스입니다."
             case .studioLike:
                 return "찜한 스튜디오가 없습니다."
+            case .question:
+                return "문의 내역이 없습니다."
             }
         }
     }

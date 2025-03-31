@@ -19,6 +19,11 @@ final class NavigationManager: ObservableObject {
             updateTabBarVisibility()
         }
     }
+    @Published var questionPath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
     @Published var studioLikePath: [ViewType] = [] {
         didSet {
             updateTabBarVisibility()
@@ -44,6 +49,8 @@ final class NavigationManager: ObservableObject {
             homePath.removeAll()
         case .reservation:
             reservationPath.removeAll()
+        case .question:
+            questionPath.removeAll()
         case .myPage:
             break
         }
@@ -57,6 +64,8 @@ final class NavigationManager: ObservableObject {
             reservationPath.removeAll()
 //        case .likedStudios:
 //            studioLikePath.removeAll()
+        case .question:
+            questionPath.removeAll()
         case .myPage:
             break
         }
@@ -73,6 +82,9 @@ final class NavigationManager: ObservableObject {
 //        case .likedStudios:
 //            studioLikePath.removeAll()
 //            tabItem = .reservation
+        case .question:
+            reservationPath.removeAll()
+            tabItem = .reservation
         case .myPage:
             break
         }
@@ -98,6 +110,10 @@ final class NavigationManager: ObservableObject {
         case .reservationDetailView:
             ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
                                   reservation: self.reservationDetailViewMaterial!.reservation)
+        case .qustionDetailView(let question):
+            QuestionDetailView(viewModel: QuestionDetailViewModel(question: question))
+        case .questionCreateView:
+            QuestionCreateView(viewModel: QuestionCreateViewModel())
         }
     }
     
@@ -111,7 +127,7 @@ final class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.studioDetailView)
             case .reservation: reservationPath.append(.studioDetailView)
-//            case .likedStudios: studioLikePath.append(.studioDetailView)
+                //            case .likedStudios: studioLikePath.append(.studioDetailView)
             default:
                 break
             }
@@ -120,7 +136,7 @@ final class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.productDetailView)
             case .reservation: reservationPath.append(.productDetailView)
-//            case .likedStudios: studioLikePath.append(.productDetailView)
+                //            case .likedStudios: studioLikePath.append(.productDetailView)
             default: break
             }
         case .reservationConfirmView:
@@ -128,14 +144,14 @@ final class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.reservationConfirmView)
             case .reservation: reservationPath.append(.reservationConfirmView)
-//            case .likedStudios: studioLikePath.append(.reservationConfirmView)
+                //            case .likedStudios: studioLikePath.append(.reservationConfirmView)
             default: break
             }
         case .reservationCompleteView:
             switch tabItem {
             case .home: homePath.append(.reservationCompleteView)
             case .reservation: reservationPath.append(.reservationCompleteView)
-//            case .likedStudios: studioLikePath.append(.reservationCompleteView)
+                //            case .likedStudios: studioLikePath.append(.reservationCompleteView)
             default: break
             }
         case .reservationDetailView:
@@ -148,6 +164,10 @@ final class NavigationManager: ObservableObject {
             case .reservation: reservationPath.append(.reviewDetailView)
             default: break
             }
+        case .qustionDetailView(let question):
+            questionPath.append(.qustionDetailView(qustion: question))
+        case .questionCreateView:
+            questionPath.append(.questionCreateView)
         }
     }
     
@@ -159,6 +179,8 @@ final class NavigationManager: ObservableObject {
             isTabBarHidden = reservationPath.count >= 1
 //        case .likedStudios:
 //            isTabBarHidden = studioLikePath.count >= 1
+        case .question:
+            break
         case .myPage:
             break
         }
@@ -172,6 +194,8 @@ final class NavigationManager: ObservableObject {
             reservationPath.removeLast(depth)
 //        case .likedStudios:
 //            studioLikePath.removeLast(depth)
+        case .question:
+            questionPath.removeLast(depth)
         case .myPage:
             break
         }

@@ -15,3 +15,7 @@ enum NetworkError: Error {
     case unexpectedStatusCode(Int)
     case unknown
 }
+
+enum ImageCompressionError: Error {
+    case compressionFailed
+}
