@@ -147,7 +147,7 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
             async let detail: Void = viewModel.fetchStudioDetail()
             async let review: Void = viewModel.fetchReviewList()
             
-            await (detail, review)
+            _ = await (detail, review)
         }
     }
     
