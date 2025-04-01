@@ -86,8 +86,8 @@ final class MockCustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalen
         Task {
             await fetchStudioCalendar(calendarMonth)
             
-            DispatchQueue.main.async {
-                self.displayTimeString = ""
+            await MainActor.run {
+                displayTimeString = ""
             }
         }
     }
@@ -98,8 +98,8 @@ final class MockCustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalen
         Task {
             await fetchStudioCalendar(calendarMonth)
             
-            DispatchQueue.main.async {
-                self.displayTimeString = ""
+            await MainActor.run {
+                displayTimeString = ""
             }
         }
     }
