@@ -113,7 +113,7 @@ final class NavigationManager: ObservableObject {
         case .qustionDetailView(let question):
             QuestionDetailView(viewModel: QuestionDetailViewModel(question: question))
         case .questionCreateView:
-            QuestionCreateView(viewModel: QuestionCreateViewModel())
+            QuestionCreateView(viewModel: QuestionCreateViewModel(), imageViewModel: ImageUploadViewModel())
         }
     }
     
