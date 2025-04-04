@@ -53,3 +53,6 @@ jobs:
           DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
           BUNDLE_GEMFILE: ./Gemfile
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_PATH: ./fastlane/AuthKey.p8
