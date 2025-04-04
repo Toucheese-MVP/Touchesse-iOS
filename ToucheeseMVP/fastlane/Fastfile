@@ -41,7 +41,7 @@ platform :ios do
     app_store_connect_api_key(
       key_id: ENV["KEY_ID"], # 앱 키 아이디
       issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
-      key_filepath: ENV["KEY_PATH"], # .p8 키 파일 경로
+      key_filepath: "./fastlane/AuthKey_22N22888B2.p8", # .p8 키 파일 경로
       in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
     )    
 
