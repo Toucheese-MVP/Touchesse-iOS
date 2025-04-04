@@ -50,5 +50,5 @@ jobs:
             bundle exec fastlane beta
           fi
         env:
-          BUNDLE_GEMFILE: ./ToucheeseMVP/Gemfile
+          BUNDLE_GEMFILE: ./Gemfile
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
