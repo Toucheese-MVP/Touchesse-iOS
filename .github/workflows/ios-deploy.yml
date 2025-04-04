@@ -31,6 +31,7 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
+        cd ToucheeseMVP
         run: bundle install
 
       # GitHub Secrets에 보안처리된 정보들 불러오기
