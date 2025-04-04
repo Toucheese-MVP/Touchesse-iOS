@@ -31,8 +31,9 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
+        run: |
         cd ToucheeseMVP
-        run: bundle install
+        bundle install
 
       # GitHub Secrets에 보안처리된 정보들 불러오기
       - name: Create API Key file from secret
