@@ -149,7 +149,8 @@ xcuserdata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 **/GoogleService-Info.plist
-**/.xcconfig
-*.xcconfig
+**/*.xcconfig
+**/*.p8
+**/*.env
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,macos,xcode,cocoapods,swiftpackagemanager,swiftpm
