@@ -1,0 +1,15 @@
+app_identifier(ENV["APP_IDENTIFIER"]) # 앱 번들 아이디
+apple_id(ENV["APPLE_ID"]) # 애플 계정
+
+itc_team_id(ENV["ITC_TEAM_ID"]) # 앱 커넥트 팀 아이디?
+team_id(ENV["TEAM_ID"]) # 팀 아이디
+
+api_key({
+  key_id: ENV["KEY_ID"], # 앱 키 아이디
+  issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
+  key_filepath: ENV["KEY_PATH"], # .p8 키 파일 경로
+  in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
+})
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
