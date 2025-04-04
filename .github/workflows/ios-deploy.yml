@@ -32,8 +32,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-        cd ToucheeseMVP
-        bundle install
+          cd ToucheeseMVP
+          bundle install
 
       # GitHub Secrets에 보안처리된 정보들 불러오기
       - name: Create API Key file from secret
