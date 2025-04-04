@@ -15,7 +15,7 @@ jobs:
     # 머지된 경우만 실행하도록 추가 조건
     if: github.event.pull_request.merged == true
     # 깃허브 액션의 가상 머신? 환경 설정 (iOS 빌드를 위해 필요하다고 함)
-    runs-on: macos-latest
+    runs-on: macos-14
 
     # 구체적인 설정 작업
     steps:
@@ -50,5 +50,6 @@ jobs:
             bundle exec fastlane beta
           fi
         env:
+          DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
           BUNDLE_GEMFILE: ./Gemfile
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
