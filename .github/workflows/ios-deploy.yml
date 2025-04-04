@@ -14,7 +14,7 @@ jobs:
   deploy:
     # 머지된 경우만 실행하도록 추가 조건
     if: github.event.pull_request.merged == true
-    # 깃허브 액션의 가상 머신? 환경 설정 (iOS 빌드를 위해 필요하다고 함)
+    # 깃허브 액션의 가상 머신? 환경 설정 (iOS 빌드를 위해 필요하다고 함).
     runs-on: macos-14
 
     # 구체적인 설정 작업
