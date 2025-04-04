@@ -1,0 +1,51 @@
+name: iOS Deploy
+
+# 시점을 정하는 조건
+on:
+  # PR이 닫힐 때 이벤트 발생
+  pull_request:
+    types: [closed]
+    # 디벨롭이랑 메인 브랜치인 경우만
+    branches:
+      - develop
+      - main
+
+jobs:
+  deploy:
+    # 머지된 경우만 실행하도록 추가 조건
+    if: github.event.pull_request.merged == true
+    # 깃허브 액션의 가상 머신? 환경 설정 (iOS 빌드를 위해 필요하다고 함)
+    runs-on: macos-latest
+
+    # 구체적인 설정 작업
+    steps:
+      # GitHub Actions가 리포지토리 코드를 다운로드
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # Ruby 환경 세팅
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.2'
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      # GitHub Secrets에 보안처리된 정보들 불러오기
+      - name: Create API Key file from secret
+        run: |
+          echo "$APP_STORE_CONNECT_API_KEY" | base64 --decode > ToucheeseMVP/fastlane/AuthKey.p8
+
+      # Fastlane 실행
+      - name: Run Fastlane (beta or release)
+        run: |
+          cd ToucheeseMVP
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            bundle exec fastlane release
+          elif [[ "${{ github.base_ref }}" == "develop" ]]; then
+            bundle exec fastlane beta
+          fi
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
