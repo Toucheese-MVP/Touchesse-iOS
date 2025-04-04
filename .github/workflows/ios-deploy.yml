@@ -39,6 +39,8 @@ jobs:
       - name: Create API Key file from secret
         run: |
           echo "$APP_STORE_CONNECT_API_KEY" | base64 --decode > ToucheeseMVP/fastlane/AuthKey_22N22888B2.p8
+          echo "✅ 디코딩 완료 - 생성된 키 미리보기"
+          head -n 3 ToucheeseMVP/fastlane/AuthKey_22N22888B2.p8
 
       # Fastlane 실행
       - name: Run Fastlane (beta or release)
