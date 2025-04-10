@@ -36,7 +36,6 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
-    private(set) var homeResultViewMaterial: HomeResultViewMaterial?
     private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
     private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
@@ -93,8 +92,8 @@ final class NavigationManager: ObservableObject {
     @ViewBuilder
     func buildView(viewType: ViewType) -> some View {
         switch viewType {
-        case .homeResultView:
-            HomeResultView(concept: self.homeResultViewMaterial!.concept)
+        case .homeResultView(let studioConcept):
+            HomeResultView(concept: studioConcept)
         case .studioDetailView:
             StudioDetailView(viewModel: self.studioDetailViewMaterial!.viewModel)
         case .productDetailView:
@@ -119,9 +118,8 @@ final class NavigationManager: ObservableObject {
     
     func appendPath(viewType: ViewType, viewMaterial: ViewMaterial?) {
         switch viewType {
-        case .homeResultView:
-            self.homeResultViewMaterial = viewMaterial as? HomeResultViewMaterial
-            homePath.append(.homeResultView)
+        case .homeResultView(let studioConcept):
+            homePath.append(.homeResultView(studioConcept: studioConcept))
         case .studioDetailView:
             self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
             switch tabItem {

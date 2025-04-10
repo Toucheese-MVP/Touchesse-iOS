@@ -9,10 +9,6 @@ import Foundation
 
 protocol ViewMaterial { }
 
-struct HomeResultViewMaterial: ViewMaterial {
-    var concept: StudioConceptEntity
-}
-
 struct StudioDetailViewMaterial: ViewMaterial {
     var viewModel: StudioDetailViewModel
     var reviewId: Int?

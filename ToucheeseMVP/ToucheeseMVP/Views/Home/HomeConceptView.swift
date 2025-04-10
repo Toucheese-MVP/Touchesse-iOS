@@ -27,7 +27,7 @@ struct HomeConceptView: View {
             LazyVGrid(columns: columns, spacing:12) {
                 ForEach(studioConceptViewModel.concepts) { concept in
                     Button {
-                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: concept))
+                        navigationManager.appendPath(viewType: .homeResultView(studioConcept: concept), viewMaterial: nil)
                     } label: {
                         conceptCardView(imageString: "concept\(concept.id)", concept: concept.shortedName)
                     }
