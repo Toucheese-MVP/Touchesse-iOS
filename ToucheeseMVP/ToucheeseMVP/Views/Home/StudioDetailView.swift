@@ -310,14 +310,8 @@ fileprivate struct ProductListView: View {
     private func productCell(product: ProductEntity) -> some View {
         Button {
             navigationManager.appendPath(
-                viewType: .productDetailView,
-                viewMaterial: ProductDetailViewMaterial(
-                    viewModel: ProductDetailViewModel(
-                        studio: studio,
-                        studioDetails: studioDetail,
-                        product: product
-                    )
-                )
+                viewType: .productDetailView(studio: studio, studioDetail: studioDetail, product: product),
+                viewMaterial: nil
             )
         } label: {
             HStack(spacing: 13) {

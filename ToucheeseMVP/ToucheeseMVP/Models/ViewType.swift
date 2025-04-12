@@ -11,7 +11,7 @@ enum ViewType: Hashable {
     // home
     case homeResultView(studioConcept: StudioConceptEntity)
     case studioDetailView(studio: Studio, reviewId: Int)
-    case productDetailView
+    case productDetailView(studio: Studio, studioDetail: StudioDetailEntity, product: ProductEntity)
     case reservationConfirmView
     case reservationCompleteView
     case reviewDetailView(studio: Studio, reviewId: Int)

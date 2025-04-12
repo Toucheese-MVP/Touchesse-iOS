@@ -35,8 +35,7 @@ final class NavigationManager: ObservableObject {
     
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
-        
-    private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
+    
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
@@ -90,8 +89,8 @@ final class NavigationManager: ObservableObject {
             HomeResultView(concept: studioConcept)
         case .studioDetailView(let studio,_):
             StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
-        case .productDetailView:
-            ProductDetailView(productDetailViewModel: self.productDetailViewMaterial!.viewModel)
+        case .productDetailView(let studio, let studioDetail, let product):
+            ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product))
         case .reservationConfirmView:
             ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
         case .reservationCompleteView:
@@ -126,11 +125,10 @@ final class NavigationManager: ObservableObject {
             default:
                 break
             }
-        case .productDetailView:
-            self.productDetailViewMaterial = viewMaterial as? ProductDetailViewMaterial
+        case .productDetailView(let studio, let studioDetail, let product):
             switch tabItem {
-            case .home: homePath.append(.productDetailView)
-            case .reservation: reservationPath.append(.productDetailView)
+            case .home: homePath.append(.productDetailView(studio: studio, studioDetail: studioDetail, product: product))
+            case .reservation: reservationPath.append(.productDetailView(studio: studio, studioDetail: studioDetail, product: product))
             default: break
             }
         case .reservationConfirmView:
