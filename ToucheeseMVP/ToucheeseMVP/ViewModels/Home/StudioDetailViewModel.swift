@@ -32,6 +32,13 @@ final class StudioDetailViewModel: StudioDetailViewModelProtocol {
     init(studio: Studio?, studioId: Int?) {
         self.studio = studio ?? Studio.sample
         self.studioId = studioId
+        
+        Task {
+            async let detail: Void = fetchStudioDetail()
+            async let review: Void = fetchReviewList()
+            
+            _ = await (detail, review)
+        }
     }
      
     // MARK: - Logic

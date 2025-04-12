@@ -36,7 +36,6 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
-    private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
     private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
@@ -61,8 +60,6 @@ final class NavigationManager: ObservableObject {
             homePath.removeAll()
         case .reservation:
             reservationPath.removeAll()
-//        case .likedStudios:
-//            studioLikePath.removeAll()
         case .question:
             questionPath.removeAll()
         case .myPage:
@@ -78,9 +75,6 @@ final class NavigationManager: ObservableObject {
         case .reservation:
             reservationPath.removeAll()
             tabItem = .reservation
-//        case .likedStudios:
-//            studioLikePath.removeAll()
-//            tabItem = .reservation
         case .question:
             reservationPath.removeAll()
             tabItem = .reservation
@@ -94,8 +88,8 @@ final class NavigationManager: ObservableObject {
         switch viewType {
         case .homeResultView(let studioConcept):
             HomeResultView(concept: studioConcept)
-        case .studioDetailView:
-            StudioDetailView(viewModel: self.studioDetailViewMaterial!.viewModel)
+        case .studioDetailView(let studio,_,_):
+            StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
         case .productDetailView:
             ProductDetailView(productDetailViewModel: self.productDetailViewMaterial!.viewModel)
         case .reservationConfirmView:
@@ -103,9 +97,10 @@ final class NavigationManager: ObservableObject {
         case .reservationCompleteView:
             ReservationCompleteView()
         case .reviewDetailView:
-            ReviewDetailView(viewModel: self.studioDetailViewMaterial!.viewModel,
-                             reviewId: self.studioDetailViewMaterial!.reviewId ?? 1)
-            
+            ReservationCompleteView()
+            // TODO: 리뷰 디테일 뷰 마테리얼 관련 작업 하기
+//            ReviewDetailView(viewModel: self.studioDetailViewMaterial!.viewModel,
+//                             reviewId: self.studioDetailViewMaterial!.reviewId ?? 1)
         case .reservationDetailView:
             ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
                                   reservation: self.reservationDetailViewMaterial!.reservation)
@@ -120,12 +115,10 @@ final class NavigationManager: ObservableObject {
         switch viewType {
         case .homeResultView(let studioConcept):
             homePath.append(.homeResultView(studioConcept: studioConcept))
-        case .studioDetailView:
-            self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+        case .studioDetailView(let studio, let studioId, let reviewId):
             switch tabItem {
-            case .home: homePath.append(.studioDetailView)
-            case .reservation: reservationPath.append(.studioDetailView)
-                //            case .likedStudios: studioLikePath.append(.studioDetailView)
+            case .home: homePath.append(.studioDetailView(studio: studio, studioId: studioId, reviewId: reviewId))
+            case .reservation: reservationPath.append(.studioDetailView(studio: studio, studioId: studioId, reviewId: reviewId))
             default:
                 break
             }
@@ -134,7 +127,6 @@ final class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.productDetailView)
             case .reservation: reservationPath.append(.productDetailView)
-                //            case .likedStudios: studioLikePath.append(.productDetailView)
             default: break
             }
         case .reservationConfirmView:
@@ -142,21 +134,20 @@ final class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.reservationConfirmView)
             case .reservation: reservationPath.append(.reservationConfirmView)
-                //            case .likedStudios: studioLikePath.append(.reservationConfirmView)
             default: break
             }
         case .reservationCompleteView:
             switch tabItem {
             case .home: homePath.append(.reservationCompleteView)
             case .reservation: reservationPath.append(.reservationCompleteView)
-                //            case .likedStudios: studioLikePath.append(.reservationCompleteView)
             default: break
             }
         case .reservationDetailView:
             self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
             reservationPath.append(.reservationDetailView)
         case .reviewDetailView:
-            self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+            // TODO: 리뷰 디테일 뷰 마테리얼 관련 작업하기
+            // self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
             switch tabItem {
             case .home: homePath.append(.reviewDetailView)
             case .reservation: reservationPath.append(.reviewDetailView)
@@ -175,8 +166,6 @@ final class NavigationManager: ObservableObject {
             isTabBarHidden = homePath.count >= 2
         case .reservation:
             isTabBarHidden = reservationPath.count >= 1
-//        case .likedStudios:
-//            isTabBarHidden = studioLikePath.count >= 1
         case .question:
             break
         case .myPage:
@@ -190,8 +179,6 @@ final class NavigationManager: ObservableObject {
             homePath.removeLast(depth)
         case .reservation:
             reservationPath.removeLast(depth)
-//        case .likedStudios:
-//            studioLikePath.removeLast(depth)
         case .question:
             questionPath.removeLast(depth)
         case .myPage:

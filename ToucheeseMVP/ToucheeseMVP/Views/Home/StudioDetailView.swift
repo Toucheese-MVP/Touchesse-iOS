@@ -143,12 +143,6 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
         }
-        .task {
-            async let detail: Void = viewModel.fetchStudioDetail()
-            async let review: Void = viewModel.fetchReviewList()
-            
-            _ = await (detail, review)
-        }
     }
     
 }
