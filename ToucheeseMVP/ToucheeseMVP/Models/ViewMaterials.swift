@@ -9,10 +9,6 @@ import Foundation
 
 protocol ViewMaterial { }
 
-struct ReservationConfirmViewMaterial: ViewMaterial {
-    var viewModel: ReservationViewModel
-}
-
 //TODO: 추상화 적용하기
 struct ReservationDetailViewMaterial: ViewMaterial {
 //    var viewModel: any ReservationDetailViewModelProtocol

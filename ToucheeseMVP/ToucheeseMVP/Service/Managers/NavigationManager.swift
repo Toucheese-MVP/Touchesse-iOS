@@ -36,7 +36,6 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
-    private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
     @MainActor
@@ -91,8 +90,28 @@ final class NavigationManager: ObservableObject {
             StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
         case .productDetailView(let studio, let studioDetail, let product):
             ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product))
-        case .reservationConfirmView:
-            ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
+        case .reservationConfirmView(
+            let studio,
+            let studioDetail,
+            let product,
+            let productDetail,
+            let productOption,
+            let reservationDate,
+            let totalPrice,
+            let addPeopleCount
+        ):
+            ReservationConfirmView(
+                viewModel: ReservationViewModel(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOptions: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
         case .reservationCompleteView:
             ReservationCompleteView()
         case .reviewDetailView(let studio, let reviewId):
@@ -131,11 +150,42 @@ final class NavigationManager: ObservableObject {
             case .reservation: reservationPath.append(.productDetailView(studio: studio, studioDetail: studioDetail, product: product))
             default: break
             }
-        case .reservationConfirmView:
-            self.reservationConfirmViewMaterial = viewMaterial as? ReservationConfirmViewMaterial
+        case .reservationConfirmView(
+            let studio,
+            let studioDetail,
+            let product,
+            let productDetail,
+            let productOption,
+            let reservationDate,
+            let totalPrice,
+            let addPeopleCount
+        ):
             switch tabItem {
-            case .home: homePath.append(.reservationConfirmView)
-            case .reservation: reservationPath.append(.reservationConfirmView)
+            case .home: homePath.append(
+                .reservationConfirmView(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOption: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
+                
+            case .reservation: reservationPath.append(
+                .reservationConfirmView(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOption: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
             default: break
             }
         case .reservationCompleteView:
