@@ -75,7 +75,6 @@ struct HomeResultView: View {
                                             navigationManager.appendPath(
                                                 viewType: .studioDetailView(
                                                     studio: studio,
-                                                    studioId: studio.id,
                                                     reviewId: 0
                                                 ),
                                                 

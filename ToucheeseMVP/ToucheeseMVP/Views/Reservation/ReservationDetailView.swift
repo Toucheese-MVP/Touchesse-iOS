@@ -85,7 +85,6 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                                         price: 0,
                                         imageUrls: []
                                     ),
-                                    studioId: reservation.studioId,
                                     reviewId: 0
                                 ),
                                 viewMaterial: nil)

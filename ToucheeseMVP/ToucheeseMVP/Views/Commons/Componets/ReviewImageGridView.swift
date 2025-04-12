@@ -41,9 +41,14 @@ struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
                                 .clipShape(.rect(cornerRadius: 6))
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    // TODO: StudioDetail 마테리얼 관련 작업하기
-                                    navigationManager.appendPath(viewType: .reviewDetailView,
-                                                                 viewMaterial: nil)
+                                    navigationManager
+                                        .appendPath(
+                                            viewType: .reviewDetailView(
+                                                studio: viewModel.studio,
+                                                reviewId: review.id
+                                            ),
+                                            viewMaterial: nil
+                                        )
                                 }
                         }
                     }

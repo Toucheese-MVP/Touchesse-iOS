@@ -35,7 +35,7 @@ final class NavigationManager: ObservableObject {
     
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
-    
+        
     private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
@@ -88,7 +88,7 @@ final class NavigationManager: ObservableObject {
         switch viewType {
         case .homeResultView(let studioConcept):
             HomeResultView(concept: studioConcept)
-        case .studioDetailView(let studio,_,_):
+        case .studioDetailView(let studio,_):
             StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
         case .productDetailView:
             ProductDetailView(productDetailViewModel: self.productDetailViewMaterial!.viewModel)
@@ -96,11 +96,15 @@ final class NavigationManager: ObservableObject {
             ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
         case .reservationCompleteView:
             ReservationCompleteView()
-        case .reviewDetailView:
-            ReservationCompleteView()
-            // TODO: 리뷰 디테일 뷰 마테리얼 관련 작업 하기
-//            ReviewDetailView(viewModel: self.studioDetailViewMaterial!.viewModel,
-//                             reviewId: self.studioDetailViewMaterial!.reviewId ?? 1)
+        case .reviewDetailView(let studio, let reviewId):
+            // TODO: reviewDetailView가 studioDetailView의 뷰모델 인스턴스를 만들고 있습니다. 뷰모델 분리가 필요할 것 같습니다.
+            ReviewDetailView(
+                viewModel: StudioDetailViewModel(
+                    studio: studio,
+                    studioId: studio.id
+                ),
+                reviewId: reviewId
+            )
         case .reservationDetailView:
             ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
                                   reservation: self.reservationDetailViewMaterial!.reservation)
@@ -115,10 +119,10 @@ final class NavigationManager: ObservableObject {
         switch viewType {
         case .homeResultView(let studioConcept):
             homePath.append(.homeResultView(studioConcept: studioConcept))
-        case .studioDetailView(let studio, let studioId, let reviewId):
+        case .studioDetailView(let studio, let reviewId):
             switch tabItem {
-            case .home: homePath.append(.studioDetailView(studio: studio, studioId: studioId, reviewId: reviewId))
-            case .reservation: reservationPath.append(.studioDetailView(studio: studio, studioId: studioId, reviewId: reviewId))
+            case .home: homePath.append(.studioDetailView(studio: studio, reviewId: reviewId))
+            case .reservation: reservationPath.append(.studioDetailView(studio: studio, reviewId: reviewId))
             default:
                 break
             }
@@ -145,12 +149,10 @@ final class NavigationManager: ObservableObject {
         case .reservationDetailView:
             self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
             reservationPath.append(.reservationDetailView)
-        case .reviewDetailView:
-            // TODO: 리뷰 디테일 뷰 마테리얼 관련 작업하기
-            // self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+        case .reviewDetailView(let studio, let reviewId):
             switch tabItem {
-            case .home: homePath.append(.reviewDetailView)
-            case .reservation: reservationPath.append(.reviewDetailView)
+            case .home: homePath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
+            case .reservation: reservationPath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
             default: break
             }
         case .qustionDetailView(let question):
