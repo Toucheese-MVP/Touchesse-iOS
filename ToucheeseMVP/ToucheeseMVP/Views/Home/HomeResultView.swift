@@ -76,9 +76,7 @@ struct HomeResultView: View {
                                                 viewType: .studioDetailView(
                                                     studio: studio,
                                                     reviewId: 0
-                                                ),
-                                                
-                                                viewMaterial: nil)
+                                                ))
                                         }
                                     }
                                 }

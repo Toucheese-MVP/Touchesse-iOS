@@ -87,7 +87,7 @@ struct ReservationConfirmView: View {
 //                            }
                             
                             if result {
-                                navigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
+                                navigationManager.appendPath(viewType: .reservationCompleteView)
                             } else {
                                 print("fail")
                             }

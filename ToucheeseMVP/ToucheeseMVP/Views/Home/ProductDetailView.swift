@@ -53,8 +53,7 @@ struct ProductDetailView: View {
                                             reservationDate: productDetailViewModel.reservationDate ?? Date(),
                                             totalPrice: productDetailViewModel.totalPrice,
                                             addPeopleCount: productDetailViewModel.addPeopleCount
-                                        ),
-                                viewMaterial: nil
+                                        )
                             )
                     } else {
                         isShowingLoginView

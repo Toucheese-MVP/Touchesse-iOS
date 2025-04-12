@@ -131,7 +131,7 @@ final class NavigationManager: ObservableObject {
         }
     }
     
-    func appendPath(viewType: ViewType, viewMaterial: ViewMaterial?) {
+    func appendPath(viewType: ViewType) {
         switch viewType {
         case .homeResultView(let studioConcept):
             homePath.append(.homeResultView(studioConcept: studioConcept))

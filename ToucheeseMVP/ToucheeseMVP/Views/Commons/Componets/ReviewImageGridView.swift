@@ -46,8 +46,7 @@ struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
                                             viewType: .reviewDetailView(
                                                 studio: viewModel.studio,
                                                 reviewId: review.id
-                                            ),
-                                            viewMaterial: nil
+                                            )
                                         )
                                 }
                         }

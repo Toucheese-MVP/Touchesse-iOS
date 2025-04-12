@@ -86,8 +86,8 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                                         imageUrls: []
                                     ),
                                     reviewId: 0
-                                ),
-                                viewMaterial: nil)
+                                )
+                            )
                         }
                         
                         if viewModel.isShowingReservationCancelButton() {
