@@ -36,6 +36,7 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
+    private(set) var studioDetailViewModel: StudioDetailViewModel?
     
     @MainActor
     func resetNavigationPath(tab: Tab) {
@@ -86,7 +87,8 @@ final class NavigationManager: ObservableObject {
         case .homeResultView(let studioConcept):
             HomeResultView(concept: studioConcept)
         case .studioDetailView(let studio,_):
-            StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
+            StudioDetailView(viewModel: studioDetailViewModel ?? StudioDetailViewModel(studio: studio, studioId: studio.id))
+            // StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
         case .productDetailView(let studio, let studioDetail, let product):
             ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product))
         case .reservationConfirmView(
@@ -136,6 +138,7 @@ final class NavigationManager: ObservableObject {
         case .homeResultView(let studioConcept):
             homePath.append(.homeResultView(studioConcept: studioConcept))
         case .studioDetailView(let studio, let reviewId):
+            studioDetailViewModel = StudioDetailViewModel(studio: studio, studioId: studio.id)
             switch tabItem {
             case .home: homePath.append(.studioDetailView(studio: studio, reviewId: reviewId))
             case .reservation: reservationPath.append(.studioDetailView(studio: studio, reviewId: reviewId))
