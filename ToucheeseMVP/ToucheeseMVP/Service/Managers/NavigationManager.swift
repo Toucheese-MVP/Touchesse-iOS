@@ -36,7 +36,6 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
-    private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
     @MainActor
     func resetNavigationPath(tab: Tab) {
@@ -123,9 +122,8 @@ final class NavigationManager: ObservableObject {
                 ),
                 reviewId: reviewId
             )
-        case .reservationDetailView:
-            ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
-                                  reservation: self.reservationDetailViewMaterial!.reservation)
+        case .reservationDetailView(let reservation):
+            ReservationDetailView(viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
         case .qustionDetailView(let question):
             QuestionDetailView(viewModel: QuestionDetailViewModel(question: question))
         case .questionCreateView:
@@ -194,9 +192,8 @@ final class NavigationManager: ObservableObject {
             case .reservation: reservationPath.append(.reservationCompleteView)
             default: break
             }
-        case .reservationDetailView:
-            self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
-            reservationPath.append(.reservationDetailView)
+        case .reservationDetailView(let reservation):
+            reservationPath.append(.reservationDetailView(reservation: reservation))
         case .reviewDetailView(let studio, let reviewId):
             switch tabItem {
             case .home: homePath.append(.reviewDetailView(studio: studio, reviewId: reviewId))

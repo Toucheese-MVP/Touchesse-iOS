@@ -26,7 +26,7 @@ enum ViewType: Hashable {
     case reviewDetailView(studio: Studio, reviewId: Int)
     
     // reservation
-    case reservationDetailView
+    case reservationDetailView(reservation: Reservation)
     
     // question
     case qustionDetailView(qustion: Question)
