@@ -116,20 +116,17 @@ final class NavigationManager: ObservableObject {
         case .reservationCompleteView:
             ReservationCompleteView()
         case .reviewDetailView(let studio, let reviewId):
-            // TODO: reviewDetailView가 studioDetailView의 뷰모델 인스턴스를 만들고 있습니다. 뷰모델 분리가 필요할 것 같습니다.
             ReviewDetailView(
-                viewModel: StudioDetailViewModel(
-                    studio: studio,
-                    studioId: studio.id
-                ),
-                reviewId: reviewId
+                viewModel: ReviewDetailViewModel(studio: studio), reviewId: reviewId
             )
+        case .reviewCreateView(let reservation):
+            ReviewCreateView(viewModel: ReviewCreateViewModel(reservation: reservation), imageViewModel: ImageUploadViewModel())
         case .reservationDetailView(let reservation):
             ReservationDetailView(viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
         case .qustionDetailView(let question):
             QuestionDetailView(viewModel: QuestionDetailViewModel(question: question))
         case .questionCreateView:
-            QuestionCreateView(viewModel: QuestionCreateViewModel())
+            QuestionCreateView(viewModel: QuestionCreateViewModel(), imageViewModel: ImageUploadViewModel())
         }
     }
     
@@ -203,6 +200,8 @@ final class NavigationManager: ObservableObject {
             case .reservation: reservationPath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
             default: break
             }
+        case .reviewCreateView(let reservation):
+            reservationPath.append(.reviewCreateView(reservation: reservation))
         case .qustionDetailView(let question):
             questionPath.append(.qustionDetailView(qustion: question))
         case .questionCreateView:

@@ -9,12 +9,13 @@ import Foundation
 
 protocol ReservationDetailViewModelProtocol: ObservableObject {
     /// 예약 취소 버튼을 UI에 표시해야하는지에 대한 여부
-    func isShowingReservationCancelButton() -> Bool
+    func isShowingButton() -> Bool
     /// 예약 취소
     func cancelReservation() async
 }
 
 final class ReservationDetailViewModel: ReservationDetailViewModelProtocol {
+    
     let authManager = AuthenticationManager.shared
     let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     
@@ -24,19 +25,21 @@ final class ReservationDetailViewModel: ReservationDetailViewModelProtocol {
         self.reservation = reservation
     }
     
-    //MARK: - Network
-
     /// 예약 취소 버튼을 UI에 표시해야하는지에 대한 여부
-    func isShowingReservationCancelButton() -> Bool {
-        switch reservation.status {
-        case ReservationStatus.complete.title, ReservationStatus.cancel.title:
-            false
-        case ReservationStatus.waiting.title, ReservationStatus.confirm.title:
-            true
+    func isShowingButton() -> Bool {
+        switch ReservationStatus(title: reservation.status) {
+        case .complete:
+            return true
+        case .confirm:
+            return true
+        case .waiting:
+            return true
         default:
-            false
+            return false
         }
     }
+    
+    //MARK: - Network
     
     /// 예약 취소
     func cancelReservation() async {

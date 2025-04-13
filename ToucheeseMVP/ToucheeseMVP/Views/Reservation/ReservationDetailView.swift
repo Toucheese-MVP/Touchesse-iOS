@@ -90,10 +90,30 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                             )
                         }
                         
-                        if viewModel.isShowingReservationCancelButton() {
-                            StrokeBottomButton(title: "예약 취소하기") {
-                                withAnimation(.easeOut(duration: 0.15)) {
-                                    isShowingReservationCancelAlert.toggle()
+                        if viewModel.isShowingButton() {
+                            
+                            var title: String {
+                                switch status {
+                                case .waiting:
+                                    "예약 취소하기"
+                                case .confirm:
+                                    ""
+                                case .cancel:
+                                    ""
+                                case .complete:
+                                    "리뷰 작성하기"
+                                }
+                            }
+                            let status = ReservationStatus(title: reservation.status)
+
+                            StrokeBottomButton(title: title) {
+                                if status == .complete  {
+                                    // 리뷰 작성하기 뷰로 이동
+                                    navigationManager.appendPath(viewType: .reviewCreateView(reservation: reservation))
+                                } else {
+                                    withAnimation(.easeOut(duration: 0.15)) {
+                                        isShowingReservationCancelAlert.toggle()
+                                    }
                                 }
                             }
                         }
