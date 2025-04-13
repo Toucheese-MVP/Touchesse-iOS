@@ -9,15 +9,24 @@ import Foundation
 
 enum ViewType: Hashable {
     // home
-    case homeResultView
-    case studioDetailView
-    case productDetailView
-    case reservationConfirmView
+    case homeResultView(studioConcept: StudioConceptEntity)
+    case studioDetailView(studio: Studio, reviewId: Int)
+    case productDetailView(studio: Studio, studioDetail: StudioDetailEntity, product: ProductEntity)
+    case reservationConfirmView(
+        studio: Studio,
+        studioDetail: StudioDetailEntity,
+        product: ProductEntity,
+        productDetail: ProductDetailEntity,
+        productOption: [OptionEntity],
+        reservationDate: Date,
+        totalPrice: Int,
+        addPeopleCount: Int
+    )
     case reservationCompleteView
-    case reviewDetailView
+    case reviewDetailView(studio: Studio, reviewId: Int)
     
     // reservation
-    case reservationDetailView
+    case reservationDetailView(reservation: Reservation)
     
     // question
     case qustionDetailView(qustion: Question)

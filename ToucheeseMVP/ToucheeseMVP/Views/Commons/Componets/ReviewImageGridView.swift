@@ -41,10 +41,13 @@ struct ReviewImageGridView<ViewModel: StudioDetailViewModelProtocol>: View {
                                 .clipShape(.rect(cornerRadius: 6))
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    navigationManager.appendPath(viewType: .reviewDetailView,
-                                                                 viewMaterial: StudioDetailViewMaterial(
-                                                                    viewModel: viewModel as! StudioDetailViewModel,
-                                                                    reviewId: review.id))
+                                    navigationManager
+                                        .appendPath(
+                                            viewType: .reviewDetailView(
+                                                studio: viewModel.studio,
+                                                reviewId: review.id
+                                            )
+                                        )
                                 }
                         }
                     }

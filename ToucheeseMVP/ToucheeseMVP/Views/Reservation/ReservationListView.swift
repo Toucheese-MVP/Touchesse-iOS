@@ -33,9 +33,7 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
                             ForEach(viewModel.reservationList, id:\.self) { reservation in
                                 Button {
                                     navigationManager.appendPath(
-                                        viewType: .reservationDetailView,
-                                        viewMaterial: ReservationDetailViewMaterial(
-                                            viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
+                                        viewType: .reservationDetailView(reservation: reservation)
                                     )
                                 } label: {
                                     ReservationRow(reservation: reservation)
