@@ -124,6 +124,8 @@ final class NavigationManager: ObservableObject {
                 ),
                 reviewId: reviewId
             )
+        case .reviewCreateView(let reservation):
+            ReviewCreateView(reservation: reservation, imageViewModel: ImageUploadViewModel())
         case .reservationDetailView(let reservation):
             ReservationDetailView(viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
         case .qustionDetailView(let question):
@@ -203,6 +205,8 @@ final class NavigationManager: ObservableObject {
             case .reservation: reservationPath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
             default: break
             }
+        case .reviewCreateView(let reservation):
+            reservationPath.append(.reviewCreateView(reservation: reservation))
         case .qustionDetailView(let question):
             questionPath.append(.qustionDetailView(qustion: question))
         case .questionCreateView:
