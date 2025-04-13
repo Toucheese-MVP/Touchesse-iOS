@@ -55,6 +55,8 @@ extension StudioAPI: TargetType {
     
     var headers: Alamofire.HTTPHeaders? {
         switch self {
+        case .postReview:
+            HeaderType.multipartForm.value
         default:
             HeaderType.json.value
         }
@@ -86,6 +88,15 @@ extension StudioAPI: TargetType {
             return params
         case .studioDetail, .studioReviewList, .reviewDetail:
             return [:]
+        }
+    }
+    
+    var imageRequest: RequestWithImageProtocol? {
+        switch self {
+        case .postReview(let request):
+            request
+        default:
+            nil
         }
     }
 }

@@ -11,6 +11,7 @@ protocol ReviewCreateViewModelProtocol: ObservableObject {
     var reservation: Reservation { get }
     var content: String { get set }
     var rating: Int { get set }
+    var isPosting: Bool { get }
     func postReview(_ imageData: [Data]) async
 }
 
@@ -28,6 +29,7 @@ final class ReviewCreateViewModel: ReviewCreateViewModelProtocol {
     //MARK: - Network
     
     // 리뷰 작성
+    @MainActor
     func postReview(_ imageData: [Data]) async {
         await MainActor.run {
             isPosting = true
