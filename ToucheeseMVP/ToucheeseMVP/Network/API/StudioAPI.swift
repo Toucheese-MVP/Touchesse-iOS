@@ -17,6 +17,8 @@ enum StudioAPI {
     case studioReviewList(studioID: Int)
     /// 해당 리뷰 상세 조회
     case reviewDetail(studioID: Int, reviewID: Int)
+    /// 리뷰 작성
+    case postReview(ReviewRequest)
 }
 
 extension StudioAPI: TargetType {
@@ -37,6 +39,8 @@ extension StudioAPI: TargetType {
             return "/\(studioId)/reviews"
         case let .reviewDetail(studioId, reviewId):
             return "/\(studioId)/reviews/\(reviewId)"
+        case .postReview(let request):
+            return "/\(request.studioID)/products/\(request.productID)/reviews"
         }
     }
     
@@ -44,12 +48,14 @@ extension StudioAPI: TargetType {
         switch self {
         case .studioCalendar, .studioDetail, .studioReviewList, .reviewDetail:
             return .get
+        case .postReview:
+            return .post
         }
     }
     
     var headers: Alamofire.HTTPHeaders? {
         switch self {
-        case .studioCalendar, .studioDetail, .studioReviewList, .reviewDetail:
+        default:
             HeaderType.json.value
         }
     }
@@ -58,6 +64,8 @@ extension StudioAPI: TargetType {
         switch self {
         case .studioCalendar, .studioDetail, .studioReviewList, .reviewDetail:
             EncodingType.get.value
+        case .postReview:
+            EncodingType.post.value
         }
     }
     
@@ -67,6 +75,13 @@ extension StudioAPI: TargetType {
             var params: Parameters = [:]
             
             params["yearMonth"] = yearMonth
+            
+            return params
+        case .postReview(let request):
+            var params: Parameters = [:]
+            
+            params["content"] = request.content
+            params["rating"] = request.rating
             
             return params
         case .studioDetail, .studioReviewList, .reviewDetail:

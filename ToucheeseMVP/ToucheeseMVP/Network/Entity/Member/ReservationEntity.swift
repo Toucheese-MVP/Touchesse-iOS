@@ -21,6 +21,7 @@ struct Reservation: Decodable, Hashable {
     let studioId: Int
     let studioName: String
     let studioImage: String
+    let productId: Int
     let productName: String
     let createDate: String
     let createTime: String

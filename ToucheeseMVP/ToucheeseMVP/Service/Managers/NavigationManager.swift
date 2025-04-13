@@ -125,7 +125,7 @@ final class NavigationManager: ObservableObject {
                 reviewId: reviewId
             )
         case .reviewCreateView(let reservation):
-            ReviewCreateView(reservation: reservation, imageViewModel: ImageUploadViewModel())
+            ReviewCreateView(viewModel: ReviewCreateViewModel(reservation: reservation), imageViewModel: ImageUploadViewModel())
         case .reservationDetailView(let reservation):
             ReservationDetailView(viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
         case .qustionDetailView(let question):
