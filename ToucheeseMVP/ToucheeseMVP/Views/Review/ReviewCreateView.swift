@@ -34,18 +34,7 @@ struct ReviewCreateView<ViewModel: ReviewCreateViewModelProtocol, ImageViewModel
                         .foregroundStyle(.tcGray01)
                         .padding(.horizontal, -16)
                     
-                    VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 0) {
-                            Text(viewModel.reservation.studioName)
-                                .bold()
-                            Text("의")
-                        }
-                        Text("촬영 경험은 어떠셨나요?")
-                        
-                        StarRatingView(rating: $viewModel.rating)
-                            .padding(.top, 8)
-                    }
-                    .font(.pretendardMedium(20))
+                    titleView
                     
                     Rectangle()
                         .frame(height: 8)
@@ -53,22 +42,9 @@ struct ReviewCreateView<ViewModel: ReviewCreateViewModelProtocol, ImageViewModel
                         .foregroundStyle(.tcGray01)
                         .padding(.horizontal, -16)
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("리뷰 작성")
-                            .font(.pretendardSemiBold16)
-                        MultiLineTextFieldView(inputValue: $viewModel.content,
-                                               placeHolder: "리뷰 내용을 입력해주세요",
-                                               width: CGFloat.screenWidth - (16 * 2))
-                    }
+                    contentView
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("후기 사진")
-                            .font(.pretendardSemiBold16)
-                        ImageSelectView(imageViewModel: imageViewModel)
-                        Text("최대 5장까지 등록할 수 있어요.")
-                            .font(.pretendardRegular13)
-                            .foregroundStyle(.tcGray06)
-                    }
+                    photoView
                     
                     HStack {
                         FillBottomButton(isSelectable: selectable, title: "작성 완료") {
@@ -105,6 +81,44 @@ struct ReviewCreateView<ViewModel: ReviewCreateViewModelProtocol, ImageViewModel
                     ProgressView()
                 }
             }
+        }
+    }
+}
+
+extension ReviewCreateView {
+    private var titleView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 0) {
+                Text(viewModel.reservation.studioName)
+                    .bold()
+                Text("의")
+            }
+            Text("촬영 경험은 어떠셨나요?")
+            
+            StarRatingView(rating: $viewModel.rating)
+                .padding(.top, 8)
+        }
+        .font(.pretendardMedium(20))
+    }
+    
+    private var contentView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("리뷰 작성")
+                .font(.pretendardSemiBold16)
+            MultiLineTextFieldView(inputValue: $viewModel.content,
+                                   placeHolder: "리뷰 내용을 입력해주세요",
+                                   width: CGFloat.screenWidth - (16 * 2))
+        }
+    }
+    
+    private var photoView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("후기 사진")
+                .font(.pretendardSemiBold16)
+            ImageSelectView(imageViewModel: imageViewModel)
+            Text("최대 5장까지 등록할 수 있어요.")
+                .font(.pretendardRegular13)
+                .foregroundStyle(.tcGray06)
         }
     }
 }
