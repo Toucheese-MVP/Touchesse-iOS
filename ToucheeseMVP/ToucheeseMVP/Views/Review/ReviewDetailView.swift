@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReviewDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
+struct ReviewDetailView<ViewModel: ReviewDetailViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
 
@@ -37,7 +37,7 @@ struct ReviewDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
             }
         }
         .task {
-            await viewModel.fetchReviewDetail(reviewID: reviewId)
+            await viewModel.fetchReviewDetail(studioID: viewModel.studio.id, reviewID: reviewId)
         }
         .customNavigationBar {
             EmptyView()
