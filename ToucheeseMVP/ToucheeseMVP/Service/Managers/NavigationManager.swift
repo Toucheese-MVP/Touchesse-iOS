@@ -36,11 +36,7 @@ final class NavigationManager: ObservableObject {
     @Published var isShowingAlert: Bool = false
     @Published var isShowingNicknameView: Bool = false
     
-    private(set) var homeResultViewMaterial: HomeResultViewMaterial?
-    private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
-    private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
-    private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
-    private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
+    private(set) var studioDetailViewModel: StudioDetailViewModel?
     
     @MainActor
     func resetNavigationPath(tab: Tab) {
@@ -62,8 +58,6 @@ final class NavigationManager: ObservableObject {
             homePath.removeAll()
         case .reservation:
             reservationPath.removeAll()
-//        case .likedStudios:
-//            studioLikePath.removeAll()
         case .question:
             questionPath.removeAll()
         case .myPage:
@@ -79,9 +73,6 @@ final class NavigationManager: ObservableObject {
         case .reservation:
             reservationPath.removeAll()
             tabItem = .reservation
-//        case .likedStudios:
-//            studioLikePath.removeAll()
-//            tabItem = .reservation
         case .question:
             reservationPath.removeAll()
             tabItem = .reservation
@@ -93,23 +84,48 @@ final class NavigationManager: ObservableObject {
     @ViewBuilder
     func buildView(viewType: ViewType) -> some View {
         switch viewType {
-        case .homeResultView:
-            HomeResultView(concept: self.homeResultViewMaterial!.concept)
-        case .studioDetailView:
-            StudioDetailView(viewModel: self.studioDetailViewMaterial!.viewModel)
-        case .productDetailView:
-            ProductDetailView(productDetailViewModel: self.productDetailViewMaterial!.viewModel)
-        case .reservationConfirmView:
-            ReservationConfirmView(viewModel: self.reservationConfirmViewMaterial!.viewModel)
+        case .homeResultView(let studioConcept):
+            HomeResultView(concept: studioConcept)
+        case .studioDetailView(let studio,_):
+            StudioDetailView(viewModel: studioDetailViewModel ?? StudioDetailViewModel(studio: studio, studioId: studio.id))
+            // StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
+        case .productDetailView(let studio, let studioDetail, let product):
+            ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product))
+        case .reservationConfirmView(
+            let studio,
+            let studioDetail,
+            let product,
+            let productDetail,
+            let productOption,
+            let reservationDate,
+            let totalPrice,
+            let addPeopleCount
+        ):
+            ReservationConfirmView(
+                viewModel: ReservationViewModel(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOptions: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
         case .reservationCompleteView:
             ReservationCompleteView()
-        case .reviewDetailView:
-            ReviewDetailView(viewModel: self.studioDetailViewMaterial!.viewModel,
-                             reviewId: self.studioDetailViewMaterial!.reviewId ?? 1)
-            
-        case .reservationDetailView:
-            ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel,
-                                  reservation: self.reservationDetailViewMaterial!.reservation)
+        case .reviewDetailView(let studio, let reviewId):
+            // TODO: reviewDetailView가 studioDetailView의 뷰모델 인스턴스를 만들고 있습니다. 뷰모델 분리가 필요할 것 같습니다.
+            ReviewDetailView(
+                viewModel: StudioDetailViewModel(
+                    studio: studio,
+                    studioId: studio.id
+                ),
+                reviewId: reviewId
+            )
+        case .reservationDetailView(let reservation):
+            ReservationDetailView(viewModel: ReservationDetailViewModel(reservation: reservation), reservation: reservation)
         case .qustionDetailView(let question):
             QuestionDetailView(viewModel: QuestionDetailViewModel(question: question))
         case .questionCreateView:
@@ -117,51 +133,74 @@ final class NavigationManager: ObservableObject {
         }
     }
     
-    func appendPath(viewType: ViewType, viewMaterial: ViewMaterial?) {
+    func appendPath(viewType: ViewType) {
         switch viewType {
-        case .homeResultView:
-            self.homeResultViewMaterial = viewMaterial as? HomeResultViewMaterial
-            homePath.append(.homeResultView)
-        case .studioDetailView:
-            self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+        case .homeResultView(let studioConcept):
+            homePath.append(.homeResultView(studioConcept: studioConcept))
+        case .studioDetailView(let studio, let reviewId):
+            studioDetailViewModel = StudioDetailViewModel(studio: studio, studioId: studio.id)
             switch tabItem {
-            case .home: homePath.append(.studioDetailView)
-            case .reservation: reservationPath.append(.studioDetailView)
-                //            case .likedStudios: studioLikePath.append(.studioDetailView)
+            case .home: homePath.append(.studioDetailView(studio: studio, reviewId: reviewId))
+            case .reservation: reservationPath.append(.studioDetailView(studio: studio, reviewId: reviewId))
             default:
                 break
             }
-        case .productDetailView:
-            self.productDetailViewMaterial = viewMaterial as? ProductDetailViewMaterial
+        case .productDetailView(let studio, let studioDetail, let product):
             switch tabItem {
-            case .home: homePath.append(.productDetailView)
-            case .reservation: reservationPath.append(.productDetailView)
-                //            case .likedStudios: studioLikePath.append(.productDetailView)
+            case .home: homePath.append(.productDetailView(studio: studio, studioDetail: studioDetail, product: product))
+            case .reservation: reservationPath.append(.productDetailView(studio: studio, studioDetail: studioDetail, product: product))
             default: break
             }
-        case .reservationConfirmView:
-            self.reservationConfirmViewMaterial = viewMaterial as? ReservationConfirmViewMaterial
+        case .reservationConfirmView(
+            let studio,
+            let studioDetail,
+            let product,
+            let productDetail,
+            let productOption,
+            let reservationDate,
+            let totalPrice,
+            let addPeopleCount
+        ):
             switch tabItem {
-            case .home: homePath.append(.reservationConfirmView)
-            case .reservation: reservationPath.append(.reservationConfirmView)
-                //            case .likedStudios: studioLikePath.append(.reservationConfirmView)
+            case .home: homePath.append(
+                .reservationConfirmView(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOption: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
+                
+            case .reservation: reservationPath.append(
+                .reservationConfirmView(
+                    studio: studio,
+                    studioDetail: studioDetail,
+                    product: product,
+                    productDetail: productDetail,
+                    productOption: productOption,
+                    reservationDate: reservationDate,
+                    totalPrice: totalPrice,
+                    addPeopleCount: addPeopleCount
+                )
+            )
             default: break
             }
         case .reservationCompleteView:
             switch tabItem {
             case .home: homePath.append(.reservationCompleteView)
             case .reservation: reservationPath.append(.reservationCompleteView)
-                //            case .likedStudios: studioLikePath.append(.reservationCompleteView)
             default: break
             }
-        case .reservationDetailView:
-            self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
-            reservationPath.append(.reservationDetailView)
-        case .reviewDetailView:
-            self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
+        case .reservationDetailView(let reservation):
+            reservationPath.append(.reservationDetailView(reservation: reservation))
+        case .reviewDetailView(let studio, let reviewId):
             switch tabItem {
-            case .home: homePath.append(.reviewDetailView)
-            case .reservation: reservationPath.append(.reviewDetailView)
+            case .home: homePath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
+            case .reservation: reservationPath.append(.reviewDetailView(studio: studio, reviewId: reviewId))
             default: break
             }
         case .qustionDetailView(let question):
@@ -177,8 +216,6 @@ final class NavigationManager: ObservableObject {
             isTabBarHidden = homePath.count >= 2
         case .reservation:
             isTabBarHidden = reservationPath.count >= 1
-//        case .likedStudios:
-//            isTabBarHidden = studioLikePath.count >= 1
         case .question:
             break
         case .myPage:
@@ -192,8 +229,6 @@ final class NavigationManager: ObservableObject {
             homePath.removeLast(depth)
         case .reservation:
             reservationPath.removeLast(depth)
-//        case .likedStudios:
-//            studioLikePath.removeLast(depth)
         case .question:
             questionPath.removeLast(depth)
         case .myPage:

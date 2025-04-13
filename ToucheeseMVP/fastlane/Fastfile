@@ -1,0 +1,61 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  # TestFlight 배포 자동화
+  lane :beta do
+    app_store_connect_api_key(
+      key_id: ENV["KEY_ID"], # 앱 키 아이디
+      issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
+      key_filepath: "./fastlane/AuthKey_22N22888B2.p8", # .p8 키 파일 경로
+      in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
+    )    
+
+    increment_build_number(xcodeproj: "ToucheeseMVP.xcodeproj") # 빌드 넘버 증가
+    build_app(scheme: "ToucheeseMVP")
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      skip_submission: true
+    )
+  end
+
+  # 앱심사 제출 자동화
+  lane :release do
+    version = get_version_number(xcodeproj: "ToucheeseMVP.xcodeproj")
+
+    app_store_connect_api_key(
+      key_id: ENV["KEY_ID"], # 앱 키 아이디
+      issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
+      key_filepath: "./fastlane/AuthKey_22N22888B2.p8", # .p8 키 파일 경로
+      in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
+    )    
+
+    increment_build_number(xcodeproj: "ToucheeseMVP.xcodeproj") # 빌드 넘버 증가
+    build_app(scheme: "ToucheeseMVP")
+
+    upload_to_app_store(
+      skip_metadata: false,
+      skip_screenshots: true,
+      submit_for_review: true
+    )
+
+  # 릴리즈 노트 반영
+  changelog_update(version: version)
+
+  end
+end

@@ -143,12 +143,6 @@ struct StudioDetailView<ViewModel: StudioDetailViewModelProtocol>: View {
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
         }
-        .task {
-            async let detail: Void = viewModel.fetchStudioDetail()
-            async let review: Void = viewModel.fetchReviewList()
-            
-            _ = await (detail, review)
-        }
     }
     
 }
@@ -316,14 +310,7 @@ fileprivate struct ProductListView: View {
     private func productCell(product: ProductEntity) -> some View {
         Button {
             navigationManager.appendPath(
-                viewType: .productDetailView,
-                viewMaterial: ProductDetailViewMaterial(
-                    viewModel: ProductDetailViewModel(
-                        studio: studio,
-                        studioDetails: studioDetail,
-                        product: product
-                    )
-                )
+                viewType: .productDetailView(studio: studio, studioDetail: studioDetail, product: product)
             )
         } label: {
             HStack(spacing: 13) {

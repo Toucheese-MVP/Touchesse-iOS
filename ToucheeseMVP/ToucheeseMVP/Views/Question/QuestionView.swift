@@ -27,7 +27,7 @@ struct QuestionView<ViewModel: QuestionViewModelProtocol>: View {
             // 문의 내역이 없을 경우 -> 문의 생성 안내
             } else if viewModel.questions.isEmpty {
                 CustomEmptyView(viewType: .question(buttonText: "문의 작성하기", buttonAction: {
-                    navigationManager.appendPath(viewType: .questionCreateView, viewMaterial: nil)
+                    navigationManager.appendPath(viewType: .questionCreateView)
                 }))
                 .padding(.horizontal, 36)
             } else {
@@ -40,8 +40,7 @@ struct QuestionView<ViewModel: QuestionViewModelProtocol>: View {
                         VStack(spacing: 0) {
                             ForEach(viewModel.questions, id: \.self) { question in
                                 Button {
-                                    navigationManager.appendPath(viewType: .qustionDetailView(qustion: question),
-                                                                 viewMaterial: nil)
+                                    navigationManager.appendPath(viewType: .qustionDetailView(qustion: question))
                                 } label: {
                                     QuestionCardView(question: question, isShowingContent: false)
                                 }
@@ -99,7 +98,7 @@ fileprivate struct CreateQuestionButton: View {
                 Spacer()
                 
                 Button {
-                    navigationManager.appendPath(viewType: .questionCreateView, viewMaterial: nil)
+                    navigationManager.appendPath(viewType: .questionCreateView)
                 } label: {
                     HStack(spacing: 0) {
                         Image(.tcAdd)

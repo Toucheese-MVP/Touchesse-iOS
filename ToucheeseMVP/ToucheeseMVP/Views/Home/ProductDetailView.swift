@@ -11,7 +11,7 @@ import Kingfisher
 struct ProductDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @StateObject var productDetailViewModel: ProductDetailViewModel
-
+    
     private let authManager = AuthenticationManager.shared
     
     @State private var displayDate: Date?
@@ -43,22 +43,21 @@ struct ProductDetailView: View {
                     if authManager.authStatus == .authenticated {
                         navigationManager
                             .appendPath(
-                                viewType: .reservationConfirmView,
-                                viewMaterial: ReservationConfirmViewMaterial(
-                                    viewModel: ReservationViewModel(
-                                        studio: productDetailViewModel.studio,
-                                        studioDetail: productDetailViewModel.studioDetail,
-                                        product: productDetailViewModel.product,
-                                        productDetail: productDetailViewModel.productDetail,
-                                        productOptions: productDetailViewModel.selectedProductOptionArray,
-                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                        totalPrice: productDetailViewModel.totalPrice,
-                                        addPeopleCount: productDetailViewModel.addPeopleCount
-                                    )
-                                )
+                                viewType:
+                                        .reservationConfirmView(
+                                            studio: productDetailViewModel.studio,
+                                            studioDetail: productDetailViewModel.studioDetail,
+                                            product: productDetailViewModel.product,
+                                            productDetail: productDetailViewModel.productDetail,
+                                            productOption: productDetailViewModel.selectedProductOptionArray,
+                                            reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                            totalPrice: productDetailViewModel.totalPrice,
+                                            addPeopleCount: productDetailViewModel.addPeopleCount
+                                        )
                             )
                     } else {
-                        isShowingLoginView.toggle()
+                        isShowingLoginView
+                            .toggle()
                     }
                 }
                 .padding(.horizontal, 16)
@@ -100,7 +99,7 @@ struct ProductDetailView: View {
         }
         .fullScreenCover(isPresented: $isShowingLoginView, content: {
             LoginView(TviewModel: LogInViewModel(),
-                          isPresented: $isShowingLoginView)
+                      isPresented: $isShowingLoginView)
         })
     }
     

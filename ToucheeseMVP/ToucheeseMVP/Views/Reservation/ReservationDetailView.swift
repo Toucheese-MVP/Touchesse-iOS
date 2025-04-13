@@ -76,12 +76,16 @@ struct ReservationDetailView<ViewModel: ReservationDetailViewModelProtocol>: Vie
                         ) {
                             
                             navigationManager.appendPath(
-                                viewType: .studioDetailView,
-                                viewMaterial: StudioDetailViewMaterial(
-                                    viewModel: StudioDetailViewModel(
-                                        studio: Studio(id: reservation.studioId, name: reservation.studioName, profileImage: "", rating: 0.0, price: 0, imageUrls: []),
-                                        studioId: reservation.studioId
-                                    )
+                                viewType: .studioDetailView(
+                                    studio: Studio(
+                                        id: reservation.studioId,
+                                        name: reservation.studioName,
+                                        profileImage: "",
+                                        rating: 0.0,
+                                        price: 0,
+                                        imageUrls: []
+                                    ),
+                                    reviewId: 0
                                 )
                             )
                         }

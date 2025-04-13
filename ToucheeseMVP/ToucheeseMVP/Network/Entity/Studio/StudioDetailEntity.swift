@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StudioDetailEntity: Decodable {
+struct StudioDetailEntity: Decodable, Hashable {
     let id: Int
     let name: String
     let profileImage: String

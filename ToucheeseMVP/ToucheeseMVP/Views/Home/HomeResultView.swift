@@ -73,13 +73,10 @@ struct HomeResultView: View {
                                             isShowingLoginView.toggle()
                                         } else {
                                             navigationManager.appendPath(
-                                                viewType: .studioDetailView,
-                                                viewMaterial: StudioDetailViewMaterial(
-                                                    viewModel: StudioDetailViewModel(
-                                                        studio: studio, studioId: studio.id
-                                                    )
-                                                )
-                                            )
+                                                viewType: .studioDetailView(
+                                                    studio: studio,
+                                                    reviewId: 0
+                                                ))
                                         }
                                     }
                                 }
@@ -124,7 +121,7 @@ struct HomeResultView: View {
         }
         .fullScreenCover(isPresented: $isShowingLoginView) {
             LoginView(TviewModel: LogInViewModel(),
-                          isPresented: $isShowingLoginView)
+                      isPresented: $isShowingLoginView)
         }
         .onAppear {
             studioListViewModel.selectStudioConcept(conceptId: concept.id)
