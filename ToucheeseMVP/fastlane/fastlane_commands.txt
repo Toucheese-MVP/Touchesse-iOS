@@ -1,0 +1,11 @@
+# Fastlane에 사용되는 로컬 명령어 메모장
+# 실행 경로는 Toucheese-iOS -> ToucheeseMVP -> fastlane 폴더 내에서 실행
+
+// TestFlight 배포 
+1. bundle exec fastlane beta
+
+// 심사 제출
+2. bundle exec fastlane release
+
+// 사용 가능한 lane 목록 보기
+3. fastlane lanes
