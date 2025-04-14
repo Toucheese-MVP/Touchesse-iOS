@@ -24,7 +24,7 @@ platform :ios do
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
     install_provisioning_profile(
-      path: "certs/ToucheeseAppstoreConnect.mobileprovision"
+      path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
     )
 
     app_store_connect_api_key(
