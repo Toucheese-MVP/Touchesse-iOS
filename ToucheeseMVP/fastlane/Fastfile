@@ -27,6 +27,11 @@ platform :ios do
       path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
     )
 
+    import_certificate(
+      certificate_path: "fastlane/certs/ToucheeseDistribution.p12",
+      certificate_password: ENV['CERTIFICATION_PASSWORD']
+    )
+
     app_store_connect_api_key(
       key_id: ENV["KEY_ID"], # 앱 키 아이디
       issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
@@ -62,7 +67,12 @@ platform :ios do
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
     install_provisioning_profile(
-      Path: "certs/ToucheeseAppstoreConnect.mobileprovision"
+      path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
+    )
+
+    import_certificate(
+      certificate_path: "fastlane/certs/ToucheeseDistribution.p12",
+      certificate_password: ENV['CERTIFICATION_PASSWORD']
     )
 
     version = get_version_number(xcodeproj: "ToucheeseMVP.xcodeproj")
