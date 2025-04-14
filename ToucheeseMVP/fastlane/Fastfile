@@ -32,7 +32,8 @@ platform :ios do
       password: "fastlane",
       default_keychain: true,
       unlock: true,
-      timeout: false,
+      timeout: 3600,
+      lock_when_sleeps: false
     )
 
 
@@ -85,7 +86,8 @@ platform :ios do
       password: "fastlane",
       default_keychain: true,
       unlock: true,
-      timeout: false,
+      timeout: 3600,
+      lock_when_sleeps: false
     )
 
 
