@@ -51,13 +51,11 @@ platform :ios do
       in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
     )    
 
-    latest = get_build_number_from_testflight(
-      app_identifier: "com.Toucheese.ToucheeseRelease"
-    ).to_i
+    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj")
 
     # 빌드 넘버 증가
     increment_build_number(
-      build_number: (latest + 1).to_s,
+      build_number: (current_build_number + 1).to_s,
       xcodeproj: "ToucheeseMVP.xcodeproj"
     ) 
 
@@ -117,15 +115,14 @@ platform :ios do
       in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
     )    
 
-    latest = get_build_number_from_testflight(
-      app_identifier: "com.Toucheese.ToucheeseRelease"
-    ).to_i
+    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj")
 
     # 빌드 넘버 증가
     increment_build_number(
-      build_number: (latest + 1).to_s,
+      build_number: (current_build_number + 1).to_s,
       xcodeproj: "ToucheeseMVP.xcodeproj"
     ) 
+
 
     build_app(
       scheme: "ToucheeseMVP",
