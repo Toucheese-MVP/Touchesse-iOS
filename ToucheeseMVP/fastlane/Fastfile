@@ -27,9 +27,19 @@ platform :ios do
       path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
     )
 
+    create_keychain(
+      name: "login.keychain",
+      password: "fastlane",
+      default: true,
+      unlock: true,
+      timeout: false,
+    )
+
+
     import_certificate(
       certificate_path: "fastlane/certs/ToucheeseDistribution.p12",
-      certificate_password: ENV['CERTIFICATION_PASSWORD']
+      certificate_password: ENV['CERTIFICATION_PASSWORD'],
+      keychain_name: "login.keychain"
     )
 
     app_store_connect_api_key(
@@ -70,9 +80,19 @@ platform :ios do
       path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
     )
 
+    create_keychain(
+      name: "login.keychain",
+      password: "fastlane",
+      default: true,
+      unlock: true,
+      timeout: false,
+    )
+
+
     import_certificate(
       certificate_path: "fastlane/certs/ToucheeseDistribution.p12",
-      certificate_password: ENV['CERTIFICATION_PASSWORD']
+      certificate_password: ENV['CERTIFICATION_PASSWORD'],
+      keychain_name: "login.keychain"
     )
 
     version = get_version_number(xcodeproj: "ToucheeseMVP.xcodeproj")
