@@ -19,9 +19,9 @@ platform :ios do
   # TestFlight 배포 자동화
   lane :beta do
     # 암호화된 파일 복호화(키는 .env 파일과 깃 시크릿에 보관)
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseDistribution.p12.enc -out certs/ToucheeseDistribution.p12 -k $CERTIFICATION_KEY")
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k $MOBILEPROVISION_KEY")
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k $AUTHKEY_KEY")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseDistribution.p12.enc -out certs/ToucheeseDistribution.p12 -k #{ENV['CERTIFICATION_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k #{ENV['MOBILEPROVISION_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
     app_store_connect_api_key(
       key_id: ENV["KEY_ID"], # 앱 키 아이디
@@ -53,9 +53,9 @@ platform :ios do
   # 앱심사 제출 자동화
   lane :release do
     # 암호화된 파일 복호화(키는 .env 파일과 깃 시크릿에 보관)
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseDistribution.p12.enc -out certs/ToucheeseDistribution.p12 -k $CERTIFICATION_KEY")
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k $MOBILEPROVISION_KEY")
-    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k $AUTHKEY_KEY")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseDistribution.p12.enc -out certs/ToucheeseDistribution.p12 -k #{ENV['CERTIFICATION_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k #{ENV['MOBILEPROVISION_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
     version = get_version_number(xcodeproj: "ToucheeseMVP.xcodeproj")
 
