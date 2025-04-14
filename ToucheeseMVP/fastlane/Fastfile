@@ -30,7 +30,7 @@ platform :ios do
     create_keychain(
       name: "login.keychain",
       password: "fastlane",
-      default: true,
+      default_keychain: true,
       unlock: true,
       timeout: false,
     )
@@ -83,7 +83,7 @@ platform :ios do
     create_keychain(
       name: "login.keychain",
       password: "fastlane",
-      default: true,
+      default_keychain: true,
       unlock: true,
       timeout: false,
     )
