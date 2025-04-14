@@ -36,7 +36,6 @@ platform :ios do
       lock_when_sleeps: false
     )
 
-
     import_certificate(
       certificate_path: "fastlane/certs/ToucheeseDistribution.p12",
       certificate_password: ENV['CERTIFICATION_PASSWORD'],
@@ -51,7 +50,7 @@ platform :ios do
       in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
     )    
 
-    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj")
+    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj").to_i
 
     # 빌드 넘버 증가
     increment_build_number(
@@ -115,7 +114,7 @@ platform :ios do
       in_house: false # 큰 회사 같은 곳에서 로컬 서버 같은 환경에 쓰인다고 함
     )    
 
-    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj")
+    current_build_number = get_build_number(xcodeproj: "ToucheeseMVP.xcodeproj").to_i
 
     # 빌드 넘버 증가
     increment_build_number(
