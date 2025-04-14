@@ -39,9 +39,10 @@ jobs:
       # GitHub Secrets에 보안처리된 정보들 불러오기
       - name: Create API Key file from secret
         run: |
-          openssl aes-256-cbc -pbkdf2 -d -in ToucheeseMVP/fastlane/certs/ToucheeseDistribution.p12.enc -out ToucheeseMVP/fastlane/certs/ToucheeseDistribution.p12 -k "$CERTIFICATION_KEY"
-          openssl aes-256-cbc -pbkdf2 -d -in ToucheeseMVP/fastlane/certs/ToucheeseAppstoreConnect.mobileprovision.enc -out ToucheeseMVP/fastlane/certs/ToucheeseAppstoreConnect.mobileprovision -k "$MOBILEPROVISION_KEY"
-          openssl aes-256-cbc -pbkdf2 -d -in ToucheeseMVP/fastlane/certs/AuthKey_22N22888B2.p8.enc -out ToucheeseMVP/fastlane/certs/AuthKey_22N22888B2.p8 -k "$AUTHKEY_KEY"
+          cd ToucheeseMVP
+          openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/ToucheeseDistribution.p12.enc -out fastlane/certs/ToucheeseDistribution.p12 -k "$CERTIFICATION_KEY"
+          openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/ToucheeseAppstoreConnect.mobileprovision.enc -out fastlane/certs/ToucheeseAppstoreConnect.mobileprovision -k "$MOBILEPROVISION_KEY"
+          openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/AuthKey_22N22888B2.p8.enc -out fastlane/certs/AuthKey_22N22888B2.p8 -k "$AUTHKEY_KEY"
         env:
           CERTIFICATION_KEY: ${{ secrets.CERTIFICATION_KEY }}
           MOBILEPROVISION_KEY: ${{ secrets.MOBILEPROVISION_KEY }}
