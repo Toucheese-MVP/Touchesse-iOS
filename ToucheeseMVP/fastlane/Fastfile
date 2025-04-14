@@ -23,6 +23,18 @@ platform :ios do
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k #{ENV['MOBILEPROVISION_KEY']}")
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
+    # ToucheeseAppstoreConnect.mobileprovision 파일을 읽어서 XML로 디코딩 | XML에서 UUID 필드만 추출 | UUID 형식 (36자, 대문자)만 필터링 | 끝의 줄바꿈 문자 제거
+    # XML 파일 -> 데이터를 구조화해서 표현하는 텍스트 형식의 파일
+    uuid = sh("security cms -D -i certs/ToucheeseAppstoreConnect.mobileprovision | plutil -extract UUID xml1 -o - - | grep -oE '[A-F0-9-]{36}'").strip
+
+    # 경로에 디렉토리 생성
+    sh("mkdir -p ~/Library/MobileDevice/Provisioning\\ Profiles/")
+
+    # 생성한 ToucheeseAppstoreConnect.mobileprovision 파일을 UUID값 이름으로 넣어주기
+    sh("cp certs/ToucheeseAppstoreConnect.mobileprovision ~/Library/MobileDevice/Provisioning\\ Profiles/#{uuid}.mobileprovision")
+
+
+
     app_store_connect_api_key(
       key_id: ENV["KEY_ID"], # 앱 키 아이디
       issuer_id: ENV["ISSUER_ID"], # Issuer 아이디
