@@ -73,7 +73,7 @@ platform :ios do
     upload_to_testflight(
       skip_waiting_for_build_processing: true,
       skip_submission: true,
-      groups: ["Internal"]
+      distribute_external: false,
     )
 
     sh("rm certs/ToucheeseDistribution.p12")
