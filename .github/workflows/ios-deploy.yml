@@ -50,6 +50,8 @@ jobs:
           CERTIFICATION_PASSWORD: ${{ secrets.CERTIFICATION_PASSWORD }}
           MOBILEPROVISION_KEY: ${{ secrets.MOBILEPROVISION_KEY }}
           AUTHKEY_KEY: ${{ secrets.AUTHKEY_KEY }}
+          GOOGLESERVICE_KEY: ${{ secrets.GOOGLESERVICE_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
           BUNDLE_GEMFILE: ./Gemfile
           KEY_ID: ${{ secrets.KEY_ID }}

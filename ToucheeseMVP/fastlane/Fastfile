@@ -23,6 +23,9 @@ platform :ios do
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k #{ENV['MOBILEPROVISION_KEY']}")
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
 
+    sh("openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/GoogleService-Info.plist.enc -out ../ToucheeseMVP/Resources/GoogleService-Info.plist -k #{ENV['GOOGLESERVICE_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/Secrets.xcconfig.enc -out ../ToucheeseMVP/Resources/Secrets.xcconfig -k #{ENV['SECRET_KEY']}")
+
     install_provisioning_profile(
       path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
     )
@@ -62,6 +65,7 @@ platform :ios do
 
     build_app(
       scheme: "ToucheeseMVP",
+      configuration: "Release",
       export_method: "app-store",
       export_options: {
         provisioningProfiles: {
@@ -87,6 +91,9 @@ platform :ios do
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseDistribution.p12.enc -out certs/ToucheeseDistribution.p12 -k #{ENV['CERTIFICATION_KEY']}")
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/ToucheeseAppstoreConnect.mobileprovision.enc -out certs/ToucheeseAppstoreConnect.mobileprovision -k #{ENV['MOBILEPROVISION_KEY']}")
     sh("openssl aes-256-cbc -pbkdf2 -d -in certs/AuthKey_22N22888B2.p8.enc -out certs/AuthKey_22N22888B2.p8 -k #{ENV['AUTHKEY_KEY']}")
+
+    sh("openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/GoogleService-Info.plist.enc -out ../ToucheeseMVP/Resources/GoogleService-Info.plist -k #{ENV['GOOGLESERVICE_KEY']}")
+    sh("openssl aes-256-cbc -pbkdf2 -d -in fastlane/certs/Secrets.xcconfig.enc -out ../ToucheeseMVP/Resources/Secrets.xcconfig -k #{ENV['SECRET_KEY']}")
 
     install_provisioning_profile(
       path: "fastlane/certs/ToucheeseAppstoreConnect.mobileprovision"
@@ -130,6 +137,7 @@ platform :ios do
 
     build_app(
       scheme: "ToucheeseMVP",
+      configuration: "Release",
       export_method: "app-store",
       export_options: {
         provisioningProfiles: {
