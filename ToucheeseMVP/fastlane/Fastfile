@@ -74,7 +74,7 @@ platform :ios do
       skip_waiting_for_build_processing: true,
       skip_submission: false,
       distribute_external: false,
-      groups: ["Internal"]
+      groups: ["FastRelease"]
     )
 
     sh("rm certs/ToucheeseDistribution.p12")
