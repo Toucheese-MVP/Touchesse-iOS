@@ -21,7 +21,7 @@ protocol CalendarViewModelProtocol: ObservableObject {
     var studioReservableTime: (AM: [String], PM: [String]) { get }
     
     /// 날짜 선택
-    func selectDate(date: Date)
+    func selectDate(date: Date) async
     /// 시간 선택
     func selectTime(date: Date)
     /// 이전 달 선택
@@ -39,13 +39,20 @@ protocol CalendarViewModelProtocol: ObservableObject {
 }
 
 protocol PrivateCalendarViewModelProtocolLogic {
+    /// 캘린더 화면에 표시되는 날짜
+    var displayDate: Date { get }
+    
     /// 캘린더 화면에 표시되는 달 문자열
     func updatePresentingMonthString()
+    
+    /// 스튜디오 캘린더 정보 Fetch
+    func fetchStudioCalendar(_ date: Date) async
 }
 
 final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarViewModelProtocolLogic {
     // MARK: - Datas
-    private let studioService = DefaultStudioService(session: SessionManager.shared.baseSession)
+    // private let studioService = DefaultStudioService(session: SessionManager.shared.baseSession)
+    private let studioService: StudioService
     
     /// 스튜디오 ID
     private let studioID: Int
@@ -94,18 +101,19 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
     
     
     // MARK: - Init
-    init(studioID: Int, preSelectedDate: Date? = nil) {
+    init(studioID: Int, preSelectedDate: Date? = nil, studioService: StudioService = DefaultStudioService(session: SessionManager.shared.baseSession)) {
         self.studioID = studioID
         self.preSelectedDate = preSelectedDate
+        self.studioService = studioService
         
         Task {
             // 이전에 선택된 날짜가 있는 경우 이전에 선택된 날짜 기준으로 Fetch
             await fetchStudioCalendar(preSelectedDate ?? Date())
-            calReservableTimes()
+            await calReservableTimes()
             
             // 이전에 선택된 날짜가 있는 경우 이전에 선택된 날짜 기준으로 화면에 표시
             if let preSelectedDate {
-                selectDate(date: preSelectedDate)
+                await selectDate(date: preSelectedDate)
                 selectTime(date: preSelectedDate)
             }
         }
@@ -113,11 +121,10 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
     
     
     // MARK: - Logics
-    func selectDate(date: Date) {
-        DispatchQueue.main.async { [weak self] in
-            self?.displayDate = date
-            self?.calReservableTimes()
-        }
+    @MainActor
+    func selectDate(date: Date) async {
+        displayDate = date
+        await calReservableTimes()
     }
     
     func selectTime(date: Date) {
@@ -182,7 +189,7 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
         }
     }
     
-    func calReservableTimes() {
+    func calReservableTimes() async {
         guard let reservableTimes = studioCalendarEntities.first(where: { calendar.isDate($0.dateType, inSameDayAs: displayDate)})?.times else { return }
         
         let amTimes = reservableTimes.filter { time in
@@ -195,8 +202,12 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
             return hour >= 12
         }
         
-        DispatchQueue.main.async {
-            self.studioReservableTime = (AM: amTimes, PM: pmTimes)
+//        DispatchQueue.main.async {
+//            self.studioReservableTime = (AM: amTimes, PM: pmTimes)
+//        }
+        
+        await MainActor.run {
+            studioReservableTime = (AM: amTimes, PM: pmTimes)
         }
     }
     
@@ -207,7 +218,7 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
     }
     
     @MainActor
-    private func fetchStudioCalendar(_ date: Date) async {
+    func fetchStudioCalendar(_ date: Date) async {
         let dateString = date.toString(format: .studioCalendarRequest)
         
         do {

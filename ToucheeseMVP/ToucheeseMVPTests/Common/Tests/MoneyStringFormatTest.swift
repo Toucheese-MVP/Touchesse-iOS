@@ -9,7 +9,7 @@ import Testing
 @testable import ToucheeseMVP
 
 struct MoneyFormatTests {
-    @Test func testExtension_MoneyStringFormat_MultipleCases() async throws {
+    @Test func test_MoneyStringFormat_MultipleCases() async throws {
         let testCases: [(input: Int, expected: String)] = [
             (3000, "3,000원"),
             (0, "0원"),
@@ -18,7 +18,7 @@ struct MoneyFormatTests {
         ]
         
         for (input, expected) in testCases {
-            #expect(input.moneyStringFormat == expected, "testExtension_MoneyStringFormat_MultipleCases Failed for input: \(input)")
+            #expect(input.moneyStringFormat == expected, "test_MoneyStringFormat_MultipleCases Failed for input: \(input)")
         }
     }
 }

@@ -161,7 +161,7 @@ final class MockCustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalen
     }
     
     @MainActor
-    private func fetchStudioCalendar(_ date: Date) async {        
+    func fetchStudioCalendar(_ date: Date) async {        
         studioCalendarEntities = date.daysInMonth.map {
             StudioCalendarEntity(
                 date: $0.toString(format: .requestYearMonthDay),

@@ -117,7 +117,9 @@ struct CustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
                     let isHoliday = viewModel.isHoliday(date)
                     
                     Button {
-                        viewModel.selectDate(date: date)
+                        Task {
+                            await viewModel.selectDate(date: date)
+                        }
                     } label: {
                         Text("\(studioCalendarEntity.presentingDate)")
                             .font(isSelectedDate ? .pretendardSemiBold14 : .pretendardMedium14)
