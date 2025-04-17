@@ -9,16 +9,41 @@ import Testing
 @testable import ToucheeseMVP
 
 struct MoneyFormatTests {
-    @Test func test_MoneyStringFormat_MultipleCases() async throws {
-        let testCases: [(input: Int, expected: String)] = [
-            (3000, "3,000원"),
-            (0, "0원"),
-            (-200, "-200원"),
-            (1000000, "1,000,000원"),
-        ]
+    enum Moneys: CaseIterable {
+        case thousand
+        case zero
+        case negative
+        case million
         
-        for (input, expected) in testCases {
-            #expect(input.moneyStringFormat == expected, "test_MoneyStringFormat_MultipleCases Failed for input: \(input)")
+        var input: Int {
+            switch self {
+            case .thousand:
+                3000
+            case .zero:
+                0
+            case .negative:
+                -200
+            case .million:
+                1000000
+            }
         }
+        
+        var expected: String {
+            switch self {
+            case .thousand:
+                "3,000원"
+            case .zero:
+                "0원"
+            case .negative:
+                "-200원"
+            case .million:
+                "1,000,000원"
+            }
+        }
+    }
+    
+    @Test(arguments: Moneys.allCases)
+    func test_MoneyStringFormat_MultipleCases(moneyCase: Moneys) async throws {
+        #expect(moneyCase.input.moneyStringFormat == moneyCase.expected, "test_MoneyStringFormat_MultipleCases Failed for input: \(moneyCase.input)")
     }
 }
