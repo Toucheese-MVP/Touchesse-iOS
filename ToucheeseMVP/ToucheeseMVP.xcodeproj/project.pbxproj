@@ -15,8 +15,19 @@
 		3BD187422D2F7842006D2C1F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD187412D2F7842006D2C1F /* Kingfisher */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3D194DF52DB0E9BD008B457B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3BD185142D2F7674006D2C1F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3BD1851B2D2F7674006D2C1F;
+			remoteInfo = ToucheeseMVP;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		3BD1851C2D2F7674006D2C1F /* ToucheeseMVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToucheeseMVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D194DF12DB0E9BD008B457B /* ToucheeseMVPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToucheeseMVPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -38,6 +49,11 @@
 			path = ToucheeseMVP;
 			sourceTree = "<group>";
 		};
+		3D194DF22DB0E9BD008B457B /* ToucheeseMVPTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ToucheeseMVPTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +70,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3D194DEE2DB0E9BD008B457B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -61,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				3BD1851E2D2F7674006D2C1F /* ToucheeseMVP */,
+				3D194DF22DB0E9BD008B457B /* ToucheeseMVPTests */,
 				3BD1851D2D2F7674006D2C1F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -69,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				3BD1851C2D2F7674006D2C1F /* ToucheeseMVP.app */,
+				3D194DF12DB0E9BD008B457B /* ToucheeseMVPTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,6 +129,29 @@
 			productReference = 3BD1851C2D2F7674006D2C1F /* ToucheeseMVP.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3D194DF02DB0E9BD008B457B /* ToucheeseMVPTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D194DF92DB0E9BD008B457B /* Build configuration list for PBXNativeTarget "ToucheeseMVPTests" */;
+			buildPhases = (
+				3D194DED2DB0E9BD008B457B /* Sources */,
+				3D194DEE2DB0E9BD008B457B /* Frameworks */,
+				3D194DEF2DB0E9BD008B457B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3D194DF62DB0E9BD008B457B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3D194DF22DB0E9BD008B457B /* ToucheeseMVPTests */,
+			);
+			name = ToucheeseMVPTests;
+			packageProductDependencies = (
+			);
+			productName = ToucheeseMVPTests;
+			productReference = 3D194DF12DB0E9BD008B457B /* ToucheeseMVPTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -111,11 +159,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					3BD1851B2D2F7674006D2C1F = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					3D194DF02DB0E9BD008B457B = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3BD1851B2D2F7674006D2C1F;
 					};
 				};
 			};
@@ -139,12 +191,20 @@
 			projectRoot = "";
 			targets = (
 				3BD1851B2D2F7674006D2C1F /* ToucheeseMVP */,
+				3D194DF02DB0E9BD008B457B /* ToucheeseMVPTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3BD1851A2D2F7674006D2C1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3D194DEF2DB0E9BD008B457B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -161,7 +221,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3D194DED2DB0E9BD008B457B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3D194DF62DB0E9BD008B457B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3BD1851B2D2F7674006D2C1F /* ToucheeseMVP */;
+			targetProxy = 3D194DF52DB0E9BD008B457B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3BD185282D2F7675006D2C1F /* Debug */ = {
@@ -373,6 +448,44 @@
 			};
 			name = Release;
 		};
+		3D194DF72DB0E9BD008B457B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUZ4CWYRGJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.HEALCode.ToucheeseMVPTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToucheeseMVP.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToucheeseMVP";
+			};
+			name = Debug;
+		};
+		3D194DF82DB0E9BD008B457B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUZ4CWYRGJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.HEALCode.ToucheeseMVPTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToucheeseMVP.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToucheeseMVP";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -390,6 +503,15 @@
 			buildConfigurations = (
 				3BD1852B2D2F7675006D2C1F /* Debug */,
 				3BD1852C2D2F7675006D2C1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3D194DF92DB0E9BD008B457B /* Build configuration list for PBXNativeTarget "ToucheeseMVPTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D194DF72DB0E9BD008B457B /* Debug */,
+				3D194DF82DB0E9BD008B457B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
