@@ -10,18 +10,10 @@ import Foundation
 @testable import ToucheeseMVP
 
 struct CustomCalendarTests {
-    // DisPlayDate가 선택된 날짜로 변경되는지
-    @Test func test_selectDate() async throws {
+    @Test("DisPlayDate가 선택된 날짜로 변경되는지")
+    func test_selectDate() async throws {
         // Given
-        let studioID: Int = 1
-        let studioService: StudioService = MockStudioService()
-        
-        let viewModel: (any CalendarViewModelProtocol & PrivateCalendarViewModelProtocolLogic) =
-        CustomCalendarViewModel(
-            studioID: studioID,
-            preSelectedDate: nil,
-            studioService: studioService
-        )
+        let viewModel = makeViewModel()
         
         // When
         await viewModel.selectDate(date: CustomCalendarStub.jan15)
@@ -30,18 +22,10 @@ struct CustomCalendarTests {
         #expect(viewModel.displayDate == CustomCalendarStub.jan15)
     }
     
-    // 응답값을 통해 제대로 된 예약 날짜 시간이 계산되는지
-    @Test func test_calReservableTimes() async throws {
+    @Test("응답값을 통해 제대로 된 예약 날짜 시간이 계산되는지")
+    func test_calReservableTimes() async throws {
         // Given
-        let studioID: Int = 1
-        let studioService: StudioService = MockStudioService()
-        
-        let viewModel: (any CalendarViewModelProtocol & PrivateCalendarViewModelProtocolLogic) =
-        CustomCalendarViewModel(
-            studioID: studioID,
-            preSelectedDate: nil,
-            studioService: studioService
-        )
+        let viewModel = makeViewModel()
         
         // When
         // fetch를 한번 해줘야 조건을 통과합니다.
@@ -71,5 +55,20 @@ struct CustomCalendarTests {
                 
             )
         )
+    }
+    
+    /// Test에 사용할 뷰모델을 만드는 함수
+    func makeViewModel() -> (any CalendarViewModelProtocol & PrivateCalendarViewModelProtocolLogic) {
+        let studioID: Int = 1
+        let studioService: StudioService = MockStudioService()
+        
+        let viewModel: (any CalendarViewModelProtocol & PrivateCalendarViewModelProtocolLogic) =
+        CustomCalendarViewModel(
+            studioID: studioID,
+            preSelectedDate: nil,
+            studioService: studioService
+        )
+        
+        return viewModel
     }
 }
