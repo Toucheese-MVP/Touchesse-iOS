@@ -29,7 +29,10 @@ final class SessionManager {
         // 캐시를 무시하고 항상 서버에서 최신 데이터를 가져옴
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         
-        self.authSession = Session(configuration: configuration, interceptor: AuthInterceptor(), eventMonitors: [LoggingEventMonitor()])
+        let accessToken = AuthenticationManager.shared.accessToken ?? ""
+        let refreshToken = AuthenticationManager.shared.refreshToken ?? ""
+        let interceptor = AuthenticationInterceptor(authenticator: TokenAuthenticator(), credential: TokenAuthCredential(accessToken: accessToken, refreshToken: refreshToken, requiresRefresh: false))
+        self.authSession = Session(configuration: configuration, interceptor: interceptor, eventMonitors: [LoggingEventMonitor()])
         self.baseSession = Session(configuration: configuration, eventMonitors: [LoggingEventMonitor()])
     }
 }

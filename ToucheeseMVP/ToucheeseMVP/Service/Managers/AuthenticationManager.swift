@@ -16,7 +16,7 @@ enum AuthStatus {
 final class AuthenticationManager: ObservableObject {
     static let shared = AuthenticationManager()
     private let keychainManager = KeychainManager.shared
-    private let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
+    private lazy var tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
     
     private init() {}
     
