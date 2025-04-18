@@ -159,7 +159,9 @@ struct CustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
                             let isSelectedTime = viewModel.isSelectedTime(dateTypeTime)
                             
                             Button {
-                                viewModel.selectTime(date: dateTypeTime)
+                                Task {
+                                    await viewModel.selectTime(date: dateTypeTime)
+                                }
                             } label: {
                                 RoundedRectangle(cornerRadius: 12)
                                     .strokeBorder(
@@ -193,7 +195,9 @@ struct CustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
                             let isSelectedTime = viewModel.isSelectedTime(dateTypeTime)
                             
                             Button {
-                                viewModel.selectTime(date: dateTypeTime)
+                                Task {
+                                    await viewModel.selectTime(date: dateTypeTime)
+                                }
                             } label: {
                                 RoundedRectangle(cornerRadius: 12)
                                     .strokeBorder(

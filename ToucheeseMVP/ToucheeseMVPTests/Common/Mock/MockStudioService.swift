@@ -10,7 +10,8 @@ import Foundation
 
 final class MockStudioService: StudioService {
     func getStudioCalendar(studioId: Int, yearMonth: String?) async throws -> [ToucheeseMVP.StudioCalendarEntity] {
-        print("=============================Mock getStudioCalendar 동작")
+        let dateString = yearMonth!
+        print("================= \(dateString)")
         
         return [
             StudioCalendarEntity(date: "2025-01-15", status: true, times: [

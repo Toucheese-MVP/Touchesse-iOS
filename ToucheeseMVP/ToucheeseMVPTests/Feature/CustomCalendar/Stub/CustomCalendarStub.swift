@@ -14,4 +14,23 @@ enum CustomCalendarStub {
         let date = formatter.date(from: "20250115")!
         return date
     }()
+    
+    static let threeAM: Date = {
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        components.hour = 3
+        components.minute = 0
+        components.second = 0
+        return Calendar.current.date(from: components)!
+    }()
+    
+    static func getDate(year: Int, month: Int, day: Int) -> Date {
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = day
+        components.hour = 0
+        components.minute = 0
+        components.second = 0
+        return Calendar.current.date(from: components)!
+    }
 }

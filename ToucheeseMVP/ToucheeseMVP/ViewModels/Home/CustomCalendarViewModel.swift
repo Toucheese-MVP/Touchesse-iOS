@@ -23,7 +23,7 @@ protocol CalendarViewModelProtocol: ObservableObject {
     /// 날짜 선택
     func selectDate(date: Date) async
     /// 시간 선택
-    func selectTime(date: Date)
+    func selectTime(date: Date) async
     /// 이전 달 선택
     func selectPreviousMonth()
     /// 다음 달 선택
@@ -41,6 +41,9 @@ protocol CalendarViewModelProtocol: ObservableObject {
 protocol PrivateCalendarViewModelProtocolLogic {
     /// 캘린더 화면에 표시되는 날짜
     var displayDate: Date { get }
+    
+    /// 캘린더 화면에 표시되는 시간
+    var displayTimeString: String { get }
     
     /// 캘린더 화면에 표시되는 달 문자열
     func updatePresentingMonthString()
@@ -114,7 +117,7 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
             // 이전에 선택된 날짜가 있는 경우 이전에 선택된 날짜 기준으로 화면에 표시
             if let preSelectedDate {
                 await selectDate(date: preSelectedDate)
-                selectTime(date: preSelectedDate)
+                await selectTime(date: preSelectedDate)
             }
         }
     }
@@ -127,10 +130,9 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
         await calReservableTimes()
     }
     
-    func selectTime(date: Date) {
-        DispatchQueue.main.async { [weak self] in
-            self?.displayTimeString = date.toString(format: .hourMinute)
-        }
+    @MainActor
+    func selectTime(date: Date) async {
+        displayTimeString = date.toString(format: .hourMinute)
     }
     
     func selectPreviousMonth() {
