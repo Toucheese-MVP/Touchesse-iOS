@@ -124,6 +124,12 @@ final class AuthenticationManager: ObservableObject {
         failedAuthentication()
     }
     
+    /// 뷰모델 정보 초기화
+    func resetViewModel() {
+        NotificationManager.shared.postRefreshQuestion()
+        NotificationManager.shared.postRefreshReservation()
+    }
+    
     /// 토큰 갱신
     @MainActor
     func reissueToken() async {

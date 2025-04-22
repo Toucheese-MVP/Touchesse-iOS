@@ -23,7 +23,7 @@ protocol PrivateReservationTabViewModelProtocolLogic {
     func subscribeRefreshReservation()
 }
 
-final class ReservationListViewModel: ReservationTabViewModelProtocol {
+final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateReservationTabViewModelProtocolLogic {
     private let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
     
     @Published private(set) var reservationList: [Reservation] = []
