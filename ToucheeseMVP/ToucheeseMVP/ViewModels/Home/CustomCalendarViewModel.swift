@@ -34,8 +34,6 @@ protocol CalendarViewModelProtocol: ObservableObject {
     func isSelectedDate(_ date: Date) -> Bool
     /// 선택된 시간인지 여부
     func isSelectedTime(_ date: Date) -> Bool
-    /// 휴일인지 여부
-    func isHoliday(_ date: Date) -> Bool
 }
 
 protocol PrivateCalendarViewModelProtocolLogic {
@@ -179,16 +177,6 @@ final class CustomCalendarViewModel: CalendarViewModelProtocol, PrivateCalendarV
     func isSelectedTime(_ date: Date) -> Bool {
         let timeString = date.toString(format: .hourMinute)
         return displayTimeString == timeString
-    }
-    
-    func isHoliday(_ date: Date) -> Bool {
-        let dateString = date.toString(format: .requestYearMonthDay)
-        
-        if let entity = studioCalendarEntities.first(where: { $0.date == dateString }) {
-            return !entity.status
-        } else {
-            return true
-        }
     }
     
     func calReservableTimes() async {

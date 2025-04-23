@@ -114,7 +114,7 @@ struct CustomCalendarView<ViewModel: CalendarViewModelProtocol>: View {
                 ForEach(viewModel.studioCalendarEntities, id: \.self) { studioCalendarEntity in
                     let date = studioCalendarEntity.dateType
                     let isSelectedDate = viewModel.isSelectedDate(date)
-                    let isHoliday = viewModel.isHoliday(date)
+                    let isHoliday = studioCalendarEntity.status
                     
                     Button {
                         Task {
