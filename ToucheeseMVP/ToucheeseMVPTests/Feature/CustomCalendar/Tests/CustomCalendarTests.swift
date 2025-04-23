@@ -11,18 +11,21 @@ import Foundation
 
 struct CustomCalendarTests {
     enum DateArray: CaseIterable {
-        case nov25
         case jan15
+        case jan16
         case may5
+        case nov25
         
         var date: Date {
             switch self {
-            case .nov25:
-                return CustomCalendarStub.getDate(year: 2025, month: 11, day: 25)
             case .jan15:
                 return CustomCalendarStub.getDate(year: 2025, month: 1, day: 15)
+            case .jan16:
+                return CustomCalendarStub.getDate(year: 2025, month: 1, day: 16)
             case .may5:
                 return CustomCalendarStub.getDate(year: 2025, month: 3, day: 5)
+            case .nov25:
+                return CustomCalendarStub.getDate(year: 2025, month: 11, day: 25)
             }
         }
     }
@@ -84,7 +87,7 @@ struct CustomCalendarTests {
         await viewModel.selectTime(date: CustomCalendarStub.threeAM)
         
         // Then
-        #expect(viewModel.displayTimeString == "03:00")        
+        #expect(viewModel.displayTimeString == "03:00")
     }
     
     @Test("selectPreviousMonth() 함수로 calendarMonth가 이전 달의 값으로 바뀌는지")
@@ -122,15 +125,15 @@ struct CustomCalendarTests {
         // When
         await viewModel.selectDate(date: dateCase.date)
         await viewModel.selectTime(date: CustomCalendarStub.threeAM)
-
+        
         // Then
         #expect(viewModel.confirmSelect() == targetDate)
     }
     
-    // (1) 선택한 날짜와 일치했을 때 True를 리턴
-    // (2) 선택한 날짜와 일치하지 않을 때 False를 리턴
-    @Test("isSelectedDate() 함수가 정상적으로 동작하는지", arguments: DateArray.allCases)
-    func test_isSelected(dateCase: DateArray) async {
+    // (1) 선택한 날짜와 일치했을 때 -> True
+    // (2) 선택한 날짜와 일치하지 않을 때 -> False
+    @Test("isSelectedDate() 선택한 날짜와 일치하는지", arguments: DateArray.allCases)
+    func test_isSelectedDate(dateCase: DateArray) async {
         // Given
         let viewModel = makeViewModel()
         
@@ -149,6 +152,23 @@ struct CustomCalendarTests {
         #expect(!viewModel.isSelectedDate(dateCase.date))
     }
     
+    // (1) 선택한 시간과 일치했을 때 -> True
+    // (2) 선택한 시간과 일치하지 않을 때 -> False
+    @Test("isSelectedTime() 선택한 시간과 일치하는지")
+    func test_isSelectedTime() async {
+        // Given
+        let viewModel = makeViewModel()
+        
+        // (1)
+        // When
+        await viewModel.selectTime(date: CustomCalendarStub.threeAM)
+        #expect(viewModel.isSelectedTime(CustomCalendarStub.threeAM))
+        
+        // (2)
+        // When
+        await viewModel.selectTime(date: CustomCalendarStub.threeAM)
+        #expect(!viewModel.isSelectedTime(CustomCalendarStub.fourAM))
+    }
     
     /// Test에 사용할 뷰모델을 만드는 함수
     func makeViewModel() -> (any CalendarViewModelProtocol & PrivateCalendarViewModelProtocolLogic) {
