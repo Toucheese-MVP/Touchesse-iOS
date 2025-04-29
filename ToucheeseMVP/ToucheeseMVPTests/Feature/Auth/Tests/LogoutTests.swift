@@ -9,7 +9,7 @@ import Testing
 import Foundation
 
 @testable import ToucheeseMVP
-
+// TODO: 싱글톤 없애고 재도전하기
 struct LogoutTests {
     
     @Test("로그아웃했을 때 예약 내역 초기화되는지")
