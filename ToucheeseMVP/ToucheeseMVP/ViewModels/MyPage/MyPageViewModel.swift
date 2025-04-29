@@ -49,8 +49,8 @@ protocol PrivateMyPageViewModelProtocolLogic {
 
 final class MyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProtocolLogic {
     // MARK: Services
-    let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
-    let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
+    let tokenService: TokenService
+    let memberService: MemberService
     
     // MARK: Managers
     let authManager = AuthenticationManager.shared
@@ -62,10 +62,15 @@ final class MyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProt
     var contactEmailString: String = "toucheese.official@gmail.com"
     
     // MARK: Init
-    init(navigationManager: NavigationManager) {
-        self.navigationManager = navigationManager
-        setAppVersionString()
-    }
+    init(
+        tokenService: TokenService,
+        memberService: MemberService,
+        navigationManager: NavigationManager) {
+            self.tokenService = tokenService
+            self.memberService = memberService
+            self.navigationManager = navigationManager
+            setAppVersionString()
+        }
     
     // MARK: Functions
     /// 로그아웃 처리

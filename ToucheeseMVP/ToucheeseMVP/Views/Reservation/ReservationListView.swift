@@ -61,6 +61,7 @@ struct ReservationListView<ViewModel: ReservationTabViewModelProtocol>: View {
         }
         .task {
             await viewModel.getReservationList()
+            print("🥺 \(viewModel.reservationList.count)")
         }
         .fullScreenCover(isPresented: $isShowingLogInView, onDismiss: {
             Task {

@@ -9,8 +9,16 @@ import SwiftUI
 
 struct ToucheeseTabView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
-    @StateObject private var reservationListViewModel = ReservationListViewModel()
-    @StateObject private var questionViewModel = QuestionViewModel()
+    @StateObject private var reservationListViewModel = ReservationListViewModel(
+        memberService: DefaultMemberService(
+            session: SessionManager.shared.authSession
+        )
+    )
+    @StateObject private var questionViewModel = QuestionViewModel(
+        questionService: DefaultQuestionsService(
+            session: SessionManager.shared.authSession
+        )
+    )
     
     var body: some View {
         VStack(spacing: 0) {
@@ -44,7 +52,17 @@ struct ToucheeseTabView: View {
                         }
                 }
             case .myPage:
-                MyPageView(myPageViewModel: MyPageViewModel(navigationManager: navigationManager))
+                MyPageView(
+                    myPageViewModel: MyPageViewModel(
+                        tokenService: DefualtTokenService(
+                            session: SessionManager.shared.authSession
+                        ),
+                        memberService: DefaultMemberService(
+                            session: SessionManager.shared.authSession
+                        ),
+                        navigationManager: navigationManager
+                    )
+                )
             }
             
             if !navigationManager.isTabBarHidden, !navigationManager.isShowingNicknameView {

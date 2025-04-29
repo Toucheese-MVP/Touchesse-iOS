@@ -16,7 +16,7 @@ final class NotificationManager {
     private init() {}
     
     // MARK: Publishers
-    /// 예약 내역 초기화 요청 정의
+    /// 예약 내역 refresh 요청 정의
     var refreshReservationPublisher: AnyPublisher<Void, Never> {
         notificationCenter.publisher(for: .refreshReservation)
             // 방출 값 Void로 변경(방출 타입은 Map<NotificationCenter.Publisher, Void>)(.publisher는 Notification.Publisher 객체를 방출)
@@ -31,30 +31,56 @@ final class NotificationManager {
             .eraseToAnyPublisher()
     }
     
-    /// 문의 내역 초기화 요청 정의
+    /// 예약 내역 초기화 요청 정의
+    var resetReservationPublisher: AnyPublisher<Void, Never> {
+        notificationCenter.publisher(for: .resetReservation)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 문의 내역 refresh 요청 정의
     var refreshQuestionPublisher: AnyPublisher<Void, Never> {
         notificationCenter.publisher(for: .refreshQuestion)
             .map { _ in () }
             .eraseToAnyPublisher()
     }
     
+    /// 문의 내역 초기화 요청 정의
+    var resetQuestionPublisher: AnyPublisher<Void, Never> {
+        notificationCenter.publisher(for: .resetQuestion)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+    }
+    
     // MARK: Posts
-    /// 예약 내역 초기화 요청 함수
+    /// 예약 내역 refresh 요청 함수
     func postRefreshReservation() {
         notificationCenter.post(name: .refreshReservation, object: nil)
     }
     
-    /// 문의 내역 초기화 요청 함수
+    /// 예약 내역 초기화 요청 함수
+    func postResetReservation() {
+        notificationCenter.post(name: .resetReservation, object: nil)
+    }
+    
+    /// 문의 내역 refresh 요청 함수
     func postRefreshQuestion() {
         notificationCenter.post(name: .refreshQuestion, object: nil)
+    }
+    
+    /// 문의 내역 초기화 요청 함수
+    func postResetQuestion() {
+        notificationCenter.post(name: .resetQuestion, object: nil)
     }
 }
 
 extension Notification.Name {
     /// 예약 내역 초기화 요청 이벤트
     static let refreshReservation = Notification.Name("refreshReservation")
+    static let resetReservation = Notification.Name("resetReservation")
     
     /// 문의 내역 초기화 요청 이벤트
     static let refreshQuestion = Notification.Name("refreshQuestion")
+    static let resetQuestion = Notification.Name("resetQuestion")
 }
 

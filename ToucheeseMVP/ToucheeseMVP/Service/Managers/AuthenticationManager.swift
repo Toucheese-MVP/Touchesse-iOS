@@ -120,14 +120,15 @@ final class AuthenticationManager: ObservableObject {
         keychainManager.delete(forAccount: .deviceId)
         
         UserDefaultsManager.remove(.loginedPlatform)
+        SessionManager.shared.resetSession()
         
         failedAuthentication()
     }
     
     /// 뷰모델 정보 초기화
     func resetViewModel() {
-        NotificationManager.shared.postRefreshQuestion()
-        NotificationManager.shared.postRefreshReservation()
+        NotificationManager.shared.postResetQuestion()
+        NotificationManager.shared.postResetReservation()
     }
     
     /// 토큰 갱신

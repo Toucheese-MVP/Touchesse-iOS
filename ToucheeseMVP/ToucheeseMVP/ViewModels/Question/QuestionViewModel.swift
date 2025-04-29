@@ -21,18 +21,21 @@ protocol QuestionViewModelProtocol: ObservableObject {
 protocol PrivateQuestionViewModelProtocolLogic {
     /// 문의 내역 초기화 구독
     func subscribeRefreshQuestion()
+    func subscribeResetQuestion()
 }
 
 final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewModelProtocolLogic {
-    private let questionService = DefaultQuestionsService(session: SessionManager.shared.authSession)
+    private let questionService: QuestionsService
     @Published private(set) var questions: [Question] = []
     
     private var cancellables = Set<AnyCancellable>()
     private var page: Int = 0
     private var isLastPage = false
     
-    init() {
+    init(questionService: QuestionsService) {
+        self.questionService = questionService
         subscribeRefreshQuestion()
+        subscribeResetQuestion()
         
         Task {
             await fetchQuestions()
@@ -55,9 +58,7 @@ final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewMod
     
     @MainActor
     func refreshAction() async {
-        page = 0
-        questions.removeAll()
-        isLastPage = false
+        resetAction()
         await fetchQuestions()
     }
     
@@ -66,6 +67,24 @@ final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewMod
             .sink { [weak self] _ in
                 Task {
                     await self?.refreshAction()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    @MainActor
+    func resetAction() {
+        page = 0
+        questions.removeAll()
+        isLastPage = false
+    }
+    
+    func subscribeResetQuestion() {
+        NotificationManager.shared.resetQuestionPublisher
+            .sink { [weak self] _ in
+                Task {
+                    await self?.resetAction()
+                    print("문의 내역 초기화")
                 }
             }
             .store(in: &cancellables)

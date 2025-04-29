@@ -126,6 +126,6 @@ fileprivate struct CreateQuestionButton: View {
 }
 
 #Preview {
-    QuestionView(viewModel: QuestionViewModel())
+    QuestionView(viewModel: QuestionViewModel(questionService: MockQuestionService()))
         .environmentObject(NavigationManager())
 }

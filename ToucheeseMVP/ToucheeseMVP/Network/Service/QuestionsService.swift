@@ -37,3 +37,19 @@ extension DefaultQuestionsService: QuestionsService {
         return result
     }
 }
+
+final class MockQuestionService: QuestionsService {
+    func postQuestions(_ questionReqeust: QuestionRequest) async throws {
+        
+    }
+    
+    func fetchQuestions(page: Int) async throws -> QuestionEntity {
+        return .init(totalPages: 0, totalElements: 0, size: 0, content: [], number: 0, numberOfElements: 0, pageable: .init(pageNumber: 0, pageSize: 0, offset: 0, paged: true, unpaged: false), last: true, first: false, empty: false)
+    }
+    
+    func fetchQuestionResponse(questionId: Int) async throws -> QuestionResponseEntity {
+        return .init(questionResponse: .init(id: 0, title: "mockTitle", content: "mockContent", createDate: ""))
+    }
+    
+    
+}
