@@ -44,6 +44,8 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateRe
     
     @MainActor
     func getReservationList() async {
+        if AuthenticationManager.shared.authStatus != .authenticated { return }
+        
         if !isLastPage {
             do {
                 print("\(nextPage)")
