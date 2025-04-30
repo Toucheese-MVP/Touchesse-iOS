@@ -33,7 +33,7 @@ protocol MyPageViewModelProtocol: ObservableObject {
     func openLicenseWebView()
 }
 
-protocol PrivateMyPageViewModelProtocol {
+protocol PrivateMyPageViewModelProtocolLogic {
     /// 앱 버젼 적용하기
     func setAppVersionString()
     /// 애플 로그아웃 처리
@@ -47,10 +47,10 @@ protocol PrivateMyPageViewModelProtocol {
 }
 
 
-final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProtocol {
+final class MyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProtocolLogic {
     // MARK: Services
-    let tokenService = DefualtTokenService(session: SessionManager.shared.authSession)
-    let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
+    let tokenService: TokenService
+    let memberService: MemberService
     
     // MARK: Managers
     let authManager = AuthenticationManager.shared
@@ -62,10 +62,15 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
     var contactEmailString: String = "toucheese.official@gmail.com"
     
     // MARK: Init
-    init(navigationManager: NavigationManager) {
-        self.navigationManager = navigationManager
-        setAppVersionString()
-    }
+    init(
+        tokenService: TokenService,
+        memberService: MemberService,
+        navigationManager: NavigationManager) {
+            self.tokenService = tokenService
+            self.memberService = memberService
+            self.navigationManager = navigationManager
+            setAppVersionString()
+        }
     
     // MARK: Functions
     /// 로그아웃 처리
@@ -93,6 +98,9 @@ final class TempMyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModel
             await authManager.resetAllAuthDatas()
             print("로그아웃 서버 전송 에러: \(error.localizedDescription)\n 강제 로그아웃 처리")
         }
+        
+        // viewModel 정보 초기화
+        authManager.resetViewModel()
         
         // 첫번째 탭의 View Depth 초기화
         await resetFirstTabViewDepth()

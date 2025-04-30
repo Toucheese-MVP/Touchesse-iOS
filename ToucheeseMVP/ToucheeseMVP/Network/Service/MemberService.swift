@@ -45,3 +45,21 @@ extension DefaultMemberService: MemberService {
         _ = try await performRequest(request, decodingType: String.self)
     }
 }
+
+final class MockMemberService: MemberService {
+    func postReservationInstant(reservation: ReservationInstantRequest) async throws -> ReservationInstantEntity {
+        return .init(status: .random())
+    }
+    
+    func getReservations(page: Int) async throws -> ReservationEntity {
+        return .init(content: [.init(reservationId: 0, studioId: 0, studioName: "mockStudioName", studioImage: "", productId: 0, productName: "mockProductName", createDate: "", createTime: "", status: "")], last: true, first: true, empty: false, totalPages: 1, totalElements: 3, size: 10)
+    }
+    
+    func cleanupUser() async throws {
+        
+    }
+    
+    func cancelReservation(_ cancelReservationRequest: CancelReservationRequest) async throws {
+        
+    }
+}

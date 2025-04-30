@@ -272,5 +272,12 @@ fileprivate struct MyPageHorizontalView<RightView: View>: View {
 }
 
 #Preview {
-    MyPageView(myPageViewModel: TempMyPageViewModel(navigationManager: NavigationManager()))
+    MyPageView(
+        myPageViewModel: MyPageViewModel(
+            tokenService: MockTokenService(),
+            memberService: MockMemberService(),
+            navigationManager: .init()
+        )
+    )
+               
 }

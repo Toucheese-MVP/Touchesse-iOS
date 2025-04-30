@@ -35,3 +35,14 @@ extension DefualtTokenService: TokenService {
         return response
     }
 }
+
+final class MockTokenService: TokenService {
+
+    func reissueToken(_ reissueTokenRequest: ReissueTokenRequest) async throws -> ReissueTokenResponse {
+        return .init(memberId: 0, email: "mock@naver.com", name: "mockUser", refreshToken: "", deviceId: "")
+    }
+    
+    func postSocialLogout(_ deviceId: String) async throws -> String {
+        return "mock social logout success"
+    }
+}

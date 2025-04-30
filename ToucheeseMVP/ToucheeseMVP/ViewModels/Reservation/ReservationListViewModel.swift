@@ -21,10 +21,11 @@ protocol ReservationTabViewModelProtocol: ObservableObject {
 protocol PrivateReservationTabViewModelProtocolLogic {
     /// 예약 내역 갱신 이벤트를 구독
     func subscribeRefreshReservation()
+    func subscribeResetReservation()
 }
 
-final class ReservationListViewModel: ReservationTabViewModelProtocol {
-    private let memberService = DefaultMemberService(session: SessionManager.shared.authSession)
+final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateReservationTabViewModelProtocolLogic {
+    private let memberService: MemberService
     
     @Published private(set) var reservationList: [Reservation] = []
     
@@ -32,8 +33,10 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
     private var nextPage = 0
     private var isLastPage = false
     
-    init() {
+    init(memberService: MemberService) {
+        self.memberService = memberService
         subscribeRefreshReservation()
+        subscribeResetReservation()
     }
     
     
@@ -41,6 +44,8 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
     
     @MainActor
     func getReservationList() async {
+        if AuthenticationManager.shared.authStatus != .authenticated { return }
+        
         if !isLastPage {
             do {
                 print("\(nextPage)")
@@ -59,9 +64,7 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
     
     @MainActor
     func refreshAction() async {
-        reservationList = []
-        nextPage = 0
-        isLastPage = false
+        resetAction()
         await getReservationList()
     }
     
@@ -72,6 +75,26 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol {
                 Task {
                     await self?.refreshAction()
                     print("예약 내역이 갱신")
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    @MainActor
+    func resetAction() {
+        reservationList = []
+        nextPage = 0
+        isLastPage = false
+    }
+    
+    /// 예약 내역 초기화 이벤트를 구독
+    func subscribeResetReservation() {
+        NotificationManager.shared.resetReservationPublisher
+            .sink { [weak self] _ in
+                Task {
+                    await self?.resetAction()
+                    print("예약 내역 초기화")
+                    print("\(KeychainManager.shared.read(forAccount: .accessToken))")
                 }
             }
             .store(in: &cancellables)
