@@ -20,8 +20,8 @@ protocol ReservationTabViewModelProtocol: ObservableObject {
 
 protocol PrivateReservationTabViewModelProtocolLogic {
     /// 예약 내역 갱신 이벤트를 구독
-    func subscribeRefreshReservation()
-    func subscribeResetReservation()
+    func subscribeReservationEvent()
+    func subscribeLogoutEvent()
 }
 
 final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateReservationTabViewModelProtocolLogic {
@@ -35,8 +35,8 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateRe
     
     init(memberService: MemberService) {
         self.memberService = memberService
-        subscribeRefreshReservation()
-        subscribeResetReservation()
+        subscribeReservationEvent()
+        subscribeLogoutEvent()
     }
     
     
@@ -68,9 +68,20 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateRe
         await getReservationList()
     }
     
-    /// 예약 내역 갱신 이벤트를 구독
-    func subscribeRefreshReservation() {
-        NotificationManager.shared.refreshReservationPublisher
+    /// 스튜디오 예약 이벤트를 구독
+    func subscribeReservationEvent() {
+        // 스튜디오 예약
+        NotificationManager.shared.reservationPublusher
+            .sink { [weak self] _ in
+                Task {
+                    await self?.refreshAction()
+                    print("예약 내역이 갱신")
+                }
+            }
+            .store(in: &cancellables)
+        
+        // 스튜디오 예약 취소
+        NotificationManager.shared.cancelReservationPublusher
             .sink { [weak self] _ in
                 Task {
                     await self?.refreshAction()
@@ -87,9 +98,9 @@ final class ReservationListViewModel: ReservationTabViewModelProtocol, PrivateRe
         isLastPage = false
     }
     
-    /// 예약 내역 초기화 이벤트를 구독
-    func subscribeResetReservation() {
-        NotificationManager.shared.resetReservationPublisher
+    /// 로그아웃 이벤트를 구독
+    func subscribeLogoutEvent() {
+        NotificationManager.shared.logoutPublisher
             .sink { [weak self] _ in
                 Task {
                     await self?.resetAction()

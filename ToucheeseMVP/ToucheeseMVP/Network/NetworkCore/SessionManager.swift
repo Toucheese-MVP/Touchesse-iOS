@@ -31,7 +31,7 @@ final class SessionManager {
 extension SessionManager {
     /// 로그인 이벤트 구독
     func subscribeLoginEvent() {
-        NotificationManager.shared.loginEventPublisher
+        NotificationManager.shared.loginPublisher
             .sink { [weak self] token in
                 self?.handleLoginEvent(token: token)
             }
@@ -40,7 +40,7 @@ extension SessionManager {
     
     /// 로그아웃 이벤트 구독
     func subscribeLogoutEvent() {
-        NotificationManager.shared.logoutEventPublisher
+        NotificationManager.shared.logoutPublisher
             .sink { [weak self] _ in
                 self?.handleLogoutEvent()
             }

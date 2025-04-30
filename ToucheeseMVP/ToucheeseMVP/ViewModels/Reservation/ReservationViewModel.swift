@@ -95,8 +95,8 @@ final class ReservationViewModel: ObservableObject, ReservationViewModelProtocol
         do {
             let result = try await reservationService.postReservationInstant(reservation: reservationRequestType).status
             
-            // 예약 내역을 초기화하도록 NotificationManager에 전달
-            NotificationManager.shared.postRefreshReservation()
+            // 예약 이벤트 발생
+            NotificationManager.shared.postReservationEvent()
             return result
         } catch {
             print("post fail!")

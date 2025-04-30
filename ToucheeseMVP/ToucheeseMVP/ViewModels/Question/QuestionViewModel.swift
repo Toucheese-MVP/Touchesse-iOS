@@ -21,7 +21,7 @@ protocol QuestionViewModelProtocol: ObservableObject {
 protocol PrivateQuestionViewModelProtocolLogic {
     /// 문의 내역 초기화 구독
     func subscribeRefreshQuestion()
-    func subscribeResetQuestion()
+    func subscribeLogoutEvent()
 }
 
 final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewModelProtocolLogic {
@@ -35,7 +35,7 @@ final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewMod
     init(questionService: QuestionsService) {
         self.questionService = questionService
         subscribeRefreshQuestion()
-        subscribeResetQuestion()
+        subscribeLogoutEvent()
         
         Task {
             await fetchQuestions()
@@ -63,7 +63,7 @@ final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewMod
     }
     
     func subscribeRefreshQuestion() {
-        NotificationManager.shared.refreshQuestionPublisher
+        NotificationManager.shared.questionPublisher
             .sink { [weak self] _ in
                 Task {
                     await self?.refreshAction()
@@ -79,8 +79,8 @@ final class QuestionViewModel: QuestionViewModelProtocol, PrivateQuestionViewMod
         isLastPage = false
     }
     
-    func subscribeResetQuestion() {
-        NotificationManager.shared.resetQuestionPublisher
+    func subscribeLogoutEvent() {
+        NotificationManager.shared.logoutPublisher
             .sink { [weak self] _ in
                 Task {
                     await self?.resetAction()
