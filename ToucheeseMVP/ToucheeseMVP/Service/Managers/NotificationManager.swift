@@ -52,6 +52,20 @@ final class NotificationManager {
             .eraseToAnyPublisher()
     }
     
+    /// 로그인 이벤트 방출 정의
+    var loginEventPublisher: AnyPublisher<Token, Never> {
+        notificationCenter.publisher(for: .loginEvent)
+            .compactMap{ $0.token }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 로그아웃 이벤트 방출 정의
+    var logoutEventPublisher: AnyPublisher<Void, Never> {
+        notificationCenter.publisher(for: .logoutEvent)
+            .map{ _ in () }
+            .eraseToAnyPublisher()
+    }
+    
     // MARK: Posts
     /// 예약 내역 refresh 요청 함수
     func postRefreshReservation() {
@@ -72,6 +86,16 @@ final class NotificationManager {
     func postResetQuestion() {
         notificationCenter.post(name: .resetQuestion, object: nil)
     }
+    
+    /// 로그인 이벤트를 발생시킵니다.
+    func postLoginEvent(token: Token) {
+        notificationCenter.post(name: .loginEvent, object: token)
+    }
+    
+    /// 로그아웃 이벤트를 발생시킵니다.
+    func postLogoutEvent() {
+        notificationCenter.post(name: .logoutEvent, object: nil)
+    }
 }
 
 extension Notification.Name {
@@ -82,5 +106,14 @@ extension Notification.Name {
     /// 문의 내역 초기화 요청 이벤트
     static let refreshQuestion = Notification.Name("refreshQuestion")
     static let resetQuestion = Notification.Name("resetQuestion")
+    
+    /// 로그인 / 로그아웃 이벤트
+    static let loginEvent = Notification.Name("loginEvent")
+    static let logoutEvent = Notification.Name("logoutEvent")
 }
 
+extension Notification {
+    var token: Token? {
+        return object as? Token
+    }
+}

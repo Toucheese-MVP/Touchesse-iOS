@@ -45,7 +45,11 @@ final class AuthenticationManager: ObservableObject {
     
     @MainActor
     func successfulAuthentication() {
+        // auth 로그인 상태로 변경
         authStatus = .authenticated
+        // 로그인 이벤트 스트림 생성
+        NotificationManager.shared.postLoginEvent(token: Token(accessToken: accessToken ?? "", refreshToken: refreshToken ?? ""))
+        
         Task {
             try await postFCMToken()
         }
@@ -53,7 +57,10 @@ final class AuthenticationManager: ObservableObject {
     
     @MainActor
     func failedAuthentication() {
+        // auth 로그아웃 상태로 변경
         authStatus = .notAuthenticated
+        // 로그아웃 이벤트 스트림 생성
+        NotificationManager.shared.postLogoutEvent()
     }
     
     /// 토큰 값을 키체인에 업데이트 하거나  저장하는 함수
@@ -120,8 +127,6 @@ final class AuthenticationManager: ObservableObject {
         keychainManager.delete(forAccount: .deviceId)
         
         UserDefaultsManager.remove(.loginedPlatform)
-        SessionManager.shared.resetSession()
-        
         failedAuthentication()
     }
     
