@@ -44,7 +44,7 @@ final class QuestionCreateViewModel: QuestionCreateViewModelProtocol {
             try? await Task.sleep(for: .seconds(0.5))
             
             // NotificationCenter에 예약 내역 초기화 요청
-            NotificationManager.shared.postRefreshQuestion()
+            NotificationManager.shared.postQuestionEvent()
         } catch {
             print("문의하기 요청 에러: \(error.localizedDescription)")
         }

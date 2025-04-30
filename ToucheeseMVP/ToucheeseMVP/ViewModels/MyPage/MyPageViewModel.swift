@@ -99,9 +99,6 @@ final class MyPageViewModel: MyPageViewModelProtocol, PrivateMyPageViewModelProt
             print("로그아웃 서버 전송 에러: \(error.localizedDescription)\n 강제 로그아웃 처리")
         }
         
-        // viewModel 정보 초기화
-        authManager.resetViewModel()
-        
         // 첫번째 탭의 View Depth 초기화
         await resetFirstTabViewDepth()
     }

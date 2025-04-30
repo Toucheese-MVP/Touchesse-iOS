@@ -49,7 +49,7 @@ final class ReservationDetailViewModel: ReservationDetailViewModelProtocol {
             try await memberService.cancelReservation(request)
             
             // 예약 내역을 초기화하도록 NotificationManager에 전달
-            NotificationManager.shared.postRefreshReservation()
+            NotificationManager.shared.postCancelReservationEvent()
         } catch {
             print("Cancel Reservation Error: \(error.localizedDescription)")
         }
