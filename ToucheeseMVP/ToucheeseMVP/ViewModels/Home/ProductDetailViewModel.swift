@@ -134,7 +134,7 @@ final class ProductDetailViewModel: ObservableObject {
         var totalPrice: Int = productDetail.price
         
         // 인원별 가격 추가
-        totalPrice += (productDetail.plusOptionInfo.plusOptPrice * addPeopleCount)
+        totalPrice += (productDetail.groupOption.pricePerPerson * addPeopleCount)
         
         // 옵션 별 상품 가격 추가
         for option in productDetail.addOptions {

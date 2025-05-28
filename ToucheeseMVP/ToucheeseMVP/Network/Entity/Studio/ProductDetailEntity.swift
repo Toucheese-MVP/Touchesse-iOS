@@ -16,7 +16,13 @@ struct ProductDetailEntity: Decodable, Hashable {
     let standard: Int
     let price: Int
     let addOptions: [OptionEntity]
-    let plusOptionInfo: PlusOptionEntity
+    // let plusOptionInfo: GroupOptionEntity
+    let groupOption: GroupOptionEntity
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, description, productImage, reviewCount, standard, price, addOptions
+        case groupOption = "plusOptionInfo"
+    }
 }
 
 struct OptionEntity: Decodable, Hashable {
@@ -25,9 +31,14 @@ struct OptionEntity: Decodable, Hashable {
     let name: String
 }
 
-struct PlusOptionEntity: Decodable, Hashable {
-    let isPlusOpt: Int
-    let plusOptPrice: Int
+struct GroupOptionEntity: Decodable, Hashable {
+    let isGroup: Int
+    let pricePerPerson: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case isGroup = "isPlusOpt"
+        case pricePerPerson = "plusOptPrice"
+    }
 }
 
 extension ProductDetailEntity {
@@ -43,9 +54,9 @@ extension ProductDetailEntity {
             .init(id: 1, price: 3000, name: "옵션1"),
             .init(id: 2, price: 4000, name: "옵션2"),
         ],
-        plusOptionInfo: PlusOptionEntity(
-            isPlusOpt: 0,
-            plusOptPrice: 0
+        groupOption: GroupOptionEntity(
+            isGroup: 0,
+            pricePerPerson: 0
         )
     )
     static let sample2Group = ProductDetailEntity(
@@ -60,9 +71,9 @@ extension ProductDetailEntity {
             .init(id: 1, price: 3000, name: "옵션1"),
             .init(id: 2, price: 4000, name: "옵션2"),
         ],
-        plusOptionInfo: PlusOptionEntity(
-            isPlusOpt: 1,
-            plusOptPrice: 22000
+        groupOption: GroupOptionEntity(
+            isGroup: 1,
+            pricePerPerson: 22000
         )
     )
 }

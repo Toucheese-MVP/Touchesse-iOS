@@ -165,7 +165,7 @@ extension ProductDetailView {
                 }
                 .padding(.vertical, 16)
                 
-                if productDetailViewModel.productDetail.plusOptionInfo.isPlusOpt == 1 {
+                if productDetailViewModel.productDetail.groupOption.isGroup == 1 {
                     VStack {
                         HStack {
                             Text("인당 가격")
@@ -173,7 +173,7 @@ extension ProductDetailView {
                             
                             Spacer()
                             
-                            Text("\(productDetailViewModel.productDetail.plusOptionInfo.plusOptPrice)원")
+                            Text("\(productDetailViewModel.productDetail.groupOption.pricePerPerson)원")
                                 .font(.pretendardMedium(14))
                         }
                         .foregroundStyle(.tcGray10)
