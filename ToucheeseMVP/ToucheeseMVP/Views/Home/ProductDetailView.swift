@@ -164,28 +164,44 @@ extension ProductDetailView {
                     }
                 }
                 .padding(.vertical, 16)
-                HStack {
-                    Text("인원")
-                    Spacer()
-                    
-                    Button {
-                        productDetailViewModel.decreaseAddPeopleCount()
-                    } label: {
-                        Image(.tcMinusButton)
+                
+                if productDetailViewModel.productDetail.groupOption.isGroup == 1 {
+                    VStack {
+                        HStack {
+                            Text("인당 가격")
+                                .font(.pretendardRegular(14))
+                            
+                            Spacer()
+                            
+                            Text("\(productDetailViewModel.productDetail.groupOption.pricePerPerson)원")
+                                .font(.pretendardMedium(14))
+                        }
+                        .foregroundStyle(.tcGray10)
+                        
+                        HStack {
+                            Text("추가 인원")
+                            Spacer()
+                            
+                            Button {
+                                productDetailViewModel.decreaseAddPeopleCount()
+                            } label: {
+                                Image(.tcMinusButton)
+                            }
+                            .frame(width: 36, height: 36)
+                            
+                            Text("\(productDetailViewModel.addPeopleCount)")
+                                .frame(minWidth: 40)
+                                .padding(.horizontal, 0)
+                            
+                            Button {
+                                productDetailViewModel.increaseAddPeopleCount()
+                            } label: {
+                                Image(.tcPlusButton)
+                            }
+                            .frame(width: 36, height: 36)
+                        }
                     }
-                    .frame(width: 36, height: 36)
-                    
-                    Text("\(productDetailViewModel.addPeopleCount)")
-                        .frame(minWidth: 40)
-                        .padding(.horizontal, 0)
-                    
-                    Button {
-                        productDetailViewModel.increaseAddPeopleCount()
-                    } label: {
-                        Image(.tcPlusButton)
-                    }
-                    .frame(width: 36, height: 36)
-                    
+                    .padding(.top, 12)
                 }
             }
             .padding(.vertical, 26)

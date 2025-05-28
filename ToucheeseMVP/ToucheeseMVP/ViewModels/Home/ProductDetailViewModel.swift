@@ -9,8 +9,7 @@ import Foundation
 
 final class ProductDetailViewModel: ObservableObject {
     // MARK: - Data
-    private let productService = DefaultProductService(session: SessionManager.shared.baseSession)
-    
+    private let productService: ProductService
     
     @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetailEntity
@@ -26,7 +25,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     
     // 추가 인원 변수
-    @Published private(set) var addPeopleCount: Int = 1 {
+    @Published private(set) var addPeopleCount: Int = 0 {
         didSet {
             calTotalPrice()
         }
@@ -70,15 +69,22 @@ final class ProductDetailViewModel: ObservableObject {
         }
     }
     
+    
     // MARK: - Init
-    init(studio: Studio, studioDetails: StudioDetailEntity, product: ProductEntity) {
+    init(
+        studio: Studio,
+        studioDetails: StudioDetailEntity,
+        product: ProductEntity,
+        productService: ProductService
+    ) {
         self.studio = studio
         self.studioDetail = studioDetails
         self.product = product
         self.totalPrice = product.price
-        
+        self.productService = productService
+                
         Task {
-            await fetchProductDetail()
+            await self.fetchProductDetail()
         }
     }
     
@@ -88,7 +94,7 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     func decreaseAddPeopleCount() {
-        if addPeopleCount > 1 {
+        if addPeopleCount > 0 {
             addPeopleCount -= 1
         }
     }
@@ -128,7 +134,7 @@ final class ProductDetailViewModel: ObservableObject {
         var totalPrice: Int = productDetail.price
         
         // 인원별 가격 추가
-        totalPrice += productDetail.price * (addPeopleCount - 1)
+        totalPrice += (productDetail.groupOption.pricePerPerson * addPeopleCount)
         
         // 옵션 별 상품 가격 추가
         for option in productDetail.addOptions {

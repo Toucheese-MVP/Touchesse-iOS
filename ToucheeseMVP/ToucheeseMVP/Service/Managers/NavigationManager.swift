@@ -90,7 +90,14 @@ final class NavigationManager: ObservableObject {
             StudioDetailView(viewModel: studioDetailViewModel ?? StudioDetailViewModel(studio: studio, studioId: studio.id))
             // StudioDetailView(viewModel: StudioDetailViewModel(studio: studio, studioId: studio.id))
         case .productDetailView(let studio, let studioDetail, let product):
-            ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product))
+            ProductDetailView(
+                productDetailViewModel: ProductDetailViewModel(
+                    studio: studio,
+                    studioDetails: studioDetail,
+                    product: product,
+                    productService: DefaultProductService(session: SessionManager.shared.baseSession),
+                )
+            )
         case .reservationConfirmView(
             let studio,
             let studioDetail,

@@ -83,3 +83,15 @@ extension StudioDetailEntity {
         )]
     )
 }
+
+extension ProductEntity {
+    static let sample = ProductEntity(
+        id: 1,
+        name: "",
+        description: "",
+        productImage: "",
+        reviewCount: 0,
+        standard: 0,
+        price: 0
+    )
+}
