@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SimpleToastKit
+// import SimpleToastKit
 
 struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
     @ObservedObject var myPageViewModel: ViewModel
@@ -90,7 +90,7 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
         .onAppear {
             myPageViewModel.calImageCacheUse()
         }
-        .toastable()
+        // .toastable()
     }
     
     struct InfoView: View {
@@ -160,18 +160,18 @@ struct MyPageView<ViewModel: MyPageViewModelProtocol>: View {
                     leftText: "문의 메일",
                     rightView: Text(viewModel.contactEmailString),
                     action: {
-                        STK.toast.show(holdSec: 1.6, animationStyle: .fade) {
-                            Text("메일주소가 복사되었습니다")
-                                .font(.pretendardSemiBold(14))
-                                .foregroundColor(Color.tcGray10)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 16)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .foregroundStyle(Color.tcPrimary06)
-                                }
-                                .padding(.bottom, 20)
-                        }
+//                        STK.toast.show(holdSec: 1.6, animationStyle: .fade) {
+//                            Text("메일주소가 복사되었습니다")
+//                                .font(.pretendardSemiBold(14))
+//                                .foregroundColor(Color.tcGray10)
+//                                .padding(.vertical, 12)
+//                                .padding(.horizontal, 16)
+//                                .background {
+//                                    RoundedRectangle(cornerRadius: 8)
+//                                        .foregroundStyle(Color.tcPrimary06)
+//                                }
+//                                .padding(.bottom, 20)
+//                        }
                         viewModel.copyContactEmail()
                     }
                 )
