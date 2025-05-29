@@ -13,7 +13,6 @@
 		3BD1873D2D2F7794006D2C1F /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD1873C2D2F7794006D2C1F /* KakaoSDKCommon */; };
 		3BD1873F2D2F7794006D2C1F /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD1873E2D2F7794006D2C1F /* KakaoSDKUser */; };
 		3BD187422D2F7842006D2C1F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD187412D2F7842006D2C1F /* Kingfisher */; };
-		3D19EC4C2DCF21C50091974A /* SimpleToastKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3D19EC4B2DCF21C50091974A /* SimpleToastKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +24,19 @@
 			remoteInfo = ToucheeseMVP;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3D0D6A0B2DE848F2005AAE0B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3BD1851C2D2F7674006D2C1F /* ToucheeseMVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToucheeseMVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,7 +74,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D19EC4C2DCF21C50091974A /* SimpleToastKit in Frameworks */,
 				3BD187422D2F7842006D2C1F /* Kingfisher in Frameworks */,
 				3BD1873D2D2F7794006D2C1F /* KakaoSDKCommon in Frameworks */,
 				3BD187382D2F774B006D2C1F /* FirebaseMessaging in Frameworks */,
@@ -110,6 +121,7 @@
 				3BD185182D2F7674006D2C1F /* Sources */,
 				3BD185192D2F7674006D2C1F /* Frameworks */,
 				3BD1851A2D2F7674006D2C1F /* Resources */,
+				3D0D6A0B2DE848F2005AAE0B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -126,7 +138,6 @@
 				3BD1873C2D2F7794006D2C1F /* KakaoSDKCommon */,
 				3BD1873E2D2F7794006D2C1F /* KakaoSDKUser */,
 				3BD187412D2F7842006D2C1F /* Kingfisher */,
-				3D19EC4B2DCF21C50091974A /* SimpleToastKit */,
 			);
 			productName = ToucheeseMVP;
 			productReference = 3BD1851C2D2F7674006D2C1F /* ToucheeseMVP.app */;
@@ -187,7 +198,6 @@
 				3BD187342D2F774B006D2C1F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				3BD187392D2F7794006D2C1F /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				3BD187402D2F7842006D2C1F /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				3D19EC4A2DCF21C50091974A /* XCRemoteSwiftPackageReference "SimpleToastKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3BD1851D2D2F7674006D2C1F /* Products */;
@@ -547,14 +557,6 @@
 				minimumVersion = 8.1.3;
 			};
 		};
-		3D19EC4A2DCF21C50091974A /* XCRemoteSwiftPackageReference "SimpleToastKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kangsworkspace/SimpleToastKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -587,11 +589,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3BD187402D2F7842006D2C1F /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		3D19EC4B2DCF21C50091974A /* SimpleToastKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3D19EC4A2DCF21C50091974A /* XCRemoteSwiftPackageReference "SimpleToastKit" */;
-			productName = SimpleToastKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
