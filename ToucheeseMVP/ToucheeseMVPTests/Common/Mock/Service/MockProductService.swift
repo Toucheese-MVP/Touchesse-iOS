@@ -9,7 +9,7 @@ import Foundation
 @testable import ToucheeseMVP
 
 final class MockProductService: ProductService {
-    var plusOptionInfoStub: GroupOptionEntity = GroupOptionEntity(isPlusOpt: 0, plusOptPrice: 0)
+    var groupOptionStub: GroupOptionEntity = GroupOptionEntity(isGroup: 0, pricePerPerson: 0)
     
     func getProductDetail(productId: Int) async throws -> ToucheeseMVP.ProductDetailEntity {
         return ProductDetailEntity(
@@ -21,7 +21,7 @@ final class MockProductService: ProductService {
             standard: 1,
             price: 0,
             addOptions: [],
-            plusOptionInfo: plusOptionInfoStub
+            groupOption: groupOptionStub
         )
     }
 }

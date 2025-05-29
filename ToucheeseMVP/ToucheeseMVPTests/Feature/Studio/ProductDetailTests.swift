@@ -19,7 +19,7 @@ struct ProductDetailTests {
     @Test("선택된 조건들로 단체 가격이 계산되는지/n(Increase -> Decrease)", arguments: CalculateCases.allCases)
     func test_CalculateGroupPrice(calculateCase: CalculateCases) async {
         // Given
-        let viewModel = makeViewModel(plusOption: GroupOptionEntity(isPlusOpt: 1, plusOptPrice: 10000))
+        let viewModel = makeViewModel(plusOption: GroupOptionEntity(isGroup: 1, pricePerPerson: 10000))
         
         try? await Task.sleep(for: .seconds(1))
         
@@ -44,7 +44,7 @@ struct ProductDetailTests {
         let mockProductService = MockProductService()
         
         if let plusOption {
-            mockProductService.plusOptionInfoStub = plusOption
+            mockProductService.groupOptionStub = plusOption
         }
         
         return ProductDetailViewModel(
