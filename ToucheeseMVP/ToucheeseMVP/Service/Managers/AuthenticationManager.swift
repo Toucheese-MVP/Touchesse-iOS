@@ -92,22 +92,22 @@ final class AuthenticationManager: ObservableObject {
             return authStatus
         }
         
-        /// 토큰 재발행 요청, 실패 시 로그아웃 상태 리턴
-        guard let reissueTokenResponse = await requestReissueTokenToServer(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
-            // Refresh 토큰이 만료된 경우 - 기존 데이터 삭제(로그아웃 처리)
-            await resetAllAuthDatas()
-            return authStatus
-        }
-        
-        /// reissueTokenResponse 헤더의 accessToken 접근
-        guard let accessToken = reissueTokenResponse.headers?["Authorization"]?.removeBearer else {
-            await failedAuthentication()
-            return authStatus
-        }
-                
-        // MARK: 로그인 상태
-        /// 계정 정보 업데이트
-        await updateAuthenticationInfo(reissueTokenResponse, accessToken)
+//        /// 토큰 재발행 요청, 실패 시 로그아웃 상태 리턴
+//        guard let reissueTokenResponse = await requestReissueTokenToServer(refreshToken:tokens.refreshToken, deviceId: tokens.deviceId) else {
+//            // Refresh 토큰이 만료된 경우 - 기존 데이터 삭제(로그아웃 처리)
+//            await resetAllAuthDatas()
+//            return authStatus
+//        }
+//        
+//        /// reissueTokenResponse 헤더의 accessToken 접근
+//        guard let accessToken = reissueTokenResponse.headers?["Authorization"]?.removeBearer else {
+//            await failedAuthentication()
+//            return authStatus
+//        }
+//                
+//        // MARK: 로그인 상태
+//        /// 계정 정보 업데이트
+//        await updateAuthenticationInfo(reissueTokenResponse, accessToken)
         
         /// 로그인 상태로 변경
         await successfulAuthentication()
