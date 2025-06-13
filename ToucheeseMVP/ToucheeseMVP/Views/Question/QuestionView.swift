@@ -65,10 +65,10 @@ struct QuestionView<ViewModel: QuestionViewModelProtocol>: View {
                     // 문의 생성 버튼
                     CreateQuestionButton()
                 }
-                .task {
-                    await viewModel.fetchQuestions()
-                }
             }
+        }
+        .task {
+            await viewModel.fetchQuestions()
         }
         .customNavigationBar {
             Text("문의하기")
